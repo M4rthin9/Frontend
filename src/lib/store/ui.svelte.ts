@@ -1,0 +1,56 @@
+export interface Toast {
+  id: number;
+  message: string;
+  type: 'success' | 'error' | 'warning' | 'info';
+}
+
+class UIStore {
+  darkMode = $state(false);
+  toasts = $state<Toast[]>([]);
+  private toastSeq = 0;
+  private media: MediaQueryList | null = null;
+  private onSystemChange = (e: MediaQueryListEvent): void => {
+    if (!localStorage.getItem('ccc_dark_mode')) {
+      this.darkMode = e.matches;
+      this.applyDarkClass();
+    }
+  };
+
+  initDarkMode(): void {
+    const saved = localStorage.getItem('ccc_dark_mode');
+    if (saved === '1') {
+      this.darkMode = true;
+    } else if (saved === '0') {
+      this.darkMode = false;
+    } else {
+      this.media = window.matchMedia('(prefers-color-scheme: dark)');
+      this.darkMode = this.media.matches;
+      this.media.addEventListener('change', this.onSystemChange);
+    }
+    this.applyDarkClass();
+  }
+
+  toggleDarkMode(): void {
+    this.darkMode = !this.darkMode;
+    localStorage.setItem('ccc_dark_mode', this.darkMode ? '1' : '0');
+    this.applyDarkClass();
+  }
+
+  private applyDarkClass(): void {
+    document.documentElement.classList.toggle('dark', this.darkMode);
+  }
+
+  showToast(message: string, type: Toast['type'] = 'info', duration = 4000): void {
+    const id = ++this.toastSeq;
+    this.toasts = [...this.toasts, { id, message, type }];
+    setTimeout(() => {
+      this.toasts = this.toasts.filter((toast) => toast.id !== id);
+    }, duration);
+  }
+
+  dismissToast(id: number): void {
+    this.toasts = this.toasts.filter((toast) => toast.id !== id);
+  }
+}
+
+export const ui = new UIStore();
