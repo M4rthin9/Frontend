@@ -27,6 +27,8 @@
   const totalPersons = $derived(visitorCount + 1);
   const total = $derived(parseInt(String(booking.total)) || totalPersons * 1000);
 
+  const SLIP_MAX_BASE64 = 2 * 1024 * 1024 - 1024;
+
   function readAsDataURL(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -34,6 +36,44 @@
       reader.onerror = () => reject(new Error('read failed'));
       reader.readAsDataURL(file);
     });
+  }
+
+  function loadImage(src: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('image load failed'));
+      img.src = src;
+    });
+  }
+
+  async function toUploadableDataUrl(file: File): Promise<string> {
+    const dataUrl = await readAsDataURL(file);
+    if (dataUrl.length <= SLIP_MAX_BASE64) return dataUrl;
+    try {
+      const img = await loadImage(dataUrl);
+      const MAX_EDGE = 1600;
+      let w = img.naturalWidth || MAX_EDGE;
+      let h = img.naturalHeight || Math.round(MAX_EDGE * 0.75);
+      const scale = Math.min(1, MAX_EDGE / Math.max(w, h));
+      w = Math.max(1, Math.round(w * scale));
+      h = Math.max(1, Math.round(h * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return dataUrl;
+      ctx.drawImage(img, 0, 0, w, h);
+      let quality = 0.85;
+      let out = canvas.toDataURL('image/jpeg', quality);
+      while (out.length > SLIP_MAX_BASE64 && quality > 0.35) {
+        quality -= 0.1;
+        out = canvas.toDataURL('image/jpeg', quality);
+      }
+      return out;
+    } catch {
+      return dataUrl;
+    }
   }
 
   function showAlert(type: 'err' | 'success', msg: string): void {
@@ -95,11 +135,12 @@
     progress = 15;
 
     try {
-      const base64Data = await readAsDataURL(slipFile);
+      const base64Data = await toUploadableDataUrl(slipFile);
+      const mimeType = base64Data.slice(base64Data.indexOf(':') + 1, base64Data.indexOf(';'));
       const url = await uploadSlip({
         ref: booking.ref,
         fileName: slipFile.name,
-        mimeType: slipFile.type,
+        mimeType,
         base64Data,
       });
       progress = 70;
