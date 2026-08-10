@@ -31,7 +31,7 @@
   </div>
 
   <div class="date-grid">
-    {#each booking.cells as cell}
+    {#each booking.cells as cell, i (i)}
       {#if cell.kind === 'outside'}
         <div></div>
       {:else}

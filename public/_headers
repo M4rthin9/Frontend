@@ -1,0 +1,12 @@
+# Cloudflare Pages security headers
+# NOTE: A strict CSP is intentionally omitted — the SPA needs inline module
+# scripts and the Cloudflare Turnstile widget. These headers are a safe,
+# non-breaking baseline applied to every response (including /sw.js).
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: origin-when-cross-origin
+  Permissions-Policy: camera=(), geolocation=(), microphone=(), payment=()
+  Cross-Origin-Opener-Policy: same-origin
+*/

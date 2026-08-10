@@ -7,6 +7,7 @@
   import type { PublicReservation } from '../lib/api/types';
   import { pickBooking } from '../lib/utils/status';
   import { escHtml, maskPrisonerName } from '../lib/utils/helpers';
+  import { safeGetItem } from '../lib/utils/storage';
   import StatusResult from '../components/status/StatusResult.svelte';
 
   type Mode = 'ref' | 'prisoner';
@@ -28,18 +29,14 @@
   const thankYouTotal = $derived(parseInt(String(found?.total)) || (thankYouCount + 1) * 1000);
 
   onMount(() => {
-    try {
-      const lastRef = sessionStorage.getItem('lastRef');
-      const lastPId = sessionStorage.getItem('lastPrisonerId');
-      if (lastRef) {
-        mode = 'ref';
-        refQuery = lastRef;
-      } else if (lastPId) {
-        mode = 'prisoner';
-        prisonerQuery = lastPId;
-      }
-    } catch {
-      /* ignore sessionStorage errors */
+    const lastRef = safeGetItem(sessionStorage, 'lastRef');
+    const lastPId = safeGetItem(sessionStorage, 'lastPrisonerId');
+    if (lastRef) {
+      mode = 'ref';
+      refQuery = lastRef;
+    } else if (lastPId) {
+      mode = 'prisoner';
+      prisonerQuery = lastPId;
     }
   });
 

@@ -9,11 +9,26 @@
     <title>ระบบจองคิวเพื่อร่วมกิจกรรม</title>
     <style>
       /* Pre-paint: navy government theme — avoids white flash before app mounts */
-      html, body {
+      html,
+      body {
         margin: 0;
         background: linear-gradient(180deg, #0a1628 0%, #0b1a30 100%);
       }
     </style>
+    <script>
+      // Pre-paint dark mode: apply saved/system preference before first render.
+      (function () {
+        try {
+          var saved = localStorage.getItem('ccc_dark_mode');
+          var dark =
+            saved === '1' ||
+            (saved !== '0' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (dark) document.documentElement.classList.add('dark');
+        } catch (e) {
+          /* storage unavailable — fall through */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>

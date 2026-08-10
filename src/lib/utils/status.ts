@@ -26,10 +26,12 @@ export function normalizeStatus(status: string | null | undefined): NormalizedSt
   const v = String(status ?? '').trim();
   if ((CANONICAL as string[]).includes(v)) return v as NormalizedStatus;
   const low = v.toLowerCase();
-  if (v === 'รอตรวจสอบ' || low === 'approved' || low === 'อนุมัติ') return 'รอตรวจสอบวินัย';
+  if (v === 'รอตรวจสอบ') return 'รอตรวจสอบวินัย';
+  if (low === 'approved' || v === 'อนุมัติ') return 'รอชำระเงิน';
   if (low === 'rejected') return 'ไม่อนุมัติ';
   if (low === 'paid') return 'ชำระแล้ว';
   if (low === 'done') return 'เสร็จสิ้น';
+  if (low === 'cancelled') return 'ยกเลิก';
   return 'รอตรวจสอบผู้เข้าร่วม';
 }
 
@@ -98,7 +100,7 @@ export function statusCardClass(status: string | null | undefined): string {
 export function pickBooking(
   rows: PublicReservation[],
   query: string,
-  mode: 'ref' | 'prisoner'
+  mode: 'ref' | 'prisoner',
 ): PublicReservation | null {
   if (!Array.isArray(rows) || rows.length === 0) return null;
   const todayStr = toLocalDateStr(new Date());
@@ -106,7 +108,14 @@ export function pickBooking(
   const completed = new Set(['เสร็จสิ้น', 'done']);
 
   if (mode === 'ref') {
-    return rows.find((r) => String(r.ref ?? '').trim().toUpperCase() === query) ?? null;
+    return (
+      rows.find(
+        (r) =>
+          String(r.ref ?? '')
+            .trim()
+            .toUpperCase() === query,
+      ) ?? null
+    );
   }
 
   const matches = rows.filter((r) => String(r.prisonerId ?? '').trim() === query);
@@ -158,7 +167,9 @@ export function parseExtraVisitorNames(raw: string | null | undefined): string[]
 export type ApprovalState = 'yes' | 'no' | 'pending';
 
 export function approvalState(raw: string | null | undefined): ApprovalState {
-  const v = String(raw ?? '').trim().toLowerCase();
+  const v = String(raw ?? '')
+    .trim()
+    .toLowerCase();
   if (v === 'yes') return 'yes';
   if (v === 'no') return 'no';
   return 'pending';

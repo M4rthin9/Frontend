@@ -51,17 +51,15 @@
       return;
     }
     const mime = (file.type || '').toLowerCase();
-    if (!mime.startsWith('image/') && mime !== 'application/pdf') {
+    if (!mime.startsWith('image/')) {
       showAlert('err', t('fileTypeInvalid'));
       return;
     }
     slipFile = file;
     clearAlert();
-    if (mime.startsWith('image/')) {
-      void readAsDataURL(file).then((url) => {
-        previewUrl = url;
-      });
-    }
+    void readAsDataURL(file).then((url) => {
+      previewUrl = url;
+    });
   }
 
   function onFileChange(event: Event & { currentTarget: HTMLInputElement }): void {
@@ -173,7 +171,7 @@
     >
       <input
         type="file"
-        accept="image/*,application/pdf"
+        accept="image/*"
         bind:this={fileInput}
         onchange={onFileChange}
       />

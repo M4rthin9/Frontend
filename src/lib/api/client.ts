@@ -6,6 +6,12 @@ export const API_BASE: string =
 
 export const API_TIMEOUT = 30000;
 
+const isAbortError = (e: unknown): boolean =>
+  (typeof DOMException !== 'undefined' && e instanceof DOMException && e.name === 'AbortError') ||
+  (e instanceof Error && e.name === 'AbortError');
+
+const isTimeoutAbort = (e: unknown): boolean => isAbortError(e);
+
 export interface ApiResult {
   status?: string;
   message?: string;
@@ -23,7 +29,7 @@ interface CallOptions {
 export async function callAction<T extends object = ApiResult>(
   action: string,
   body: Record<string, unknown> = {},
-  opts: CallOptions = {}
+  opts: CallOptions = {},
 ): Promise<T> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), opts.timeoutMs ?? API_TIMEOUT);
@@ -37,7 +43,7 @@ export async function callAction<T extends object = ApiResult>(
       signal: controller.signal,
     });
   } catch (e) {
-    if (e instanceof DOMException && e.name === 'AbortError') {
+    if (isTimeoutAbort(e)) {
       throw new ApiError('เซิร์ฟเวอร์ไม่ตอบกลับภายในเวลาที่กำหนด — กรุณาลองใหม่อีกครั้ง');
     }
     throw e;
@@ -55,13 +61,26 @@ export async function callAction<T extends object = ApiResult>(
 /** GET a REST alias endpoint (e.g. /api/prisoners). */
 export async function callGet<T extends object = ApiResult>(
   path: string,
-  params: Record<string, string> = {}
+  params: Record<string, string> = {},
 ): Promise<T> {
   const qs = Object.keys(params).length ? '?' + new URLSearchParams(params).toString() : '';
-  const res = await fetch(`${API_BASE}${path}${qs}`, {
-    method: 'GET',
-    cache: 'no-store',
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), API_TIMEOUT);
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}${path}${qs}`, {
+      method: 'GET',
+      cache: 'no-store',
+      signal: controller.signal,
+    });
+  } catch (e) {
+    if (isTimeoutAbort(e)) {
+      throw new ApiError('เซิร์ฟเวอร์ไม่ตอบกลับภายในเวลาที่กำหนด — กรุณาลองใหม่อีกครั้ง');
+    }
+    throw e;
+  } finally {
+    clearTimeout(timer);
+  }
   const data = (await res.json().catch(() => ({}))) as ApiResult;
   if (typeof data !== 'object' || data === null || !('status' in data)) {
     throw new ApiError('การตอบสนองจากเซิร์ฟเวอร์ไม่ถูกต้อง');

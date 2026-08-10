@@ -37,7 +37,7 @@ export function turnstileReady(): boolean {
 export function renderTurnstile(
   el: HTMLElement,
   sitekey: string,
-  onToken: (token: string) => void
+  onToken: (token: string) => void,
 ): string {
   if (!window.turnstile) return '';
   return window.turnstile.render(el, {

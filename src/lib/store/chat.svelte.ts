@@ -1,6 +1,7 @@
 import { lookupByRef } from '../api/endpoints';
 import type { PublicReservation } from '../api/types';
 import { escHtml } from '../utils/helpers';
+import { safeGetItem, safeSetItem } from '../utils/storage';
 import { toThaiLong, parseLocalDate } from '../utils/date';
 import { i18n } from '../i18n/i18n.svelte';
 
@@ -14,7 +15,8 @@ export interface ChatMessage {
 
 const chatI18n: Record<ChatLang, Record<string, string>> = {
   th: {
-    chatGreeting: '🤖 สวัสดี! ฉันเป็น M4RTHIN9 AI ผู้ช่วยตอบคำถามเกี่ยวกับการจองเข้ากิจกรรม ลองถามมาได้เลย',
+    chatGreeting:
+      '🤖 สวัสดี! ฉันเป็น M4RTHIN9 AI ผู้ช่วยตอบคำถามเกี่ยวกับการจองเข้ากิจกรรม ลองถามมาได้เลย',
     chatPlaceholder: 'พิมพ์คำถาม...',
     chatClose: 'ปิดแชท',
     overlayLoading: 'กำลังส่งคำขอ...',
@@ -40,7 +42,8 @@ const chatI18n: Record<ChatLang, Record<string, string>> = {
       '📞 <strong>ติดต่อเจ้าหน้าที่</strong>:<br>สอบถามเพิ่มเติมได้ที่ ทัณฑสถานบำบัดพิเศษกลาง<br><br>หรือเยี่ยมชม <a href="https://main.correct.go.th" target="_blank">main.correct.go.th</a>',
     bookingDetails:
       '<div class="chat-booking-card"><div class="chat-booking-row"><strong>Ref No.</strong> {ref}<span>{status}</span></div>{details}</div>',
-    statusPrompt: '📌 หากต้องการตรวจสอบสถานะ ให้พิมพ์ <strong>Ref No.</strong> ของคุณ (เช่น VIS-12345)',
+    statusPrompt:
+      '📌 หากต้องการตรวจสอบสถานะ ให้พิมพ์ <strong>Ref No.</strong> ของคุณ (เช่น VIS-12345)',
     greetingHello:
       '👋 สวัสดีครับ! ยินดีช่วยเหลือครับ<br>ฉันเป็นผู้ช่วย AI ที่สามารถตอบคำถามเกี่ยวกับการจองเข้ากิจกรรมของทัณฑสถานบำบัดพิเศษกลาง<br><br>ลองถามมาได้เลย เช่น "ค่าใช้จ่ายเท่าไหร่" หรือ "จองยังไง"',
     notUnderstand:
@@ -52,7 +55,8 @@ const chatI18n: Record<ChatLang, Record<string, string>> = {
     statusPaid: '💳 รอเจ้าหน้าที่ยืนยัน',
     statusCompleted: '✅ เสร็จสิ้นแล้ว',
     statusCancelled: '🚫 ยกเลิก',
-    bookingDetailsRows: '<div><strong>👤 ผู้ร่วมกิจกรรม:</strong> {visitor}</div><div><strong>🔒 ผู้ต้องขัง:</strong> {prisoner}</div><div><strong>🏢 แดน:</strong> {wing}</div><div><strong>📅 วันที่เยี่ยม:</strong> {visitDate}</div><div><strong>💰 ค่าบริการ:</strong> {total}</div>',
+    bookingDetailsRows:
+      '<div><strong>👤 ผู้ร่วมกิจกรรม:</strong> {visitor}</div><div><strong>🔒 ผู้ต้องขัง:</strong> {prisoner}</div><div><strong>🏢 แดน:</strong> {wing}</div><div><strong>📅 วันที่เยี่ยม:</strong> {visitDate}</div><div><strong>💰 ค่าบริการ:</strong> {total}</div>',
   },
   en: {
     chatGreeting:
@@ -84,7 +88,7 @@ const chatI18n: Record<ChatLang, Record<string, string>> = {
       '<div class="chat-booking-card"><div class="chat-booking-row"><strong>Ref No.</strong> {ref}<span>{status}</span></div>{details}</div>',
     statusPrompt: '📌 To check status, type your <strong>Ref No.</strong> (e.g. VIS-12345)',
     greetingHello:
-      "👋 Hello! How can I assist you?<br>I'm the AI assistant for the reservation system<br><br>Feel free to ask about \"cost\", \"how to book\", or \"check status\"",
+      '👋 Hello! How can I assist you?<br>I\'m the AI assistant for the reservation system<br><br>Feel free to ask about "cost", "how to book", or "check status"',
     notUnderstand:
       '❓ Sorry, I don\'t understand this question<br>Try asking about "cost", "how to book", or "check status"',
     statusApprovedPayment: '✅ Approved — waiting for payment',
@@ -98,8 +102,7 @@ const chatI18n: Record<ChatLang, Record<string, string>> = {
       '<div><strong>👤 Visitor:</strong> {visitor}</div><div><strong>🔒 Prisoner:</strong> {prisoner}</div><div><strong>🏢 Wing:</strong> {wing}</div><div><strong>📅 Visit Date:</strong> {visitDate}</div><div><strong>💰 Service Fee:</strong> {total}</div>',
   },
   zh: {
-    chatGreeting:
-      '🤖 您好！我是 M4RTHIN9 AI 助手，可以回答关于本场地预约的任何问题。',
+    chatGreeting: '🤖 您好！我是 M4RTHIN9 AI 助手，可以回答关于本场地预约的任何问题。',
     chatPlaceholder: '请输入问题...',
     chatClose: '关闭聊天',
     overlayLoading: '正在提交请求...',
@@ -128,8 +131,7 @@ const chatI18n: Record<ChatLang, Record<string, string>> = {
     statusPrompt: '📌 如需查询状态，请输入您的 <strong>Ref No.</strong>（例如 VIS-12345）',
     greetingHello:
       '👋 您好！我能为您做些什么？<br>我是此活动预约系统的AI助手<br><br>随时可询问"费用"、"如何预约"或"查询状态"',
-    notUnderstand:
-      '❓ 抱歉，我不理解您的问题<br>请尝试询问"费用"、"如何预约"或"查询状态"',
+    notUnderstand: '❓ 抱歉，我不理解您的问题<br>请尝试询问"费用"、"如何预约"或"查询状态"',
     statusApprovedPayment: '✅ 已批准 — 等待付款',
     statusPending: '⏳ 待审核',
     statusApproved: '✅ 已批准',
@@ -166,63 +168,199 @@ function normalizeStatus(status: string): string {
 
 function getStatusPill(status: string, langCode: ChatLang): string {
   const s = normalizeStatus(status);
-  if (s === 'รอชำระเงิน') return `<span class="status-pill status-pill-approved">${getI18n('statusApprovedPayment', langCode)}</span>`;
-  if (s === 'รอตรวจสอบ') return `<span class="status-pill status-pill-pending">${getI18n('statusPending', langCode)}</span>`;
-  if (s.includes('ไม่อนุมัติ')) return `<span class="status-pill status-pill-rejected">${getI18n('statusRejected', langCode)}</span>`;
-  if (s.includes('อนุมัติ')) return `<span class="status-pill status-pill-approved">${getI18n('statusApproved', langCode)}</span>`;
-  if (s.includes('ชำระ')) return `<span class="status-pill status-pill-paid">${getI18n('statusPaid', langCode)}</span>`;
-  if (s.includes('เสร็จสิ้น')) return `<span class="status-pill status-pill-done">${getI18n('statusCompleted', langCode)}</span>`;
-  if (s.includes('ยกเลิก')) return `<span class="status-pill status-pill-cancelled">${getI18n('statusCancelled', langCode)}</span>`;
+  if (s === 'รอชำระเงิน')
+    return `<span class="status-pill status-pill-approved">${getI18n('statusApprovedPayment', langCode)}</span>`;
+  if (s === 'รอตรวจสอบ')
+    return `<span class="status-pill status-pill-pending">${getI18n('statusPending', langCode)}</span>`;
+  if (s.includes('ไม่อนุมัติ'))
+    return `<span class="status-pill status-pill-rejected">${getI18n('statusRejected', langCode)}</span>`;
+  if (s.includes('อนุมัติ'))
+    return `<span class="status-pill status-pill-approved">${getI18n('statusApproved', langCode)}</span>`;
+  if (s.includes('ชำระ'))
+    return `<span class="status-pill status-pill-paid">${getI18n('statusPaid', langCode)}</span>`;
+  if (s.includes('เสร็จสิ้น'))
+    return `<span class="status-pill status-pill-done">${getI18n('statusCompleted', langCode)}</span>`;
+  if (s.includes('ยกเลิก'))
+    return `<span class="status-pill status-pill-cancelled">${getI18n('statusCancelled', langCode)}</span>`;
   return `<span class="status-pill status-pill-pending">${getI18n('statusPending', langCode)}</span>`;
 }
 
 const knowledgeBase: { keywords: Record<ChatLang, string[]>; responseKey: string }[] = [
   {
-    keywords: { th: ['ค่าใช้จ่าย', 'ค่าบริการ', 'ราคา', 'ราคาเท่าไหร่', 'ค่าสมัคร', 'ค่าจอง', 'บาท'], en: ['cost', 'price', 'fee', 'how much', 'payment amount', 'adult price', 'child price', 'charge'], zh: ['费用', '价格', '多少钱', '收费', '成人', '儿童', '价格'] },
+    keywords: {
+      th: ['ค่าใช้จ่าย', 'ค่าบริการ', 'ราคา', 'ราคาเท่าไหร่', 'ค่าสมัคร', 'ค่าจอง', 'บาท'],
+      en: [
+        'cost',
+        'price',
+        'fee',
+        'how much',
+        'payment amount',
+        'adult price',
+        'child price',
+        'charge',
+      ],
+      zh: ['费用', '价格', '多少钱', '收费', '成人', '儿童', '价格'],
+    },
     responseKey: 'paymentCost',
   },
   {
-    keywords: { th: ['จอง', 'จองคิว', 'ทำอย่างไร', 'ขั้นตอน', 'ขั้นตอนการจอง', 'เริ่มต้น', 'เริ่มจอง'], en: ['book', 'booking', 'reserve', 'reservation', 'how to book', 'steps', 'start booking', 'process'], zh: ['预约', '预订', '怎么预约', '步骤', '流程', '开始预约', '报名'] },
+    keywords: {
+      th: ['จอง', 'จองคิว', 'ทำอย่างไร', 'ขั้นตอน', 'ขั้นตอนการจอง', 'เริ่มต้น', 'เริ่มจอง'],
+      en: [
+        'book',
+        'booking',
+        'reserve',
+        'reservation',
+        'how to book',
+        'steps',
+        'start booking',
+        'process',
+      ],
+      zh: ['预约', '预订', '怎么预约', '步骤', '流程', '开始预约', '报名'],
+    },
     responseKey: 'bookingSteps',
   },
   {
-    keywords: { th: ['เช็คสถานะ', 'ตรวจสอบสถานะ', 'สถานะ', 'ค้นหา', 'ref', 'เลขอ้างอิง', 'ผู้ต้องขัง'], en: ['check status', 'status', 'search', 'ref', 'reference number', 'prisoner id', 'prisoner number'], zh: ['查询状态', '状态', '搜索', '参考编号', '囚犯编号', '编号'] },
+    keywords: {
+      th: ['เช็คสถานะ', 'ตรวจสอบสถานะ', 'สถานะ', 'ค้นหา', 'ref', 'เลขอ้างอิง', 'ผู้ต้องขัง'],
+      en: [
+        'check status',
+        'status',
+        'search',
+        'ref',
+        'reference number',
+        'prisoner id',
+        'prisoner number',
+      ],
+      zh: ['查询状态', '状态', '搜索', '参考编号', '囚犯编号', '编号'],
+    },
     responseKey: 'checkStatus',
   },
   {
-    keywords: { th: ['วัน', 'วันไหน', 'เวลา', 'เวลาเปิด', 'เปิด', 'ปิด', 'วันทำการ', 'กะ', 'เวลาจอง'], en: ['day', 'days', 'time', 'hours', 'open', 'closed', 'working days', 'schedule'], zh: ['日期', '时间', '开放', '关闭', '工作日', '营业时间', '预约时间', '星期'] },
+    keywords: {
+      th: ['วัน', 'วันไหน', 'เวลา', 'เวลาเปิด', 'เปิด', 'ปิด', 'วันทำการ', 'กะ', 'เวลาจอง'],
+      en: ['day', 'days', 'time', 'hours', 'open', 'closed', 'working days', 'schedule'],
+      zh: ['日期', '时间', '开放', '关闭', '工作日', '营业时间', '预约时间', '星期'],
+    },
     responseKey: 'daysTime',
   },
   {
-    keywords: { th: ['นำอะไรไป', 'สิ่งที่ต้องเตรียม', 'อะไรบ้าง', 'ของที่ต้องใช้', 'ต้องเตรียม', 'อุปกรณ์', 'เอกสาร'], en: ['bring', 'prepare', 'document', 'id', 'phone', 'what to bring', 'rules'], zh: ['携带', '准备', '文件', '证件', '电话', '参观须知', '规则'] },
+    keywords: {
+      th: [
+        'นำอะไรไป',
+        'สิ่งที่ต้องเตรียม',
+        'อะไรบ้าง',
+        'ของที่ต้องใช้',
+        'ต้องเตรียม',
+        'อุปกรณ์',
+        'เอกสาร',
+      ],
+      en: ['bring', 'prepare', 'document', 'id', 'phone', 'what to bring', 'rules'],
+      zh: ['携带', '准备', '文件', '证件', '电话', '参观须知', '规则'],
+    },
     responseKey: 'whatToBring',
   },
   {
-    keywords: { th: ['เด็ก', 'เด็กอายุ', 'ฟรี', 'เด็กไม่มีค่าใช้จ่าย', 'ฟรีค่าใช้จ่าย'], en: ['child', 'children', 'kid', 'age', 'free', 'under 5', '5-8'], zh: ['儿童', '小孩', '孩子', '年龄', '免费', '5岁以下', '5到8岁'] },
+    keywords: {
+      th: ['เด็ก', 'เด็กอายุ', 'ฟรี', 'เด็กไม่มีค่าใช้จ่าย', 'ฟรีค่าใช้จ่าย'],
+      en: ['child', 'children', 'kid', 'age', 'free', 'under 5', '5-8'],
+      zh: ['儿童', '小孩', '孩子', '年龄', '免费', '5岁以下', '5到8岁'],
+    },
     responseKey: 'childAgePrice',
   },
   {
-    keywords: { th: ['ชำระเงิน', 'ชำระ', 'โอน', 'การชำระ', 'ชำระยังไง', 'วิธีชำระ'], en: ['pay', 'payment', 'payment method', 'transfer', 'bank', 'how to pay'], zh: ['付款', '支付', '转账', '银行', '付款方式', '怎么付款'] },
+    keywords: {
+      th: ['ชำระเงิน', 'ชำระ', 'โอน', 'การชำระ', 'ชำระยังไง', 'วิธีชำระ'],
+      en: ['pay', 'payment', 'payment method', 'transfer', 'bank', 'how to pay'],
+      zh: ['付款', '支付', '转账', '银行', '付款方式', '怎么付款'],
+    },
     responseKey: 'paymentMethod',
   },
   {
-    keywords: { th: ['อนุมัติ', 'ไม่อนุมัติ', 'ผลการตรวจสอบ', 'รอนาน', 'เช็คแล้ว', 'ดำเนินการ', 'ใช้เวลานาน', 'นานแค่ไหน'], en: ['approval', 'approved', 'reject', 'rejected', 'pending', 'review', 'verify', 'verification', 'how long', 'processing time', 'long'], zh: ['批准', '审核', '审批', '拒绝', '待审核', '处理时间', '多久', '等待', '结果'] },
+    keywords: {
+      th: [
+        'อนุมัติ',
+        'ไม่อนุมัติ',
+        'ผลการตรวจสอบ',
+        'รอนาน',
+        'เช็คแล้ว',
+        'ดำเนินการ',
+        'ใช้เวลานาน',
+        'นานแค่ไหน',
+      ],
+      en: [
+        'approval',
+        'approved',
+        'reject',
+        'rejected',
+        'pending',
+        'review',
+        'verify',
+        'verification',
+        'how long',
+        'processing time',
+        'long',
+      ],
+      zh: ['批准', '审核', '审批', '拒绝', '待审核', '处理时间', '多久', '等待', '结果'],
+    },
     responseKey: 'approvalTime',
   },
   {
-    keywords: { th: ['ติดต่อ', 'ติดต่อเจ้าหน้าที่', 'เบอร์', 'โทร', 'สาย', 'ช่วยเหลือ'], en: ['contact', 'officer', 'phone', 'call', 'help', 'support', 'number'], zh: ['联系', '工作人员', '电话', '帮助', '咨询', '号码'] },
+    keywords: {
+      th: ['ติดต่อ', 'ติดต่อเจ้าหน้าที่', 'เบอร์', 'โทร', 'สาย', 'ช่วยเหลือ'],
+      en: ['contact', 'officer', 'phone', 'call', 'help', 'support', 'number'],
+      zh: ['联系', '工作人员', '电话', '帮助', '咨询', '号码'],
+    },
     responseKey: 'contactUs',
   },
   {
-    keywords: { th: ['สวัสดี', 'หวัดดี', 'ครับ', 'ค่ะ'], en: ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening', 'start'], zh: ['你好', '您好', '哈喽', '嗨', '早上好', '下午好'] },
+    keywords: {
+      th: ['สวัสดี', 'หวัดดี', 'ครับ', 'ค่ะ'],
+      en: ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening', 'start'],
+      zh: ['你好', '您好', '哈喽', '嗨', '早上好', '下午好'],
+    },
     responseKey: 'greetingHello',
   },
 ];
 
 const languageSignals: Record<ChatLang, string[]> = {
   th: ['ค่าใช้จ่าย', 'จอง', 'สถานะ', 'วัน', 'เวลา', 'ชำระเงิน', 'อนุมัติ', 'ติดต่อ', 'สวัสดี'],
-  en: ['cost', 'price', 'fee', 'book', 'booking', 'status', 'payment', 'pay', 'approval', 'approved', 'contact', 'hello', 'hi', 'days', 'hours', 'child', 'children', 'bring', 'ref'],
-  zh: ['费用', '预约', '状态', '付款', '审核', '联系', '你好', '您好', '参考编号', '囚犯', '儿童', '携带', '工作日'],
+  en: [
+    'cost',
+    'price',
+    'fee',
+    'book',
+    'booking',
+    'status',
+    'payment',
+    'pay',
+    'approval',
+    'approved',
+    'contact',
+    'hello',
+    'hi',
+    'days',
+    'hours',
+    'child',
+    'children',
+    'bring',
+    'ref',
+  ],
+  zh: [
+    '费用',
+    '预约',
+    '状态',
+    '付款',
+    '审核',
+    '联系',
+    '你好',
+    '您好',
+    '参考编号',
+    '囚犯',
+    '儿童',
+    '携带',
+    '工作日',
+  ],
 };
 
 function detectLanguage(message: string, fallback: ChatLang): ChatLang {
@@ -232,7 +370,11 @@ function detectLanguage(message: string, fallback: ChatLang): ChatLang {
   const hasEnglishLetters = /[a-z]/i.test(message);
 
   if (hasChinese || languageSignals.zh.some((kw) => lower.includes(kw.toLowerCase()))) return 'zh';
-  if (languageSignals.en.some((kw) => lower.includes(kw)) || (hasEnglishLetters && !hasThai && !hasChinese)) return 'en';
+  if (
+    languageSignals.en.some((kw) => lower.includes(kw)) ||
+    (hasEnglishLetters && !hasThai && !hasChinese)
+  )
+    return 'en';
   if (hasThai || languageSignals.th.some((kw) => lower.includes(kw))) return 'th';
   return fallback;
 }
@@ -251,7 +393,7 @@ function formatBookingDetails(booking: PublicReservation, langCode: ChatLang): s
       visitDate: escHtml(visitDate),
       total: `${Number(booking.total ?? 0).toLocaleString()} ${currency}`,
     },
-    langCode
+    langCode,
   );
   return formatI18n(
     'bookingDetails',
@@ -260,7 +402,7 @@ function formatBookingDetails(booking: PublicReservation, langCode: ChatLang): s
       status: getStatusPill(booking.status || '', langCode),
       details,
     },
-    langCode
+    langCode,
   );
 }
 
@@ -271,11 +413,12 @@ async function getBotResponse(message: string): Promise<string> {
   const refMatch = message.match(/([Vv][Ii][Ss]-[0-9]{5})/i);
   if (refMatch) {
     const ref = refMatch[1].toUpperCase();
-    let rows: PublicReservation[] = [];
+    let rows: PublicReservation[];
     try {
       rows = await lookupByRef({ ref });
     } catch {
-      if (activeLang === 'th') return '⚠️ ไม่สามารถเชื่อมต่อระบบได้ในขณะนี้ — กรุณาลองใหม่ภายหลัง หรือใช้หน้า "ตรวจสอบสถานะ"';
+      if (activeLang === 'th')
+        return '⚠️ ไม่สามารถเชื่อมต่อระบบได้ในขณะนี้ — กรุณาลองใหม่ภายหลัง หรือใช้หน้า "ตรวจสอบสถานะ"';
       if (activeLang === 'zh') return '⚠️ 目前无法连接系统 — 请稍后再试或使用"查询状态"页面';
       return '⚠️ Cannot connect to the system at the moment — please try again later or use the "Check Status" page';
     }
@@ -290,7 +433,11 @@ async function getBotResponse(message: string): Promise<string> {
     const keywords = item.keywords[activeLang] || item.keywords.th || [];
     if (keywords.some((kw) => lower.includes(kw.toLowerCase()))) {
       if (item.responseKey === 'checkStatus') {
-        sessionStorage.setItem('chatContext', JSON.stringify({ intent: 'checkStatus', step: 1 }));
+        safeSetItem(
+          sessionStorage,
+          'chatContext',
+          JSON.stringify({ intent: 'checkStatus', step: 1 }),
+        );
         return `${getI18n(item.responseKey, activeLang)}<br><br>${getI18n('statusPrompt', activeLang)}`;
       }
       return getI18n(item.responseKey, activeLang);
@@ -313,14 +460,15 @@ class ChatStore {
 
   private addMessage(text: string, sender: 'user' | 'bot'): void {
     this.messages = [...this.messages, { id: nextId(), text, sender }];
-    sessionStorage.setItem(
+    safeSetItem(
+      sessionStorage,
       'chatHistory',
-      JSON.stringify(this.messages.map((m) => ({ text: m.text, sender: m.sender })))
+      JSON.stringify(this.messages.map((m) => ({ text: m.text, sender: m.sender }))),
     );
   }
 
   private restoreChatHistory(): void {
-    const raw = sessionStorage.getItem('chatHistory');
+    const raw = safeGetItem(sessionStorage, 'chatHistory');
     if (!raw) return;
     try {
       const history: { text: string; sender: 'user' | 'bot' }[] = JSON.parse(raw);
@@ -352,9 +500,14 @@ class ChatStore {
     if (!trimmed) return;
     this.addMessage(trimmed, 'user');
     this.typing = true;
-    const reply = await getBotResponse(trimmed);
-    this.typing = false;
-    setTimeout(() => this.addMessage(reply, 'bot'), 200);
+    try {
+      const reply = await getBotResponse(trimmed);
+      this.addMessage(reply, 'bot');
+    } catch {
+      /* keep typing state consistent even on unexpected failures */
+    } finally {
+      this.typing = false;
+    }
   }
 
   placeholder(): string {

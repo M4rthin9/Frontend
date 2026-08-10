@@ -27,7 +27,7 @@
       />
       {#if booking.showSuggestions && booking.suggestions.length > 0}
         <div class="suggestions-dropdown" role="listbox">
-          {#each booking.suggestions as p}
+          {#each booking.suggestions as p (p.prisonerId)}
             <div
               class="suggestion-item"
               role="option"

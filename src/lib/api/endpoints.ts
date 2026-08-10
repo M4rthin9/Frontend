@@ -1,12 +1,6 @@
 import { callAction, callGet, assertOk } from './client';
 import { rebuildPrisonerObjects } from '../utils/helpers';
-import type {
-  ApiResult,
-  Note,
-  Prisoner,
-  PublicReservation,
-  SaveReservationPayload,
-} from './types';
+import type { ApiResult, Note, Prisoner, PublicReservation, SaveReservationPayload } from './types';
 
 export async function ping(): Promise<{ status: string; pong?: boolean; timestamp?: string }> {
   return callAction<{ status: string; pong?: boolean; timestamp?: string }>('ping');
@@ -17,26 +11,38 @@ export async function testConnection(): Promise<{
   message?: string;
   reservationCount?: number;
 }> {
-  return callAction<{ status: string; message?: string; reservationCount?: number }>('testConnection');
+  return callAction<{ status: string; message?: string; reservationCount?: number }>(
+    'testConnection',
+  );
 }
 
 /** Full prisoner master (minified rows) via GET /api/prisoners. */
 export async function getPrisoners(): Promise<Prisoner[]> {
-  const data = await callGet<{ status: string; prisoners: string[][] | Prisoner[] }>('/api/prisoners');
+  const data = await callGet<{ status: string; prisoners: string[][] | Prisoner[] }>(
+    '/api/prisoners',
+  );
   assertOk(data);
   return rebuildPrisonerObjects(data.prisoners ?? []);
 }
 
 /** Active booking counts per visitDateISO — drives the calendar quota. */
 export async function getCountsByDate(): Promise<Record<string, number>> {
-  const data = await callAction<{ status: string; counts?: Record<string, number> }>('getCountsByDate');
+  const data = await callAction<{ status: string; counts?: Record<string, number> }>(
+    'getCountsByDate',
+  );
   assertOk(data);
   return data.counts ?? {};
 }
 
 /** Public status lookup by ref number or prisoner ID. */
-export async function lookupByRef(query: { ref?: string; prisonerId?: string }): Promise<PublicReservation[]> {
-  const data = await callAction<{ status: string; rows?: PublicReservation[] }>('lookupByRef', query);
+export async function lookupByRef(query: {
+  ref?: string;
+  prisonerId?: string;
+}): Promise<PublicReservation[]> {
+  const data = await callAction<{ status: string; rows?: PublicReservation[] }>(
+    'lookupByRef',
+    query,
+  );
   assertOk(data);
   return data.rows ?? [];
 }
@@ -46,7 +52,7 @@ export async function saveReservation(payload: SaveReservationPayload): Promise<
   const data = await callAction<{ status: string; ref?: string; message?: string }>(
     'saveReservation',
     payload as unknown as Record<string, unknown>,
-    { timeoutMs: 45000 }
+    { timeoutMs: 45000 },
   );
   assertOk(data);
   return { ref: data.ref ?? '' };
@@ -62,7 +68,7 @@ export async function uploadSlip(input: {
   const data = await callAction<{ status: string; url?: string; message?: string }>(
     'uploadSlip',
     input as unknown as Record<string, unknown>,
-    { timeoutMs: 120000 }
+    { timeoutMs: 120000 },
   );
   assertOk(data);
   return data.url ?? '';
@@ -76,14 +82,16 @@ export async function updateSlipAndStatus(input: {
 }): Promise<void> {
   const data = await callAction<{ status: string; message?: string }>(
     'updateSlipAndStatus',
-    input as unknown as Record<string, unknown>
+    input as unknown as Record<string, unknown>,
   );
   assertOk(data);
 }
 
 /** Public self-service cancellation. */
 export async function publicCancelBooking(ref: string): Promise<void> {
-  const data = await callAction<{ status: string; message?: string }>('publicCancelBooking', { ref });
+  const data = await callAction<{ status: string; message?: string }>('publicCancelBooking', {
+    ref,
+  });
   assertOk(data);
 }
 

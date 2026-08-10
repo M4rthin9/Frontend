@@ -1,6 +1,8 @@
-/* CC Cafe frontend — Service Worker (app shell + static asset caching) */
-const CACHE = 'ccc-shell-v1';
-const PRECACHE = ['/', '/index.html'];
+/* CC Cafe frontend — Service Worker (app shell + static asset caching).
+ * Build-time placeholders (CACHE name + precache list) are injected by
+ * vite-plugin-sw-stamp so every deploy installs a fresh cache. */
+const CACHE = __CACHE__;
+const PRECACHE = __PRECACHE__;
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

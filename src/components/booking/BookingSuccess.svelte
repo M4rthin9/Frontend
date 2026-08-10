@@ -58,7 +58,7 @@
           <div class="detail-row">
             <span class="detail-label">📋 รายชื่อผู้เข้าร่วมเพิ่มเติม</span>
             <span class="detail-value" style="line-height:1.8">
-              {#each success.extras as v, i}
+              {#each success.extras as v, i (v.name + i)}
                 <div>{i + 2}. {v.name} ({v.relation})</div>
               {/each}
             </span>

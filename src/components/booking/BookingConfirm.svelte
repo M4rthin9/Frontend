@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { booking } from '../../lib/store/booking.svelte';
+  import { booking, CHILD_RELATIONS } from '../../lib/store/booking.svelte';
   import { t } from '../../lib/i18n/i18n.svelte';
   import Button from '../ui/Button.svelte';
   import Spinner from '../ui/Spinner.svelte';
@@ -15,7 +15,7 @@
   const data = $derived(booking.confirmData);
   const cost = $derived(booking.cost);
   const n = $derived(booking.visitorCount);
-  const totalPersons = $derived((data?.totalPersons ?? 0));
+  const totalPersons = $derived(data?.totalPersons ?? 0);
   const thDate = $derived(data?.visitDate ?? '');
 
   const extrasList = $derived(
@@ -23,7 +23,7 @@
       ? booking.extras.map((v) => ({
           name: v.name,
           relation: v.relation,
-          ageNote: v.relation === 'บุตร / ธิดา' && v.age ? ` (อายุ ${v.age} ปี)` : '',
+          ageNote: CHILD_RELATIONS.includes(v.relation) && v.age ? ` (อายุ ${v.age} ปี)` : '',
         }))
       : []
   );
@@ -75,7 +75,7 @@
         <div class="review-value review-list">
           1. {booking.visitorName.trim()} (ผู้จอง)
           {#if extrasList.length > 0}
-            {#each extrasList as v, i}
+            {#each extrasList as v, i (i)}
               <div>• {v.name} — {v.relation}{v.ageNote}</div>
             {/each}
           {:else}

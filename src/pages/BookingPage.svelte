@@ -82,7 +82,7 @@
           error={booking.errors.relation}
         >
           <option value="">{t('relationPlaceholder')}</option>
-          {#each RELATION_KEYS as key}
+          {#each RELATION_KEYS as key (key)}
             <option value={t(key)}>{t(key)}</option>
           {/each}
         </Select>
@@ -93,7 +93,7 @@
           bind:value={booking.religion}
           error={booking.errors.religion}
         >
-          {#each RELIGION_OPTIONS as r}
+          {#each RELIGION_OPTIONS as r (r)}
             <option value={r === '-- เลือก --' ? '' : r}>{r}</option>
           {/each}
         </Select>
@@ -116,7 +116,7 @@
             onchange={onCountChange}
             class="w-full rounded-lg border border-border-strong bg-surface px-3 py-2.5 text-sm text-text transition focus:border-navy-500 focus:outline-none focus:ring-2 focus:ring-navy-100"
           >
-            {#each Array.from({ length: 10 }, (_, i) => i + 1) as n}
+            {#each Array.from({ length: 10 }, (_, i) => i + 1) as n (n)}
               <option value={n}>{n} คน</option>
             {/each}
           </select>
@@ -128,7 +128,7 @@
           <div class="extra-visitors-title">
             {t('extraVisitorTitle')} <span style="font-weight:400">({t('extraVisitorSub')})</span>
           </div>
-          {#each booking.extras as extra, i}
+          {#each booking.extras as extra, i (i)}
             {@const num = i + 2}
             <div class="extra-visitor-block">
               <div class="extra-visitor-num">ผู้เข้าร่วมกิจกรรม {num}</div>
@@ -157,7 +157,7 @@
                   bind:value={extra.religion}
                   error={booking.errors[`extraReligion${num}`]}
                 >
-                  {#each RELIGION_OPTIONS as r}
+                  {#each RELIGION_OPTIONS as r (r)}
                     <option value={r === '-- เลือก --' ? '' : r}>{r}</option>
                   {/each}
                 </Select>
@@ -177,7 +177,7 @@
                   error={booking.errors[`extraRelation${num}`]}
                 >
                   <option value="">{t('relationPlaceholder')}</option>
-                  {#each RELATION_KEYS as key}
+                  {#each RELATION_KEYS as key (key)}
                     <option value={t(key)}>{t(key)}</option>
                   {/each}
                 </Select>

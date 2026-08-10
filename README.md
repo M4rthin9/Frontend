@@ -13,16 +13,18 @@ SPA frontend สำหรับโครงการจัดการเรี�
 npm install
 npm run dev       # http://localhost:5173
 npm run check     # svelte-check + tsc
+npm run lint      # ESLint (svelte + typescript)
+npm run format    # Prettier (write)
 npm run build     # output → dist/
 npm run preview   # preview production build
 ```
 
 ## Configuration (`.env.local`)
 
-| Variable        | Default                               | Description                        |
-| --------------- | ------------------------------------- | ---------------------------------- |
-| `VITE_API_BASE` | `https://ccc-backend.pongsinbas.workers.dev` | ฐาน URL ของ Worker ฝั่ง backend |
-| `VITE_SITE_KEY` | —                                     | Cloudflare Turnstile site key      |
+| Variable                 | Default                                      | Description                     |
+| ------------------------ | -------------------------------------------- | ------------------------------- |
+| `VITE_API_BASE`          | `https://ccc-backend.pongsinbas.workers.dev` | ฐาน URL ของ Worker ฝั่ง backend |
+| `VITE_TURNSTILE_SITEKEY` | —                                            | Cloudflare Turnstile site key   |
 
 ## Backend contract
 
@@ -47,8 +49,13 @@ src/
   lib/
     api/             # client, endpoints, types, errors
     store/           # booking, ui (dark mode + toasts), chat, i18n, router
-    utils/           # status, date, currency, validation, turnstile, helpers
+    utils/           # status, date, currency, validation, turnstile, storage, helpers
   styles/globals.css # tokens + booking/status CSS (รองรับ dark mode)
+plugins/
+  sw-stamp.ts        # stamp service worker (version + precache) ตอน build
+scripts/
+  sw.template.js     # template ของ service worker
+public/              # static files (รวม _headers สำหรับ Cloudflare Pages)
 ```
 
 ## Deployment (Cloudflare Pages)
@@ -57,4 +64,4 @@ src/
 2. เพิ่ม secrets ใน GitHub repo: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
 3. push ที่ branch `main` → workflow `.github/workflows/deploy.yml` ทำงานอัตโนมัติ (`npm run check` + `npm run build` + `pages deploy`)
 
-Service worker (`public/sw.js`) ลงทะเบียนเฉพาะ production (`import.meta.env.PROD`) — ใช้ app-shell + stale-while-revalidate สำหรับ static assets, ไม่แตะ `/api/*`
+Service worker (`dist/sw.js`) ลงทะเบียนเฉพาะ production (`import.meta.env.PROD`) — ถูก stamp ด้วย version + รายการ asset จริงตอน build (`plugins/sw-stamp.ts`) ใช้ app-shell + stale-while-revalidate สำหรับ static assets, ไม่แตะ `/api/*`

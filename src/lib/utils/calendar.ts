@@ -57,7 +57,7 @@ export function buildCalendarCells(
   year: number,
   month: number,
   selectedDate: string | null,
-  bookings: Record<string, number>
+  bookings: Record<string, number>,
 ): CalendarCell[] {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();

@@ -1,3 +1,5 @@
+import { safeGetItem, safeSetItem } from '../utils/storage';
+
 export interface Toast {
   id: number;
   message: string;
@@ -10,14 +12,14 @@ class UIStore {
   private toastSeq = 0;
   private media: MediaQueryList | null = null;
   private onSystemChange = (e: MediaQueryListEvent): void => {
-    if (!localStorage.getItem('ccc_dark_mode')) {
+    if (!safeGetItem(window.localStorage, 'ccc_dark_mode')) {
       this.darkMode = e.matches;
       this.applyDarkClass();
     }
   };
 
   initDarkMode(): void {
-    const saved = localStorage.getItem('ccc_dark_mode');
+    const saved = safeGetItem(window.localStorage, 'ccc_dark_mode');
     if (saved === '1') {
       this.darkMode = true;
     } else if (saved === '0') {
@@ -32,7 +34,7 @@ class UIStore {
 
   toggleDarkMode(): void {
     this.darkMode = !this.darkMode;
-    localStorage.setItem('ccc_dark_mode', this.darkMode ? '1' : '0');
+    safeSetItem(window.localStorage, 'ccc_dark_mode', this.darkMode ? '1' : '0');
     this.applyDarkClass();
   }
 

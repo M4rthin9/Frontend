@@ -1,7 +1,13 @@
 import { getPrisoners, getCountsByDate, lookupByRef, saveReservation } from '../api/endpoints';
 import { ApiError } from '../api/errors';
 import type { CostSummary, Prisoner } from '../api/types';
-import { debounce, generateUniqueRef, maskPrisonerName, rebuildPrisonerObjects } from '../utils/helpers';
+import {
+  debounce,
+  generateUniqueRef,
+  maskPrisonerName,
+  rebuildPrisonerObjects,
+} from '../utils/helpers';
+import { safeGetItem, safeSetItem, safeRemoveItem } from '../utils/storage';
 import { toThaiLong } from '../utils/date';
 import { validateIdFormat, validatePhone } from '../utils/validation';
 import { buildCalendarCells, calendarTitle, QUOTA } from '../utils/calendar';
@@ -13,8 +19,7 @@ import {
 } from '../utils/turnstile';
 
 export const TURNSTILE_SITEKEY =
-  (import.meta.env.VITE_TURNSTILE_SITEKEY as string | undefined) ||
-  '0x4AAAAAAEIsdWWK1_eTnbKj';
+  (import.meta.env.VITE_TURNSTILE_SITEKEY as string | undefined) || '0x4AAAAAAEIsdWWK1_eTnbKj';
 
 export const ACTIVE_STATUSES = [
   'รอตรวจสอบวินัย',
@@ -80,7 +85,7 @@ export function calcCost(count: number, extras: ExtraVisitor[]): CostSummary {
   extras.forEach((v, idx) => {
     let fee = PRICE_PER_PERSON;
     let isChild = false;
-    if (v.relation === 'บุตร / ธิดา') {
+    if (CHILD_RELATIONS.includes(v.relation)) {
       const a = parseInt(v.age, 10);
       if (!isNaN(a)) {
         if (a < 5) {
@@ -98,7 +103,7 @@ export function calcCost(count: number, extras: ExtraVisitor[]): CostSummary {
     }
     extraFees += fee;
     if (!isChild) adults++;
-    if (v.relation === 'บุตร / ธิดา' && fee < PRICE_PER_PERSON) {
+    if (CHILD_RELATIONS.includes(v.relation) && fee < PRICE_PER_PERSON) {
       discountNotes.push(`คนที่ ${idx + 2}: ${fee === 0 ? 'ฟรี' : fee + ' บาท'}`);
     }
   });
@@ -229,12 +234,12 @@ class BookingStore {
 
   // ===== PRISONER =====
   private loadPrisonerFromCache(): Prisoner[] | null {
+    const raw = safeGetItem(localStorage, PRISONER_CACHE_KEY);
+    if (!raw) return null;
     try {
-      const raw = localStorage.getItem(PRISONER_CACHE_KEY);
-      if (!raw) return null;
       const cached = JSON.parse(raw) as { data: string[][] | Prisoner[]; timestamp: number };
       if (Date.now() - cached.timestamp > PRISONER_CACHE_TTL) {
-        localStorage.removeItem(PRISONER_CACHE_KEY);
+        safeRemoveItem(localStorage, PRISONER_CACHE_KEY);
         return null;
       }
       return rebuildPrisonerObjects(cached.data);
@@ -244,11 +249,7 @@ class BookingStore {
   }
 
   private savePrisonerToCache(data: Prisoner[]): void {
-    try {
-      localStorage.setItem(PRISONER_CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
-    } catch {
-      /* storage full — ignore */
-    }
+    safeSetItem(localStorage, PRISONER_CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
   }
 
   async loadPrisonerMaster(): Promise<void> {
@@ -276,7 +277,8 @@ class BookingStore {
       console.error('[Booking] prisoner master fetch failed:', err);
       this.prisonerLoadState = 'error';
       let detail = err instanceof ApiError ? err.message : '';
-      if (/failed to fetch|network|load failed|abort/i.test(String(err))) detail = 'เครือข่ายไม่เสถียร';
+      if (/failed to fetch|network|load failed|abort/i.test(String(err)))
+        detail = 'เครือข่ายไม่เสถียร';
       this.prisonerLoadMsg = `⚠️ โหลดรายชื่อจากฐานข้อมูลไม่ได้${detail ? ` (${detail})` : ''} — กรอกเองได้ชั่วคราว`;
     }
   }
@@ -289,7 +291,11 @@ class BookingStore {
       return;
     }
     const matches: Prisoner[] = [];
-    for (let i = 0; i < this.prisonerMaster.length && matches.length < MAX_PRISONER_SUGGESTIONS; i++) {
+    for (
+      let i = 0;
+      i < this.prisonerMaster.length && matches.length < MAX_PRISONER_SUGGESTIONS;
+      i++
+    ) {
       const p = this.prisonerMaster[i];
       if (
         p.prisonerId.toLowerCase().indexOf(q) !== -1 ||
@@ -336,9 +342,8 @@ class BookingStore {
     const s = String(vinaiDateStr || '').trim();
     if (!s) return false; // no date → block by default
     const vinaiDate = s.indexOf('T') >= 0 ? new Date(s) : new Date(s + 'T00:00:00');
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-    return vinaiDate <= oneYearAgo;
+    const oneYearAgo = Date.now() - 365 * 24 * 60 * 60 * 1000;
+    return vinaiDate.getTime() <= oneYearAgo;
   }
 
   prisonerIsRestricted(): boolean {
@@ -396,14 +401,17 @@ class BookingStore {
         const r = validateIdFormat(v.id.trim());
         if (!r.valid && r.error) errs[`extraId${n}`] = `ผู้เข้าร่วมคนที่ ${n}: ${r.error}`;
       }
-      if (!v.religion.trim()) errs[`extraReligion${n}`] = `กรุณาเลือกศาสนาสำหรับผู้เข้าร่วมกิจกรรมคนที่ ${n}`;
+      if (!v.religion.trim())
+        errs[`extraReligion${n}`] = `กรุณาเลือกศาสนาสำหรับผู้เข้าร่วมกิจกรรมคนที่ ${n}`;
       if (!v.allergy.trim())
-        errs[`extraAllergy${n}`] = `กรุณาระบุการแพ้อาหารสำหรับผู้เข้าร่วมกิจกรรมคนที่ ${n} (ถ้าไม่มีให้กรอก "ไม่มี")`;
+        errs[`extraAllergy${n}`] =
+          `กรุณาระบุการแพ้อาหารสำหรับผู้เข้าร่วมกิจกรรมคนที่ ${n} (ถ้าไม่มีให้กรอก "ไม่มี")`;
       if (!v.relation) errs[`extraRelation${n}`] = `กรุณาเลือกความสัมพันธ์ผู้ร่วมกิจกรรมคนที่ ${n}`;
-      if (v.relation === 'บุตร / ธิดา') {
+      if (CHILD_RELATIONS.includes(v.relation)) {
         const a = parseInt(v.age, 10);
         if (isNaN(a) || a < 0)
-          errs[`extraAge${n}`] = `กรุณากรอกอายุ (ปี) สำหรับผู้เข้าร่วมกิจกรรมคนที่ ${n} (บุตร/ธิดา)`;
+          errs[`extraAge${n}`] =
+            `กรุณากรอกอายุ (ปี) สำหรับผู้เข้าร่วมกิจกรรมคนที่ ${n} (บุตร/ธิดา)`;
       }
     });
 
@@ -425,10 +433,11 @@ class BookingStore {
         (p) =>
           p.prisonerId === this.prisoner!.prisonerId ||
           (p.prisonerName.toLowerCase() === this.prisoner!.prisonerName.toLowerCase() &&
-            p.wing === this.prisoner!.wing)
+            p.wing === this.prisoner!.wing),
       );
       if (!exists) {
-        errs.prisonerSearch = '⚠️ ไม่พบข้อมูลผู้ต้องขังนี้ในฐานข้อมูล\n\nคุณต้องการดำเนินการต่อหรือไม่?\n(เจ้าหน้าที่จะตรวจสอบอีกครั้ง)';
+        errs.prisonerSearch =
+          '⚠️ ไม่พบข้อมูลผู้ต้องขังนี้ในฐานข้อมูล\n\nคุณต้องการดำเนินการต่อหรือไม่?\n(เจ้าหน้าที่จะตรวจสอบอีกครั้ง)';
       }
     }
 
@@ -478,13 +487,9 @@ class BookingStore {
       if (attempts++ > 10) return;
       await new Promise((r) => setTimeout(r, 200));
     }
-    this.turnstileWidgetId = renderTurnstileWidget(
-      el,
-      TURNSTILE_SITEKEY,
-      (token: string) => {
-        this.turnstileToken = token;
-      }
-    );
+    this.turnstileWidgetId = renderTurnstileWidget(el, TURNSTILE_SITEKEY, (token: string) => {
+      this.turnstileToken = token;
+    });
   }
 
   resetTurnstile(): void {
@@ -516,7 +521,8 @@ class BookingStore {
       const rows = await lookupByRef({ prisonerId: this.prisoner.prisonerId });
       existingRefs = rows.map((r) => r.ref).filter(Boolean);
       const duplicate = rows.find(
-        (r) => r.visitDateISO === this.selectedDate && ACTIVE_STATUSES.includes(String(r.status || ''))
+        (r) =>
+          r.visitDateISO === this.selectedDate && ACTIVE_STATUSES.includes(String(r.status || '')),
       );
       if (duplicate) {
         this.submitting = false;
@@ -571,7 +577,8 @@ class BookingStore {
       const resp = await saveReservation(payload);
       savedRef = String(resp.ref || '').trim() || ref;
     } catch (err) {
-      submitError = err instanceof ApiError ? err.message : String(err instanceof Error ? err.message : err);
+      submitError =
+        err instanceof ApiError ? err.message : String(err instanceof Error ? err.message : err);
     } finally {
       this.submitting = false;
     }
@@ -603,12 +610,8 @@ class BookingStore {
       extras,
     };
 
-    try {
-      sessionStorage.setItem('lastRef', savedRef);
-      sessionStorage.setItem('lastPrisonerId', this.prisoner.prisonerId);
-    } catch {
-      /* ignore */
-    }
+    safeSetItem(sessionStorage, 'lastRef', savedRef);
+    safeSetItem(sessionStorage, 'lastPrisonerId', this.prisoner.prisonerId);
 
     this.step = 3;
     window.scrollTo(0, 0);

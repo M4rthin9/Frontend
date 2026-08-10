@@ -1,15 +1,14 @@
 <script lang="ts">
-  import { t } from '../../lib/i18n/i18n.svelte';
+  import { t, i18n } from '../../lib/i18n/i18n.svelte';
   import { chat } from '../../lib/store/chat.svelte';
 
   let inputValue = $state('');
-  let messagesEl: HTMLElement | null = $state(null);
 
   const quickQuestions = $derived([
-    { label: t('price'), question: 'ค่าใช้จ่ายเท่าไหร่' },
-    { label: t('stepBooking'), question: 'จองยังไง' },
-    { label: t('step2'), question: 'เช็คสถานะยังไง' },
-    { label: t('rules'), question: 'ติดต่อเจ้าหน้าที่' },
+    { label: t('price'), question: i18n.lang === 'th' ? 'ค่าใช้จ่ายเท่าไหร่' : i18n.lang === 'zh' ? '费用多少钱' : 'How much does it cost' },
+    { label: t('stepBooking'), question: i18n.lang === 'th' ? 'จองยังไง' : i18n.lang === 'zh' ? '怎么预约' : 'How to book' },
+    { label: t('step2'), question: i18n.lang === 'th' ? 'เช็คสถานะยังไง' : i18n.lang === 'zh' ? '怎么查询状态' : 'How to check status' },
+    { label: t('rules'), question: i18n.lang === 'th' ? 'ติดต่อเจ้าหน้าที่' : i18n.lang === 'zh' ? '联系工作人员' : 'Contact officers' },
   ]);
 
   function ask(question: string) {
@@ -54,7 +53,6 @@
     </div>
 
     <div
-      bind:this={messagesEl}
       class="chat-scroll flex-1 space-y-2 overflow-y-auto px-4 py-3 text-sm leading-relaxed"
     >
       {#each chat.messages as msg (msg.id)}

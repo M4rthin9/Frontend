@@ -3,7 +3,7 @@ import type { Prisoner } from '../api/types';
 /** Trailing-edge debounce — fires `ms` after the last call. */
 export function debounce<A extends unknown[]>(
   fn: (...args: A) => void,
-  ms: number
+  ms: number,
 ): (...args: A) => void {
   let timer: ReturnType<typeof setTimeout> | null = null;
   return (...args: A) => {
@@ -58,7 +58,7 @@ export function rebuildPrisonerObjects(rows: string[][] | Prisoner[]): Prisoner[
 /** Generate a unique VIS-xxxxx ref avoiding the given existing refs. */
 export function generateUniqueRef(existingRefs: string[] = []): string {
   const existing = new Set(existingRefs.map((r) => String(r).trim()));
-  let ref = '';
+  let ref: string;
   let attempts = 0;
   do {
     ref = 'VIS-' + Math.floor(10000 + Math.random() * 90000);
