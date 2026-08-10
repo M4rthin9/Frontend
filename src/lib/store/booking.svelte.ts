@@ -19,7 +19,7 @@ import {
 } from '../utils/turnstile';
 
 export const TURNSTILE_SITEKEY =
-  (import.meta.env.VITE_TURNSTILE_SITEKEY as string | undefined) || '0x4AAAAAAEIsdWWK1_eTnbKj';
+  (import.meta.env.VITE_TURNSTILE_SITEKEY as string | undefined) || '0x4AAAAAAELr-p6jZh9efERD';
 
 export const ACTIVE_STATUSES = [
   'รอตรวจสอบวินัย',
