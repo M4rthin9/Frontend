@@ -34,7 +34,7 @@
 </script>
 
 <div class="booking-app">
-  <div style="margin-bottom:1.5rem">
+  <div class="mb-6">
     <Stepper steps={steps} current={booking.step} />
   </div>
 
@@ -45,7 +45,10 @@
   {#if booking.step === 1}
     <!-- ===== STEP 1: FORM ===== -->
     <div class="section">
-      <div class="section-title">👤 {t('visitorInfo')}</div>
+      <div class="section-title">
+        <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-sm">👤</span>
+        {t('visitorInfo')}
+      </div>
       <div class="form-grid">
         <Input
           id="visitorName"
@@ -106,15 +109,15 @@
           error={booking.errors.allergy}
         />
         <div class="form-group full">
-          <label for="visitorCount" class="mb-1 block text-sm font-semibold text-text">
-            {t('visitorCountLabel')} <span class="text-crimson"> *</span>
-            <span style="font-weight:400;color:var(--text-secondary)">({t('visitorCountSub')})</span>
+          <label for="visitorCount" class="mb-1.5 block text-sm font-semibold text-text-primary">
+            {t('visitorCountLabel')} <span class="text-rose-500 ml-0.5">*</span>
+            <span style="font-weight:400;color:var(--app-text-secondary)">({t('visitorCountSub')})</span>
           </label>
           <select
             id="visitorCount"
             value={booking.visitorCount}
             onchange={onCountChange}
-            class="w-full rounded-lg border border-border-strong bg-surface px-3 py-2.5 text-sm text-text transition focus:border-navy-500 focus:outline-none focus:ring-2 focus:ring-navy-100"
+            class="w-full rounded-xl border border-border-strong bg-surface px-3.5 py-2.5 text-sm text-text-primary transition-all duration-200 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
           >
             {#each Array.from({ length: 10 }, (_, i) => i + 1) as n (n)}
               <option value={n}>{n} คน</option>
@@ -126,12 +129,16 @@
       {#if booking.visitorCount > 1}
         <div class="extra-visitors-wrap">
           <div class="extra-visitors-title">
-            {t('extraVisitorTitle')} <span style="font-weight:400">({t('extraVisitorSub')})</span>
+            <span class="flex h-6 w-6 items-center justify-center rounded-md bg-indigo-100 text-xs font-bold text-indigo-700">+</span>
+            {t('extraVisitorTitle')} <span style="font-weight:400;color:var(--app-text-secondary)">({t('extraVisitorSub')})</span>
           </div>
           {#each booking.extras as extra, i (i)}
             {@const num = i + 2}
             <div class="extra-visitor-block">
-              <div class="extra-visitor-num">ผู้เข้าร่วมกิจกรรม {num}</div>
+              <div class="extra-visitor-num">
+                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">{num}</span>
+                ผู้เข้าร่วมกิจกรรม {num}
+              </div>
               <div class="form-grid">
                 <Input
                   id="extraVisitorName{num}"
@@ -183,17 +190,19 @@
                 </Select>
               </div>
               {#if CHILD_RELATIONS.includes(extra.relation)}
-                <Input
-                  id="extraVisitorAge{num}"
-                  label="อายุ (ปี)"
-                  required
-                  type="number"
-                  min={0}
-                  max={120}
-                  placeholder={t('ageChildRule')}
-                  bind:value={extra.age}
-                  error={booking.errors[`extraAge${num}`]}
-                />
+                <div class="mt-3">
+                  <Input
+                    id="extraVisitorAge{num}"
+                    label="อายุ (ปี)"
+                    required
+                    type="number"
+                    min={0}
+                    max={120}
+                    placeholder={t('ageChildRule')}
+                    bind:value={extra.age}
+                    error={booking.errors[`extraAge${num}`]}
+                  />
+                </div>
               {/if}
             </div>
           {/each}
@@ -202,22 +211,26 @@
     </div>
 
     <div class="section">
-      <div class="section-title">🔒 {t('prisonerInfo')}</div>
+      <div class="section-title">
+        <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-sm">🔒</span>
+        {t('prisonerInfo')}
+      </div>
       <PrisonerSearch />
     </div>
 
     <div class="section">
-      <div class="section-title">📅 {t('selectDate')}</div>
+      <div class="section-title">
+        <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-sm">📅</span>
+        {t('selectDate')}
+      </div>
       <Calendar />
     </div>
 
     <div class="rules">
       <strong>{t('confirmRules')}</strong><br />
       <span>{t('rulesDesc')}</span><br />
-      รับจองวันละ <strong>20 โต๊ะ</strong> · ค่าร่วมกิจกรรม <strong>1,000 บาท / คน</strong> (คิดรวมผู้ต้องขัง 1
-      คนด้วย)<br />
-      <span style="color:var(--green)" class="child-price-note">บุตร/ธิดา (ผู้เข้าร่วมคนที่ 2+): อายุ &lt;5 ปี ฟรี, 5-8 ปี 500 บาท, &gt;8 ปี 1,000
-        บาท</span><br />
+      รับจองวันละ <strong>20 โต๊ะ</strong> · ค่าร่วมกิจกรรม <strong>1,000 บาท / คน</strong> (คิดรวมผู้ต้องขัง 1 คนด้วย)<br />
+      <span style="color:var(--emerald-600)" class="child-price-note">บุตร/ธิดา (ผู้เข้าร่วมคนที่ 2+): อายุ &lt;5 ปี ฟรี, 5-8 ปี 500 บาท, &gt;8 ปี 1,000 บาท</span><br />
       <strong>{t('selectDate')}:</strong> <br />
       <span>{t('extraVisitorSub')}</span><br />
       <span>{t('paymentInfoText')}</span>
@@ -245,7 +258,10 @@
   {:else if booking.step === 2}
     <!-- ===== STEP 2: CONFIRM ===== -->
     <div class="section">
-      <div class="section-title">✅ {t('confirmInfo')}</div>
+      <div class="section-title">
+        <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-sm">✅</span>
+        {t('confirmInfo')}
+      </div>
       <BookingConfirm />
     </div>
   {:else if booking.step === 3}

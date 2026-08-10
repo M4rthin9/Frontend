@@ -118,15 +118,22 @@
 <div class="booking-app status-app">
   <div class="status-hero">
     <button type="button" class="status-back" onclick={() => navigate('home')}>
-      ← {t('backHome')}
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      {t('backHome')}
     </button>
-    <div class="status-badge">🔍 {t('statusSearch')}</div>
+    <div class="status-badge">
+      <span class="h-1.5 w-1.5 rounded-full bg-white animate-pulse"></span>
+      🔍 {t('statusSearch')}
+    </div>
     <h1 class="status-h1">{t('statusH1')}</h1>
     <p class="status-sub">{t('statusP')}</p>
   </div>
 
   <div class="section status-search-section">
-    <div class="section-title">🔍 {t('statusSearch')}</div>
+    <div class="section-title">
+      <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-sm">🔍</span>
+      {t('statusSearch')}
+    </div>
 
     <div class="status-tabs" role="tablist" aria-label={t('statusSearch')}>
       <button
@@ -136,6 +143,7 @@
         aria-selected={mode === 'ref'}
         onclick={() => switchMode('ref')}
       >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         {t('refTab')}
       </button>
       <button
@@ -145,11 +153,12 @@
         aria-selected={mode === 'prisoner'}
         onclick={() => switchMode('prisoner')}
       >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         {t('prisonerTab')}
       </button>
     </div>
 
-    <div class="status-tab-panel">
+    <div class="status-tab-panel mt-4">
       {#if mode === 'ref'}
         <label for="searchRef" class="status-label">{t('refLabelShort')}</label>
         <input
@@ -176,8 +185,11 @@
       {/if}
     </div>
 
-    <div style="margin-top:12px">
+    <div class="mt-4">
       <button type="button" class="btn-primary" disabled={searching} onclick={() => void doSearch()}>
+        {#if searching}
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+        {/if}
         🔍 {t('checkStatus')}
       </button>
     </div>
@@ -186,8 +198,8 @@
   {#if showThankYou && found}
     <div class="success-page status-thankyou">
       <div class="success-icon">🎉</div>
-      <h2 style="font-size:22px;font-weight:700;margin-bottom:8px">{t('successPage')}</h2>
-      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:1rem">{t('successPageSub')}</p>
+      <h2 class="text-xl font-bold text-text-primary mb-2">{t('successPage')}</h2>
+      <p class="text-sm text-text-secondary mb-5">{t('successPageSub')}</p>
 
       <div class="ref-box">
         <div class="ref-label">{t('refLabel')}</div>
@@ -225,7 +237,7 @@
         </div>
       </div>
 
-      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:1rem">
+      <div class="flex flex-wrap gap-3 justify-center mt-6">
         <button type="button" class="btn-secondary" style="flex:1;min-width:160px" onclick={() => resetSearch()}>
           🔍 {t('searchAgain')}
         </button>
@@ -257,7 +269,7 @@
       <div class="error-icon">⚠️</div>
       <div class="error-title">{t('errorTitle')}</div>
       <div class="error-message">{errorMsg}</div>
-      <div style="margin-top:14px;display:flex;gap:8px;justify-content:center">
+      <div class="mt-4 flex gap-2 justify-center">
         <button type="button" class="btn-primary" style="font-size:13px;width:auto;padding:var(--space-2) var(--space-4)" onclick={() => void doSearch()}>
           🔄 {t('retryBtn')}
         </button>
