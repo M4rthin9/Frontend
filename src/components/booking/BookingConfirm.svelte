@@ -9,6 +9,7 @@
   let copiedSummary = $state(false);
 
   onMount(() => {
+    booking.turnstileError = '';
     void booking.setupTurnstile(turnstileEl);
   });
 
@@ -119,9 +120,18 @@
     <strong>❌ {t('vinaiInfo')}:</strong> <span>{t('vinaiInfoText')}</span>
   </div>
 
-  <div class="turnstile-wrap" style="margin-bottom:1rem">
-    <div bind:this={turnstileEl}></div>
-  </div>
+   <div class="turnstile-wrap" style="margin-bottom:1rem">
+     {#if booking.turnstileError}
+       <div class="error-text-inline" style="white-space:pre-line">
+        ⚠️ ระบบตรวจสอบความปลอดภัย (Turnstile) ไม่สามารถโหลดได้ — กรุณาตรวจสอบว่าอยู่ในหน้าต่างที่อนุญาตแล้วลองใหม่อีกครั้ง
+       </div>
+     {:else if !booking.turnstileToken}
+       <div class="text-xs text-text-tertiary text-center py-2">
+         กำลังโหลดระบบตรวจสอบความปลอดภัย...
+       </div>
+     {/if}
+     <div bind:this={turnstileEl}></div>
+   </div>
 
   {#if booking.inlineError}
     <div class="error-text-inline" style="white-space:pre-line">{booking.inlineError}</div>

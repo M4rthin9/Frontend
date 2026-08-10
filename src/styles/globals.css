@@ -113,6 +113,49 @@
   --warning: #f59e0b;
   --error: #ef4444;
   --info: #0ea5e9;
+
+  /* Legacy aliases — booking-flow CSS + inline styles still reference these */
+  --indigo-50: var(--color-indigo-50);
+  --indigo-100: var(--color-indigo-100);
+  --indigo-200: var(--color-indigo-200);
+  --indigo-500: var(--color-indigo-500);
+  --indigo-600: var(--color-indigo-600);
+  --indigo-700: var(--color-indigo-700);
+  --indigo-800: var(--color-indigo-800);
+  --indigo-900: var(--color-indigo-900);
+  --indigo-950: var(--color-indigo-950);
+  --amber-50: var(--color-amber-50);
+  --amber-100: var(--color-amber-100);
+  --amber-200: var(--color-amber-200);
+  --amber-300: var(--color-amber-300);
+  --amber-400: var(--color-amber-400);
+  --amber-700: var(--color-amber-700);
+  --emerald-50: var(--color-emerald-50);
+  --emerald-100: var(--color-emerald-100);
+  --emerald-200: var(--color-emerald-200);
+  --emerald-500: var(--color-emerald-500);
+  --emerald-600: var(--color-emerald-600);
+  --emerald-700: var(--color-emerald-700);
+  --rose-50: var(--color-rose-50);
+  --rose-100: var(--color-rose-100);
+  --rose-200: var(--color-rose-200);
+  --rose-700: var(--color-rose-700);
+  --accent-500: var(--color-amber-500);
+  --accent-600: var(--color-amber-600);
+  --accent-700: var(--color-amber-700);
+  --accent-800: var(--color-amber-800);
+  --error-50: var(--color-rose-50);
+  --error-200: var(--color-rose-200);
+  --error-400: var(--color-rose-400);
+  --error-500: var(--color-rose-500);
+  --error-600: var(--color-rose-600);
+  --error-700: var(--color-rose-700);
+  --error-800: var(--color-rose-800);
+  --blue: var(--color-indigo-500);
+  --gray-200: var(--color-slate-200);
+  --bg-subtle: var(--app-bg-subtle);
+  --border: var(--app-border-strong);
+  --text: var(--app-text);
 }
 
 .dark {

@@ -163,6 +163,7 @@ class BookingStore {
   confirmData = $state<ConfirmData | null>(null);
   turnstileToken = $state('');
   turnstileWidgetId = $state('');
+  turnstileError = $state('');
   success = $state<SuccessData | null>(null);
   copied = $state(false);
 
@@ -468,6 +469,7 @@ class BookingStore {
   goBack(): void {
     this.resetTurnstile();
     this.turnstileWidgetId = '';
+    this.turnstileError = '';
     this.inlineError = '';
     this.step = 1;
     window.scrollTo(0, 0);
@@ -476,25 +478,39 @@ class BookingStore {
   // ===== TURNSTILE =====
   async setupTurnstile(el: HTMLElement): Promise<void> {
     if (this.turnstileWidgetId || !el) return;
+    this.turnstileError = '';
     try {
       await loadTurnstileScript();
     } catch {
+      this.turnstileError = 'script_load_failed';
       return;
     }
     // Poll briefly for the API object (script loads async).
     let attempts = 0;
     while (typeof window.turnstile !== 'object') {
-      if (attempts++ > 10) return;
+      if (attempts++ > 10) {
+        this.turnstileError = 'script_not_ready';
+        return;
+      }
       await new Promise((r) => setTimeout(r, 200));
     }
-    this.turnstileWidgetId = renderTurnstileWidget(el, TURNSTILE_SITEKEY, (token: string) => {
-      this.turnstileToken = token;
-    });
+    try {
+      this.turnstileWidgetId = renderTurnstileWidget(el, TURNSTILE_SITEKEY, (token: string) => {
+        this.turnstileToken = token;
+        this.turnstileError = '';
+      }, (error: string) => {
+        this.turnstileError = error;
+        this.turnstileToken = '';
+      });
+    } catch (e) {
+      this.turnstileError = e instanceof Error ? e.message : 'render_failed';
+    }
   }
 
   resetTurnstile(): void {
     resetTurnstileWidget(this.turnstileWidgetId);
     this.turnstileToken = '';
+    this.turnstileError = '';
   }
 
   // ===== SUBMIT =====
@@ -505,6 +521,10 @@ class BookingStore {
     const token = getTurnstileResponse(this.turnstileWidgetId);
     if (typeof window.turnstile !== 'object') {
       this.inlineError = '⚠️ ระบบ CAPTCHA ยังไม่พร้อม — กรุณารอสักครู่แล้วลองอีกครั้ง';
+      return;
+    }
+    if (this.turnstileError) {
+      this.inlineError = '⚠️ ระบบตรวจสอบความปลอดภัย (Turnstile) ไม่สามารถโหลดได้ — กรุณาตรวจสอบว่าอยู่ในหน้าต่างที่อนุญาตแล้วลองใหม่อีกครั้ง';
       return;
     }
     if (!token) {
@@ -652,6 +672,7 @@ class BookingStore {
     this.confirmData = null;
     this.success = null;
     this.copied = false;
+    this.turnstileError = '';
     this.resetTurnstile();
     window.scrollTo(0, 0);
     void this.loadBookingCounts();

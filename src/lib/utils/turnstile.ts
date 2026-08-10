@@ -4,6 +4,7 @@ declare global {
       render: (el: HTMLElement, opts: Record<string, unknown>) => string;
       reset: (widgetId?: string) => void;
       getResponse: (widgetId?: string) => string;
+      remove: (widgetId?: string) => void;
     };
   }
 }
@@ -38,19 +39,36 @@ export function renderTurnstile(
   el: HTMLElement,
   sitekey: string,
   onToken: (token: string) => void,
+  onError?: (error: string) => void,
 ): string {
   if (!window.turnstile) return '';
-  return window.turnstile.render(el, {
-    sitekey,
-    action: 'booking',
-    callback: onToken,
-  });
+  try {
+    return window.turnstile.render(el, {
+      sitekey,
+      action: 'booking',
+      callback: onToken,
+      'error-callback': onError,
+    });
+  } catch (e) {
+    onError?.(e instanceof Error ? e.message : 'render_failed');
+    return '';
+  }
 }
 
 export function resetTurnstile(widgetId?: string): void {
   if (window.turnstile) {
     try {
       window.turnstile.reset(widgetId);
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
+export function removeTurnstile(widgetId?: string): void {
+  if (window.turnstile) {
+    try {
+      window.turnstile.remove(widgetId);
     } catch {
       /* ignore */
     }

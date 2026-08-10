@@ -4,26 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="ระบบจองคิวเพื่อร่วมกิจกรรม · ทัณฑสถานบำบัดพิเศษกลาง" />
-    <meta name="theme-color" content="#0a1628" />
+    <meta name="theme-color" content="#f8fafc" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>ระบบจองคิวเพื่อร่วมกิจกรรม</title>
     <style>
-      /* Pre-paint: navy government theme — avoids white flash before app mounts */
+      /* Pre-paint: light indigo tint — avoids flash before app mounts */
       html,
       body {
         margin: 0;
-        background: linear-gradient(180deg, #0a1628 0%, #0b1a30 100%);
+        background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
       }
     </style>
     <script>
-      // Pre-paint dark mode: apply saved/system preference before first render.
+      // Pre-paint theme: apply saved/system preference before first render.
       (function () {
         try {
           var saved = localStorage.getItem('ccc_dark_mode');
           var dark =
             saved === '1' ||
             (saved !== '0' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-          if (dark) document.documentElement.classList.add('dark');
+          if (dark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.background = '#0f172a';
+          }
         } catch (e) {
           /* storage unavailable — fall through */
         }

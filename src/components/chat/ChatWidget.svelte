@@ -29,15 +29,15 @@
 {#if !chat.open}
   <button
     type="button"
-    class="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-navy-600 text-2xl text-white shadow-lg transition hover:scale-105 hover:bg-navy-700"
+    class="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-600 text-2xl text-white shadow-lg shadow-indigo-600/30 transition hover:scale-105 hover:bg-indigo-700"
     aria-label="เปิดแชทบอท"
     onclick={() => chat.toggle()}
   >
     💬
   </button>
 {:else}
-  <div class="fixed bottom-4 right-4 z-50 flex h-[min(560px,calc(100dvh-5rem))] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl bg-navy-900 text-white shadow-2xl">
-    <div class="flex items-center justify-between border-b border-white/10 bg-navy-800 px-4 py-3">
+  <div class="fixed bottom-4 right-4 z-50 flex h-[min(560px,calc(100dvh-5rem))] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl bg-indigo-950 text-white shadow-2xl ring-1 ring-white/10">
+    <div class="flex items-center justify-between border-b border-white/10 bg-indigo-900 px-4 py-3">
       <div class="flex items-center gap-2">
         <span class="text-lg">🤖</span>
         <h3 class="text-sm font-bold">M4RTHIN9 AI</h3>
@@ -83,7 +83,7 @@
       {/each}
     </div>
 
-    <div class="flex items-center gap-2 border-t border-white/10 bg-navy-800 px-3 py-3">
+    <div class="flex items-center gap-2 border-t border-white/10 bg-indigo-900 px-3 py-3">
       <input
         type="text"
         class="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:border-white/30 focus:outline-none"
@@ -96,7 +96,7 @@
       />
       <button
         type="button"
-        class="rounded-lg bg-gold px-3 py-2 text-sm font-bold text-navy-900 transition hover:bg-gold-400"
+        class="rounded-lg bg-amber-400 px-3 py-2 text-sm font-bold text-indigo-950 transition hover:bg-amber-300"
         aria-label="ส่ง"
         onclick={onSend}
       >

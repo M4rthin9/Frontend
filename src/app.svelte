@@ -39,7 +39,7 @@
   <title>{titles[router.route]()}</title>
 </svelte:head>
 
-<div class="flex min-h-screen flex-col bg-bg">
+<div class="flex min-h-screen flex-col bg-background">
   <Header />
 
   <main class="flex-1">
