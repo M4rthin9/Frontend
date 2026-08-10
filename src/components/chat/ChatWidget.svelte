@@ -31,7 +31,7 @@
     type="button"
     class="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-navy-600 text-2xl text-white shadow-lg transition hover:scale-105 hover:bg-navy-700"
     aria-label="เปิดแชทบอท"
-    onclick={chat.toggle}
+    onclick={() => chat.toggle()}
   >
     💬
   </button>
@@ -46,7 +46,7 @@
         type="button"
         class="rounded-full p-1.5 text-white/60 transition hover:bg-white/10 hover:text-white"
         aria-label={chat.closeLabel()}
-        onclick={chat.close}
+        onclick={() => chat.close()}
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
       </button>

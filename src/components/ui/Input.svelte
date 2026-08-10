@@ -55,11 +55,14 @@
     {step}
     {disabled}
     {required}
-    {value}
-    {oninput}
     class={inputCls}
     aria-invalid={error ? 'true' : undefined}
     {...rest}
+    value={value}
+    oninput={(e) => {
+      value = e.currentTarget.value;
+      oninput?.(e);
+    }}
   />
   {#if error}
     <p class="mt-1 text-xs text-crimson">{error}</p>
