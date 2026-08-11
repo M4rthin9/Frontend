@@ -50,6 +50,7 @@
   "paymentInfoText": "When status shows \"Pending payment\", payment link will be available",
   "editBtn": "Edit",
   "submitBtn": "Submit Booking",
+  "captchaTitle": "Security Verification",
   "successTitle": "Booking Request Sent!",
   "successSub": "Officer will verify participant first, then check disciplinary record within 1-2 business days",
   "refLabel": "Reference No.",

@@ -64,9 +64,7 @@
       <h1 class="booking-h1">{t('bookingTitle')}</h1>
       <p class="booking-p">{t('bookingP')}</p>
     </div>
-  </div>
-
-  <div class="mb-6">
+  </div>  <div class="mb-6">
     <Stepper steps={steps} current={booking.step} />
   </div>
 
@@ -140,6 +138,19 @@
           bind:value={booking.allergy}
           error={booking.errors.allergy}
         />
+        {#if CHILD_RELATIONS.includes(booking.relation)}
+          <Input
+            id="visitorAge"
+            label="อายุ (ปี)"
+            required
+            type="number"
+            min={0}
+            max={120}
+            placeholder={t('ageChildRule')}
+            bind:value={booking.visitorAge}
+            error={booking.errors.visitorAge}
+          />
+        {/if}
         <div class="form-group full">
           <label for="visitorCount" class="mb-1.5 block text-sm font-semibold text-text-primary">
             {t('visitorCountLabel')} <span class="text-rose-500 ml-0.5">*</span>

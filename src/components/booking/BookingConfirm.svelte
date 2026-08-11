@@ -120,7 +120,8 @@
     <strong>{t('vinaiInfo')}:</strong> <span>{t('vinaiInfoText')}</span>
   </div>
 
-   <div class="turnstile-wrap" style="margin-bottom:1rem">
+   <div class="turnstile-wrap">
+     <div class="turnstile-box-title">{t('captchaTitle')}</div>
      {#if booking.turnstileError}
        <div class="error-text-inline" style="white-space:pre-line">
         ⚠️ ระบบตรวจสอบความปลอดภัย (Turnstile) ไม่สามารถโหลดได้ — กรุณาตรวจสอบว่าอยู่ในหน้าต่างที่อนุญาตแล้วลองใหม่อีกครั้ง

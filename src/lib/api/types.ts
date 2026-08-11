@@ -76,6 +76,7 @@ export interface SaveReservationPayload {
   relation: string;
   religion: string;
   allergy: string;
+  visitorAge: string;
   extraVisitorReligions: string;
   extraVisitorAllergies: string;
   extraVisitorNames: string;

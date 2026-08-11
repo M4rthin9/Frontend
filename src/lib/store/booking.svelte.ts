@@ -72,15 +72,41 @@ export interface SuccessData {
   extras: ExtraVisitor[];
 }
 
-/** Replicates calculateTotal() in booking.js (main visitor always adult). */
-export function calcCost(count: number, extras: ExtraVisitor[]): CostSummary {
+/** Replicates calculateTotal() in booking.js (main visitor may be a child too). */
+export function calcCost(
+  count: number,
+  extras: ExtraVisitor[],
+  mainRelation = '',
+  mainAge = ''
+): CostSummary {
   let extraFees = 0;
   const discountNotes: string[] = [];
-  let adults = 1;
+  let adults = 0;
   let kids5_8 = 0;
   let kidsUnder5 = 0;
   const kids5_8Names: string[] = [];
   const kidsUnder5Names: string[] = [];
+
+  // Main visitor (person #1) — child discount applies when relation is child.
+  let mainFee = PRICE_PER_PERSON;
+  if (CHILD_RELATIONS.includes(mainRelation)) {
+    const a = parseInt(mainAge, 10);
+    if (!isNaN(a)) {
+      if (a < 5) {
+        mainFee = PRICE_CHILD_UNDER_5;
+        kidsUnder5++;
+        kidsUnder5Names.push('ผู้จอง');
+      } else if (a <= 8) {
+        mainFee = PRICE_CHILD_5_8;
+        kids5_8++;
+        kids5_8Names.push('ผู้จอง');
+      }
+    }
+  }
+  if (mainFee === PRICE_PER_PERSON) adults = 1;
+  if (CHILD_RELATIONS.includes(mainRelation) && mainFee < PRICE_PER_PERSON) {
+    discountNotes.push(`ผู้จอง: ${mainFee === 0 ? 'ฟรี' : mainFee + ' บาท'}`);
+  }
 
   extras.forEach((v, idx) => {
     let fee = PRICE_PER_PERSON;
@@ -108,7 +134,7 @@ export function calcCost(count: number, extras: ExtraVisitor[]): CostSummary {
     }
   });
 
-  const total = PRICE_PER_PERSON + PRICE_PER_PERSON + extraFees; // ญาติ + ผู้ต้องขัง + เพิ่มเติม
+  const total = mainFee + PRICE_PER_PERSON + extraFees; // ผู้จอง + ผู้ต้องขัง + เพิ่มเติม
   return {
     total,
     extraFees,
@@ -133,6 +159,7 @@ class BookingStore {
   relation = $state('');
   religion = $state('');
   allergy = $state('');
+  visitorAge = $state('');
   visitorCount = $state(1);
   consent = $state(false);
   extras = $state<ExtraVisitor[]>([]);
@@ -175,7 +202,7 @@ class BookingStore {
     return calendarTitle(this.calYear, this.calMonth);
   }
   get cost(): CostSummary {
-    return calcCost(this.visitorCount, this.extras);
+    return calcCost(this.visitorCount, this.extras, this.relation, this.visitorAge);
   }
 
   private debouncedFilter = debounce(() => this.filterSuggestions(), 250);
@@ -393,6 +420,14 @@ class BookingStore {
     if (!this.religion.trim()) errs.religion = 'กรุณาเลือกศาสนา';
     if (!this.allergy.trim()) errs.allergy = 'กรุณาระบุการแพ้อาหาร (ถ้าไม่มีให้กรอก "ไม่มี")';
 
+    // Main visitor child discount requires age.
+    if (CHILD_RELATIONS.includes(this.relation)) {
+      const mainAgeNum = parseInt(this.visitorAge, 10);
+      if (isNaN(mainAgeNum) || mainAgeNum < 0) {
+        errs.visitorAge = 'กรุณากรอกอายุ (ปี) ของผู้จอง (บุตร/ธิดา)';
+      }
+    }
+
     // Extra visitors
     this.extras.forEach((v, i) => {
       const n = i + 2;
@@ -572,6 +607,7 @@ class BookingStore {
       relation: this.relation,
       religion: this.religion.trim(),
       allergy: this.allergy.trim(),
+      visitorAge: this.visitorAge.trim(),
       extraVisitorReligions: extraReligionsStr,
       extraVisitorAllergies: extraAllergiesStr,
       prisonerName: this.prisoner.prisonerName,
@@ -659,6 +695,7 @@ class BookingStore {
     this.relation = '';
     this.religion = '';
     this.allergy = '';
+    this.visitorAge = '';
     this.visitorCount = 1;
     this.consent = false;
     this.extras = [];

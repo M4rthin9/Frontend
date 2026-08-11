@@ -50,6 +50,7 @@
   "paymentInfoText": "当状态显示 \"待付款\" 时，将提供付款链接",
   "editBtn": "编辑",
   "submitBtn": "提交预约",
+  "captchaTitle": "安全验证",
   "successTitle": "预约请求提交成功！",
   "successSub": "工作人员将先核验参与者，再于 1–2 个工作日内审核纪律记录",
   "refLabel": "参考编号",
