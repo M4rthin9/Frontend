@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { booking, CHILD_RELATIONS, RELIGION_OPTIONS } from '../lib/store/booking.svelte';
   import { t } from '../lib/i18n/i18n.svelte';
+  import { navigate } from '../lib/router.svelte';
   import Stepper from '../components/ui/Stepper.svelte';
   import Input from '../components/ui/Input.svelte';
   import Select from '../components/ui/Select.svelte';
@@ -10,6 +11,7 @@
   import Calendar from '../components/booking/Calendar.svelte';
   import BookingConfirm from '../components/booking/BookingConfirm.svelte';
   import BookingSuccess from '../components/booking/BookingSuccess.svelte';
+  import { toThaiLong } from '../lib/utils/date';
 
   onMount(() => {
     booking.init();
@@ -28,12 +30,42 @@
     'relationOther',
   ];
 
-  function onCountChange(event: Event & { currentTarget: HTMLSelectElement }): void {
-    booking.updateVisitorCount(Number(event.currentTarget.value));
+  const COUNT_OPTIONS = Array.from({ length: 10 }, (_, i) => i + 1);
+
+  function parseLocalDate(dateStr: string): Date {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    return new Date(y, m - 1, d);
   }
+
+  const visitDateLabel = $derived(
+    booking.selectedDate ? toThaiLong(parseLocalDate(booking.selectedDate)) : ''
+  );
+  const totalPersons = $derived(booking.visitorCount + 1);
+  const totalCost = $derived(booking.cost.total);
 </script>
 
 <div class="booking-app">
+  <div class="booking-head">
+    <button type="button" class="booking-back" onclick={() => navigate('home')}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      ><path d="M19 12H5" /><path d="M12 19l-7-7 7-7" /></svg>
+      {t('backHomeShort')}
+    </button>
+
+    <div class="booking-head-title">
+      <span class="booking-badge">{t('bookingBadge')}</span>
+      <h1 class="booking-h1">{t('bookingTitle')}</h1>
+      <p class="booking-p">{t('bookingP')}</p>
+    </div>
+  </div>
+
   <div class="mb-6">
     <Stepper steps={steps} current={booking.step} />
   </div>
@@ -46,7 +78,7 @@
     <!-- ===== STEP 1: FORM ===== -->
     <div class="section">
       <div class="section-title">
-        <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-sm">👤</span>
+        <span class="section-num">1</span>
         {t('visitorInfo')}
       </div>
       <div class="form-grid">
@@ -113,16 +145,18 @@
             {t('visitorCountLabel')} <span class="text-rose-500 ml-0.5">*</span>
             <span style="font-weight:400;color:var(--app-text-secondary)">({t('visitorCountSub')})</span>
           </label>
-          <select
-            id="visitorCount"
-            value={booking.visitorCount}
-            onchange={onCountChange}
-            class="w-full rounded-xl border border-border-strong bg-surface px-3.5 py-2.5 text-sm text-text-primary transition-all duration-200 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-          >
-            {#each Array.from({ length: 10 }, (_, i) => i + 1) as n (n)}
-              <option value={n}>{n} คน</option>
+          <div class="count-grid" role="group" aria-label={t('visitorCountLabel')}>
+            {#each COUNT_OPTIONS as n (n)}
+              <button
+                type="button"
+                class="count-btn {n === booking.visitorCount ? 'active' : ''}"
+                onclick={() => booking.updateVisitorCount(n)}
+                aria-pressed={n === booking.visitorCount}
+              >
+                {n}
+              </button>
             {/each}
-          </select>
+          </div>
         </div>
       </div>
 
@@ -212,7 +246,7 @@
 
     <div class="section">
       <div class="section-title">
-        <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-sm">🔒</span>
+        <span class="section-num">2</span>
         {t('prisonerInfo')}
       </div>
       <PrisonerSearch />
@@ -220,7 +254,7 @@
 
     <div class="section">
       <div class="section-title">
-        <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-sm">📅</span>
+        <span class="section-num">3</span>
         {t('selectDate')}
       </div>
       <Calendar />
@@ -234,6 +268,21 @@
       <strong>{t('selectDate')}:</strong> <br />
       <span>{t('extraVisitorSub')}</span><br />
       <span>{t('paymentInfoText')}</span>
+    </div>
+
+    <div class="booking-summary">
+      <div class="bs-item">
+        <span class="bs-label">{t('lblVisitDate')}</span>
+        <span class="bs-value">{visitDateLabel || '—'}</span>
+      </div>
+      <div class="bs-item">
+        <span class="bs-label">{t('lblCount')}</span>
+        <span class="bs-value">{totalPersons} คน</span>
+      </div>
+      <div class="bs-item">
+        <span class="bs-label">{t('lblCost')}</span>
+        <span class="bs-value bs-total">{totalCost.toLocaleString()} บาท</span>
+      </div>
     </div>
 
     <div class="consent-row">
@@ -259,7 +308,17 @@
     <!-- ===== STEP 2: CONFIRM ===== -->
     <div class="section">
       <div class="section-title">
-        <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-sm">✅</span>
+        <span class="section-num">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ><path d="M20 6L9 17l-5-5" /></svg>
+        </span>
         {t('confirmInfo')}
       </div>
       <BookingConfirm />

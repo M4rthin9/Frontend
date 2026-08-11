@@ -10,12 +10,22 @@
 <div>
   {#if success}
     <div class="success-page">
-      <div class="success-icon">📋</div>
+      <div class="success-icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        ><path d="M20 6L9 17l-5-5" /></svg>
+      </div>
       <h2 style="font-size:22px;font-weight:700;margin-bottom:6px">{t('successTitle')}</h2>
       <p style="font-size:14px;color:var(--text-secondary);margin-bottom:1rem">{t('successSub')}</p>
 
       <div class="status-pill status-pending">
-        ⏳ <span>{t('bookingInitialStatus')}</span>
+        <span>{t('bookingInitialStatus')}</span>
       </div>
 
       <div class="ref-box">
@@ -26,37 +36,37 @@
 
       <div class="booking-details">
         <div style="text-align:center;margin-bottom:8px">
-          <strong style="color:var(--blue)">✅ ส่งคำขอเรียบร้อย — Ref: {success.ref}</strong>
+          <strong style="color:var(--blue)">ส่งคำขอเรียบร้อย — Ref: {success.ref}</strong>
         </div>
         <div class="detail-row">
-          <span class="detail-label">📅 วันที่เข้าร่วม</span>
+          <span class="detail-label">วันที่เข้าร่วม</span>
           <span class="detail-value">{success.visitDate}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">👥 จำนวนผู้เข้าร่วม</span>
+          <span class="detail-label">จำนวนผู้เข้าร่วม</span>
           <span class="detail-value"
             >ญาติ {success.visitorCount} คน + ผู้ต้องขัง 1 คน = {success.totalPersons} คน</span
           >
         </div>
         <div class="detail-row">
-          <span class="detail-label">👤 ชื่อผู้ต้องขัง</span>
+          <span class="detail-label">ชื่อผู้ต้องขัง</span>
           <span class="detail-value">{success.prisonerName}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">🔢 เลขประจำตัวผู้ต้องขัง</span>
+          <span class="detail-label">เลขประจำตัวผู้ต้องขัง</span>
           <span class="detail-value">{success.prisonerId}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">📍 แดนของผู้ต้องขัง</span>
+          <span class="detail-label">แดนของผู้ต้องขัง</span>
           <span class="detail-value">{success.wing}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">🧑 ชื่อผู้จอง</span>
+          <span class="detail-label">ชื่อผู้จอง</span>
           <span class="detail-value">{success.visitorName}</span>
         </div>
         {#if success.extras.length > 0}
           <div class="detail-row">
-            <span class="detail-label">📋 รายชื่อผู้เข้าร่วมเพิ่มเติม</span>
+            <span class="detail-label">รายชื่อผู้เข้าร่วมเพิ่มเติม</span>
             <span class="detail-value" style="line-height:1.8">
               {#each success.extras as v, i (v.name + i)}
                 <div>{i + 2}. {v.name} ({v.relation})</div>
@@ -77,16 +87,16 @@
           style="flex:1;min-width:180px"
           onclick={() => navigate('status')}
         >
-          🔍 {t('checkStatusBtn')}
+          {t('checkStatusBtn')}
         </Button>
         <Button variant="secondary" size="lg" style="flex:0.6;min-width:130px" onclick={() => void booking.copyRef()}>
-          {booking.copied ? '✓ คัดลอกแล้ว' : '📋 ' + t('copyRef')}
+          {booking.copied ? 'คัดลอกแล้ว' : t('copyRef')}
         </Button>
       </div>
 
       <div style="margin-top:10px;display:flex">
         <Button variant="secondary" size="lg" style="flex:1" onclick={() => booking.resetAll()}>
-          ＋ {t('newBooking')}
+          {t('newBooking')}
         </Button>
       </div>
     </div>

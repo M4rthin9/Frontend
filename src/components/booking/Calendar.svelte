@@ -63,7 +63,7 @@
 
   {#if booking.selectedDate}
     <div class="selected-date-display">
-      ✓ เลือก: {toThaiLong(parseLocal(booking.selectedDate))}
+      เลือก: {toThaiLong(parseLocal(booking.selectedDate))}
     </div>
   {/if}
 
@@ -75,7 +75,7 @@
   </div>
 
   {#if booking.countsState === 'loading'}
-    <div class="counts-status">⏳ กำลังโหลดข้อมูลการจอง...</div>
+    <div class="counts-status">กำลังโหลดข้อมูลการจอง...</div>
   {:else if booking.countsState === 'error'}
     <div class="counts-status counts-error">
       <span>{booking.countsMsg}</span>

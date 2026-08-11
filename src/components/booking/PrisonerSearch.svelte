@@ -7,7 +7,7 @@
 <div>
   <div class="prisoner-search">
     <label class="prisoner-search-label" for="prisonerSearch">
-      🔍 {t('prisonerInfo')} <span class="text-crimson">*</span>
+      {t('prisonerInfo')} <span class="text-crimson">*</span>
       <span class="prisoner-search-hint">({t('extraVisitorSub')})</span>
     </label>
 
@@ -90,7 +90,7 @@
   {#if booking.prisoner}
     <div class="selected-prisoner-display">
       <div class="selected-prisoner-check">
-        ✅ {t('prisonerInfoConfirm')}
+        {t('prisonerInfoConfirm')}
         <button
           type="button"
           class="selected-prisoner-clear"
@@ -118,7 +118,7 @@
   {/if}
 
   <div class="prisoner-hint">
-    💡 {t('extraVisitorSub')} — ค้นหาแล้วคลิกเลือกจากรายการด้านบน — ชื่อ + เลข + แดน จะแสดงอัตโนมัติ
+    {t('extraVisitorSub')} — ค้นหาแล้วคลิกเลือกจากรายการด้านบน — ชื่อ + เลข + แดน จะแสดงอัตโนมัติ
     (ไม่ต้องพิมเอง)
   </div>
 </div>
