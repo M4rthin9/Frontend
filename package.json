@@ -10,7 +10,8 @@
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "qr:bill": "node scripts/generate-promptpay-bill-qr.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -31,6 +32,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
+    "qrcode": "^1.5.4",
     "tailwindcss": "^4.3.3"
   }
 }
