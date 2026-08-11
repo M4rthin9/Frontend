@@ -44,5 +44,11 @@
       <span class="h-1 w-1 rounded-full bg-border-strong"></span>
       <span>กรมราชทัณฑ์</span>
     </div>
+
+    <div class="mt-4 border-t border-border-subtle pt-4">
+      <p class="text-xs text-text-tertiary">
+        ออกแบบและพัฒนาโดย <span class="font-semibold text-text-secondary">พงศ์สิน พวษ์วชิรินทร์</span>
+      </p>
+    </div>
   </div>
 </footer>
