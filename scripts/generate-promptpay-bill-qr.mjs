@@ -12,14 +12,11 @@
 
 import QRCode from 'qrcode';
 import { buildPromptPayBillPayment } from '../src/lib/utils/promptpay-emvco.js';
+import { BILLER_ID, REF_1, REF_2 } from '../src/lib/utils/promptpay-biller.js';
 
 /* ------------------------------------------------------------------ *
- * Test inputs — hardcode the booking values here.
- * amount is the amount shown on the booking.
+ * Test inputs — amount is the amount shown on the booking.
  * ------------------------------------------------------------------ */
-const BILLER_ID = '010753700088205';
-const REF_1 = 'ML099400ZO0160208VX';
-const REF_2 = 'CIDA';
 const AMOUNT = '500.00'; // set to the amount shown on the booking
 
 async function main() {

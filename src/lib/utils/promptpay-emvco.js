@@ -58,6 +58,11 @@ export function buildTlv(tag, value) {
   if (!/^\d{2}$/.test(tag)) {
     throw new Error(`Invalid EMVCo tag "${tag}" (must be exactly 2 digits).`);
   }
+  if (value.length > 99) {
+    throw new Error(
+      `EMVCo value for tag "${tag}" is ${value.length} chars, exceeds the 99-char max for a 2-digit length field.`,
+    );
+  }
   const length = String(value.length).padStart(2, '0');
   return `${tag}${length}${value}`;
 }

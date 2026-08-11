@@ -5,11 +5,7 @@
   import { uploadSlip, updateSlipAndStatus } from '../../lib/api/endpoints';
   import type { PublicReservation } from '../../lib/api/types';
   import { buildPromptPayBillPayment } from '../../lib/utils/promptpay-emvco.js';
-
-  // Fixed PromptPay biller configuration (institution biller QR).
-  const BILLER_ID = '010753700088205';
-  const REF_1 = 'ML099400ZO0160208VX';
-  const REF_2 = 'CIDA';
+  import { BILLER_ID, REF_1, REF_2 } from '../../lib/utils/promptpay-biller.js';
 
   let {
     booking,
