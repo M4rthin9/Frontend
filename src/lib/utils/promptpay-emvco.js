@@ -1,8 +1,10 @@
 /* PromptPay Bill Payment — EMVCo Tag 30 payload builder.
  *
- * Pure, dependency-free ES module. Implements the EMVCo Merchant-Presented
- * QR Code standard as used by Thai PromptPay Bill Payment (Biller/Corporate
- * QR). Verified against a real decoded PromptPay payload:
+ * Shared, dependency-free ES module used by both the Svelte app
+ * (PaymentForm renders the QR client-side) and the CLI runner in
+ * scripts/generate-promptpay-bill-qr.mjs.
+ *
+ * Verified against a real decoded PromptPay payload:
  *
  *   0002010102113070...5802TH6208070400006304968B
  *

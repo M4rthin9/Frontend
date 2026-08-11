@@ -11,7 +11,7 @@
  */
 
 import QRCode from 'qrcode';
-import { buildPromptPayBillPayment } from './promptpay-emvco.mjs';
+import { buildPromptPayBillPayment } from '../src/lib/utils/promptpay-emvco.js';
 
 /* ------------------------------------------------------------------ *
  * Test inputs — hardcode the booking values here.

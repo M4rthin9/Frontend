@@ -1,7 +1,15 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+  import * as QRCode from 'qrcode';
   import { t, tc } from '../../lib/i18n/i18n.svelte';
   import { uploadSlip, updateSlipAndStatus } from '../../lib/api/endpoints';
   import type { PublicReservation } from '../../lib/api/types';
+  import { buildPromptPayBillPayment } from '../../lib/utils/promptpay-emvco.js';
+
+  // Fixed PromptPay biller configuration (institution biller QR).
+  const BILLER_ID = '010753700088205';
+  const REF_1 = 'ML099400ZO0160208VX';
+  const REF_2 = 'CIDA';
 
   let {
     booking,
@@ -22,12 +30,35 @@
   let dragOver = $state(false);
   let submitting = $state(false);
   let fileInput = $state<HTMLInputElement | null>(null);
+  let qrSrc = $state('');
+  let qrError = $state(false);
 
   const visitorCount = $derived(parseInt(String(booking.visitorCount)) || 1);
   const totalPersons = $derived(visitorCount + 1);
   const total = $derived(parseInt(String(booking.total)) || totalPersons * 1000);
 
   const SLIP_MAX_BASE64 = 2 * 1024 * 1024 - 1024;
+
+  // Generate the bill-payment QR (in-memory, transient) for the amount this
+  // booking needs to pay. Nothing is persisted; it is regenerated on demand.
+  onMount(async () => {
+    try {
+      const payload = buildPromptPayBillPayment({
+        billerId: BILLER_ID,
+        ref1: REF_1,
+        ref2: REF_2,
+        amount: total,
+      });
+      qrSrc = await QRCode.toDataURL(payload, {
+        width: 300,
+        margin: 1,
+        errorCorrectionLevel: 'M',
+      });
+    } catch (err) {
+      console.error('Failed to generate PromptPay QR:', err);
+      qrError = true;
+    }
+  });
 
   function readAsDataURL(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -156,7 +187,7 @@
       progressVisible = false;
       showAlert(
         'err',
-        tc('uploadSlipFail', { msg: err instanceof Error ? err.message : t('retryBtn') })
+        tc('uploadSlipFail', { msg: err instanceof Error ? err.message : t('retryBtn') }),
       );
     } finally {
       submitting = false;
@@ -173,7 +204,17 @@
     <div class="promptpay-tag">📱 {t('promptpayTag')}</div>
 
     <div class="qr-frame">
-      <img src="/promptpay-qr.png" alt="PromptPay QR" />
+      {#if qrSrc}
+        <img src={qrSrc} alt={t('promptpayTag')} />
+      {:else}
+        <div class="qr-pending">
+          {#if qrError}
+            ⚠️
+          {:else}
+            <span class="spinner"></span>
+          {/if}
+        </div>
+      {/if}
     </div>
 
     <div class="bank-name">{t('bankName')}</div>
@@ -210,12 +251,7 @@
         }
       }}
     >
-      <input
-        type="file"
-        accept="image/*"
-        bind:this={fileInput}
-        onchange={onFileChange}
-      />
+      <input type="file" accept="image/*" bind:this={fileInput} onchange={onFileChange} />
       {#if previewUrl}
         <img src={previewUrl} class="preview-img" alt="slip preview" style="display:block" />
       {:else}
@@ -226,7 +262,9 @@
       {#if slipFile}
         <div style="font-size:12px;color:var(--text-secondary);text-align:center;line-height:1.7">
           <strong>✓ {tc('fileSelected', { name: slipFile.name })}</strong><br />
-          <span style="font-size:11px">{tc('sizeKB', { size: (slipFile.size / 1024).toFixed(1) })}</span>
+          <span style="font-size:11px"
+            >{tc('sizeKB', { size: (slipFile.size / 1024).toFixed(1) })}</span
+          >
         </div>
       {/if}
     </div>
@@ -259,8 +297,24 @@
     >
       ← {t('payCancel')}
     </button>
-    <button type="button" class="btn-primary" style="flex:1" disabled={submitting} onclick={() => void submit()}>
+    <button
+      type="button"
+      class="btn-primary"
+      style="flex:1"
+      disabled={submitting}
+      onclick={() => void submit()}
+    >
       ✅ {t('confirmPay')}
     </button>
   </div>
 </div>
+
+<style>
+  .qr-pending {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+</style>
