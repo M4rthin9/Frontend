@@ -16,16 +16,13 @@
       }
     </style>
     <script>
-      // Pre-paint theme: apply saved/system preference before first render.
+      // Pre-paint theme: default to light; only apply dark when explicitly chosen.
       (function () {
         try {
           var saved = localStorage.getItem('ccc_dark_mode');
-          var dark =
-            saved === '1' ||
-            (saved !== '0' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-          if (dark) {
+          if (saved === '1') {
             document.documentElement.classList.add('dark');
-            document.documentElement.style.background = '#0f172a';
+            document.documentElement.style.background = '#0b1220';
           }
         } catch (e) {
           /* storage unavailable — fall through */

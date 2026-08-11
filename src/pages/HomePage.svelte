@@ -3,10 +3,30 @@
   import { navigate } from '../lib/router.svelte';
 
   const infoCards = $derived([
-    { icon: '📅', title: t('dayTime'), desc: t('dayTimeDesc'), color: 'indigo' },
-    { icon: '💺', title: t('seats'), desc: t('seatsDesc'), color: 'emerald' },
-    { icon: '💰', title: t('price'), desc: t('priceDesc'), color: 'amber' },
-    { icon: '⚠️', title: t('rules'), desc: t('rulesDesc'), color: 'rose' },
+    {
+      icon: '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+      title: t('dayTime'),
+      desc: t('dayTimeDesc'),
+      color: 'indigo',
+    },
+    {
+      icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+      title: t('seats'),
+      desc: t('seatsDesc'),
+      color: 'emerald',
+    },
+    {
+      icon: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/>',
+      title: t('price'),
+      desc: t('priceDesc'),
+      color: 'amber',
+    },
+    {
+      icon: '<path d="M12 3l7 3v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3z"/><path d="M12 9v4m0 3h.01"/>',
+      title: t('rules'),
+      desc: t('rulesDesc'),
+      color: 'rose',
+    },
   ]);
 
   const steps = $derived([t('step1'), t('step2'), t('step3'), t('step4')]);
@@ -74,8 +94,8 @@
         onclick={() => navigate('booking')}
       >
         <div class="relative z-10 flex items-center gap-3.5">
-          <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/25 text-2xl backdrop-blur-sm">
-            📋
+          <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/25 backdrop-blur-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6M9 4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1M9 11h6m-6 4h4"/></svg>
           </span>
           <span class="flex-1">
             <span class="block text-base font-bold leading-tight">{@html t('btnBook')}</span>
@@ -91,8 +111,8 @@
         onclick={() => navigate('status')}
       >
         <div class="flex items-center gap-3.5">
-          <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20 text-2xl backdrop-blur-sm">
-            🔍
+          <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
           </span>
           <span class="flex-1">
             <span class="block text-base font-bold leading-tight">{@html t('btnStatus')}</span>
@@ -139,9 +159,9 @@
           ></div>
           <div class="relative flex items-start gap-4">
             <div
-              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl shadow-lg {colorMap[card.color].tile} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-white shadow-lg {colorMap[card.color].tile} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
             >
-              {card.icon}
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{@html card.icon}</svg>
             </div>
             <div class="min-w-0 flex-1">
               <h3 class="text-sm font-bold text-text-primary">{card.title}</h3>
@@ -181,8 +201,8 @@
 <section class="app-container py-10">
   <div class="mx-auto max-w-4xl rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/70 to-amber-50/70 p-6 shadow-sm sm:p-8">
     <div class="flex items-start gap-4">
-      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-800 text-lg text-white shadow-md shadow-indigo-600/30">
-        📘
+      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-800 text-white shadow-md shadow-indigo-600/30">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>
       </div>
       <div class="min-w-0 flex-1">
         <h2 class="text-base font-bold text-text-primary">{t('stepsHeading')}</h2>
@@ -204,7 +224,7 @@
     ></div>
 
     <div class="relative">
-      <span class="text-4xl">🤝</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M8.5 13.5L6 21l6-3 6 3-2.5-7.5"/></svg>
       <h2 class="mx-auto mt-4 max-w-md text-xl font-bold leading-snug sm:text-2xl">{t('appName')}</h2>
       <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-300">{@html t('heroSub')}</p>
 

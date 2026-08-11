@@ -10,25 +10,10 @@ class UIStore {
   darkMode = $state(false);
   toasts = $state<Toast[]>([]);
   private toastSeq = 0;
-  private media: MediaQueryList | null = null;
-  private onSystemChange = (e: MediaQueryListEvent): void => {
-    if (!safeGetItem(window.localStorage, 'ccc_dark_mode')) {
-      this.darkMode = e.matches;
-      this.applyDarkClass();
-    }
-  };
 
   initDarkMode(): void {
     const saved = safeGetItem(window.localStorage, 'ccc_dark_mode');
-    if (saved === '1') {
-      this.darkMode = true;
-    } else if (saved === '0') {
-      this.darkMode = false;
-    } else {
-      this.media = window.matchMedia('(prefers-color-scheme: dark)');
-      this.darkMode = this.media.matches;
-      this.media.addEventListener('change', this.onSystemChange);
-    }
+    this.darkMode = saved === '1';
     this.applyDarkClass();
   }
 
