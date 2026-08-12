@@ -2,10 +2,10 @@
   import { onMount } from 'svelte';
   import * as QRCode from 'qrcode';
   import { t, tc } from '../../lib/i18n/i18n.svelte';
-  import { uploadSlip, updateSlipAndStatus } from '../../lib/api/endpoints';
-  import type { PublicReservation } from '../../lib/api/types';
+  import { uploadSlip, updateSlipAndStatus, getPromptPayConfig } from '../../lib/api/endpoints';
+  import type { PublicReservation, PromptPayConfig } from '../../lib/api/types';
   import { buildPromptPayBillPayment } from '../../lib/utils/promptpay-emvco.js';
-  import { BILLER_ID, REF_1, REF_2 } from '../../lib/utils/promptpay-biller.js';
+  import { PROMPTPAY_DEFAULTS } from '../../lib/utils/promptpay-biller.js';
 
   let {
     booking,
@@ -37,12 +37,23 @@
 
   // Generate the bill-payment QR (in-memory, transient) for the amount this
   // booking needs to pay. Nothing is persisted; it is regenerated on demand.
+  // Uses the biller config saved in the Dashboard settings (with local
+  // defaults as a fallback when the server config cannot be loaded).
   onMount(async () => {
+    let cfg: PromptPayConfig = { ...PROMPTPAY_DEFAULTS };
     try {
+      cfg = await getPromptPayConfig();
+    } catch (err) {
+      console.warn('Failed to load PromptPay config, using defaults:', err);
+    }
+    try {
+      const hasAmount = total > 0;
       const payload = buildPromptPayBillPayment({
-        billerId: BILLER_ID,
-        ref1: REF_1,
-        ref2: REF_2,
+        billerId: cfg.billerId,
+        ref1: cfg.ref1,
+        ref2: cfg.ref2,
+        ref3: cfg.ref3,
+        pointOfInitiation: hasAmount ? '12' : cfg.pointOfInitiation,
         amount: total,
       });
       qrSrc = await QRCode.toDataURL(payload, {

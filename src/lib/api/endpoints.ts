@@ -1,6 +1,14 @@
 import { callAction, callGet, assertOk } from './client';
 import { rebuildPrisonerObjects } from '../utils/helpers';
-import type { ApiResult, Note, Prisoner, PublicReservation, SaveReservationPayload } from './types';
+import { PROMPTPAY_DEFAULTS } from '../utils/promptpay-biller';
+import type {
+  ApiResult,
+  Note,
+  Prisoner,
+  PromptPayConfig,
+  PublicReservation,
+  SaveReservationPayload,
+} from './types';
 
 export async function ping(): Promise<{ status: string; pong?: boolean; timestamp?: string }> {
   return callAction<{ status: string; pong?: boolean; timestamp?: string }>('ping');
@@ -100,6 +108,15 @@ export async function getNotes(ref: string): Promise<Note[]> {
   const data = await callAction<{ status: string; notes?: Note[] }>('getNotes', { ref });
   assertOk(data);
   return data.notes ?? [];
+}
+
+/** Public PromptPay biller config saved from the Dashboard (admin_settings.promptpay). */
+export async function getPromptPayConfig(): Promise<PromptPayConfig> {
+  const data = await callAction<{ status: string; config?: PromptPayConfig }>(
+    'getPromptPayConfig',
+  );
+  assertOk(data);
+  return data.config ?? { ...PROMPTPAY_DEFAULTS };
 }
 
 export type { ApiResult };

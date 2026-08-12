@@ -7,6 +7,15 @@ export type BookingStatus =
   | 'ไม่อนุมัติ'
   | 'ยกเลิก';
 
+/** PromptPay biller config saved from the Dashboard (admin_settings.promptpay). */
+export interface PromptPayConfig {
+  billerId: string;
+  ref1: string;
+  ref2: string;
+  ref3: string;
+  pointOfInitiation: '11' | '12';
+}
+
 export interface ApiResult {
   status?: string;
   message?: string;

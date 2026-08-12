@@ -12,7 +12,7 @@
 
 import QRCode from 'qrcode';
 import { buildPromptPayBillPayment } from '../src/lib/utils/promptpay-emvco.js';
-import { BILLER_ID, REF_1, REF_2 } from '../src/lib/utils/promptpay-biller.js';
+import { PROMPTPAY_DEFAULTS } from '../src/lib/utils/promptpay-biller.js';
 
 /* ------------------------------------------------------------------ *
  * Test inputs — amount is the amount shown on the booking.
@@ -21,9 +21,11 @@ const AMOUNT = '500.00'; // set to the amount shown on the booking
 
 async function main() {
   const payload = buildPromptPayBillPayment({
-    billerId: BILLER_ID,
-    ref1: REF_1,
-    ref2: REF_2,
+    billerId: PROMPTPAY_DEFAULTS.billerId,
+    ref1: PROMPTPAY_DEFAULTS.ref1,
+    ref2: PROMPTPAY_DEFAULTS.ref2,
+    ref3: PROMPTPAY_DEFAULTS.ref3,
+    pointOfInitiation: '12', // dynamic — a specific amount is always set
     amount: AMOUNT,
   });
 
