@@ -2,8 +2,8 @@
   import { onMount } from 'svelte';
   import * as QRCode from 'qrcode';
   import { t, tc } from '../../lib/i18n/i18n.svelte';
-  import { uploadSlip, updateSlipAndStatus, getPromptPayConfig } from '../../lib/api/endpoints';
-  import type { PublicReservation, PromptPayConfig } from '../../lib/api/types';
+  import { uploadSlip, updateSlipAndStatus, getPromptPayConfig, verifySlip } from '../../lib/api/endpoints';
+  import type { PublicReservation, PromptPayConfig, SlipVerifyResult } from '../../lib/api/types';
   import { buildPromptPayBillPayment } from '../../lib/utils/promptpay-emvco.js';
   import { PROMPTPAY_DEFAULTS } from '../../lib/utils/promptpay-biller.js';
 
@@ -28,6 +28,8 @@
   let fileInput = $state<HTMLInputElement | null>(null);
   let qrSrc = $state('');
   let qrError = $state(false);
+  let verifyResult = $state<SlipVerifyResult | null>(null);
+  let verifyChecking = $state(false);
 
   const visitorCount = $derived(parseInt(String(booking.visitorCount)) || 1);
   const totalPersons = $derived(visitorCount + 1);
@@ -134,10 +136,28 @@
       return;
     }
     slipFile = file;
+    verifyResult = null;
     clearAlert();
     void readAsDataURL(file).then((url) => {
       previewUrl = url;
     });
+  }
+
+  function mismatchFields(result: SlipVerifyResult | null): string {
+    const labels: Record<string, string> = {
+      amount: t('slipMismatchAmount'),
+      refs: t('slipMismatchRefs'),
+      biller: t('slipMismatchBiller'),
+    };
+    return (result?.mismatch ?? []).map((f) => labels[f] || f).join(', ');
+  }
+
+  function verifyNotice(result: SlipVerifyResult | null): string {
+    if (!result) return '';
+    if (result.status === 'ok') return t('slipVerifyOk');
+    if (result.status === 'slip_verify') return t('slipVerifyReview');
+    if (result.status === 'mismatch') return tc('slipVerifyMismatch', { fields: mismatchFields(result) });
+    return t('slipVerifyUnreadable');
   }
 
   function onFileChange(event: Event & { currentTarget: HTMLInputElement }): void {
@@ -181,7 +201,26 @@
         mimeType,
         base64Data,
       });
+      progress = 55;
+
+      verifyChecking = true;
+      try {
+        verifyResult = await verifySlip({ ref: booking.ref, base64Data });
+      } finally {
+        verifyChecking = false;
+      }
       progress = 70;
+
+      const v = verifyResult;
+      if (v && (v.status === 'mismatch' || v.status === 'unreadable')) {
+        showAlert(
+          'err',
+          `${verifyNotice(v)}<br/><span style="font-size:12px">${t('slipVerifyBlocked')}</span>`,
+        );
+        progressVisible = false;
+        return;
+      }
+
       await updateSlipAndStatus({
         ref: booking.ref,
         status: 'ชำระแล้ว',
@@ -282,6 +321,18 @@
       </div>
     {/if}
 
+    {#if verifyChecking}
+      <div class="slip-verify-checking">
+        <span class="spinner"></span> {t('slipVerifyChecking')}
+      </div>
+    {/if}
+
+    {#if verifyResult}
+      <div class="slip-verify-badge {verifyResult.status}">
+        {verifyNotice(verifyResult)}
+      </div>
+    {/if}
+
     {#if alertMsg}
       <div class="alert-strip {alertType}">
         {@html alertMsg}
@@ -298,6 +349,7 @@
         if (fileInput) fileInput.value = '';
         slipFile = null;
         previewUrl = '';
+        verifyResult = null;
         clearAlert();
         oncancel();
       }}
@@ -323,5 +375,41 @@
     justify-content: center;
     width: 100%;
     height: 100%;
+  }
+
+  .slip-verify-checking {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .slip-verify-badge {
+    margin-top: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .slip-verify-badge.ok {
+    background: rgba(46, 160, 67, 0.12);
+    color: #2ea043;
+    border: 1px solid rgba(46, 160, 67, 0.4);
+  }
+
+  .slip-verify-badge.slip_verify {
+    background: rgba(219, 171, 9, 0.12);
+    color: #d29922;
+    border: 1px solid rgba(219, 171, 9, 0.4);
+  }
+
+  .slip-verify-badge.mismatch,
+  .slip-verify-badge.unreadable {
+    background: rgba(248, 81, 73, 0.12);
+    color: #f85149;
+    border: 1px solid rgba(248, 81, 73, 0.4);
   }
 </style>

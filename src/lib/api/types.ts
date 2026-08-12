@@ -7,6 +7,19 @@ export type BookingStatus =
   | 'ไม่อนุมัติ'
   | 'ยกเลิก';
 
+export type SlipVerifyStatus = 'ok' | 'mismatch' | 'slip_verify' | 'unreadable';
+
+/** Result of scanning + parsing the slip QR against the booking. */
+export interface SlipVerifyResult {
+  status: SlipVerifyStatus;
+  kind: 'paymentQr' | 'slipVerify' | 'trueMoneySlipVerify' | 'none';
+  qrCount: number;
+  at: string;
+  detail?: Record<string, unknown> | null;
+  match?: Record<string, unknown> | null;
+  mismatch?: string[];
+}
+
 /** PromptPay biller config saved from the Dashboard (admin_settings.promptpay). */
 export interface PromptPayConfig {
   billerId: string;

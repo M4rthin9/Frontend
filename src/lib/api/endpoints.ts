@@ -8,6 +8,8 @@ import type {
   PromptPayConfig,
   PublicReservation,
   SaveReservationPayload,
+  SlipVerifyResult,
+  SlipVerifyStatus,
 } from './types';
 
 export async function ping(): Promise<{ status: string; pong?: boolean; timestamp?: string }> {
@@ -119,4 +121,20 @@ export async function getPromptPayConfig(): Promise<PromptPayConfig> {
   return data.config ?? { ...PROMPTPAY_DEFAULTS };
 }
 
-export type { ApiResult };
+/** Scan + parse the slip QR and compare it against the booking's expected
+ *  biller/refs/amount. Passes the freshly uploaded base64 so the result is
+ *  returned immediately without re-fetching the stored slip. */
+export async function verifySlip(input: {
+  ref: string;
+  base64Data: string;
+}): Promise<SlipVerifyResult> {
+  const data = await callAction<{
+    status: string;
+    result?: SlipVerifyResult;
+    message?: string;
+  }>('verifySlip', input as unknown as Record<string, unknown>, { timeoutMs: 30000 });
+  assertOk(data);
+  return data.result ?? { status: 'unreadable', kind: 'none', qrCount: 0, at: '' };
+}
+
+export type { ApiResult, SlipVerifyResult, SlipVerifyStatus };

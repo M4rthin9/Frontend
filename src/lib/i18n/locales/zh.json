@@ -216,5 +216,14 @@
   "loadingPrisoners": "⏳ 正在从数据库加载囚犯列表...",
   "submittingBooking": "⏳ 正在提交，请勿重复点击按钮...",
   "loadSuccess": "✓ 已加载 ({count} 人)",
-  "loadFail": "⚠️ 无法从数据库加载 — 可暂时手动输入"
+  "loadFail": "⚠️ 无法从数据库加载 — 可暂时手动输入",
+  "slipVerifyChecking": "正在校验回单二维码…",
+  "slipVerifyOk": "✅ 校验通过：回单二维码与预约信息一致",
+  "slipVerifyReview": "🧾 仅检测到回单参考二维码 — 将由工作人员核对金额",
+  "slipVerifyMismatch": "❌ 回单二维码不匹配：{fields}",
+  "slipVerifyUnreadable": "❌ 无法读取回单上的二维码 — 请上传更清晰的照片",
+  "slipVerifyBlocked": "支付确认被阻止 — 回单校验未通过，请检查后重试",
+  "slipMismatchAmount": "金额",
+  "slipMismatchRefs": "参考编号",
+  "slipMismatchBiller": "收款人编号"
 }

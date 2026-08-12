@@ -216,5 +216,14 @@
   "loadingPrisoners": "⏳ Loading prisoner list...",
   "submittingBooking": "⏳ Submitting, please do not press the button again...",
   "loadSuccess": "✓ Loaded ({count} people)",
-  "loadFail": "⚠️ Failed to load from database — manual entry available"
+  "loadFail": "⚠️ Failed to load from database — manual entry available",
+  "slipVerifyChecking": "Checking slip QR…",
+  "slipVerifyOk": "✅ Verified: slip QR matches booking",
+  "slipVerifyReview": "🧾 Only a slip-reference QR found — staff will verify the amount",
+  "slipVerifyMismatch": "❌ Slip QR mismatch: {fields}",
+  "slipVerifyUnreadable": "❌ Could not read a QR on the slip — please upload a clearer photo",
+  "slipVerifyBlocked": "Payment confirmation blocked — slip verification failed. Please check and retry.",
+  "slipMismatchAmount": "amount",
+  "slipMismatchRefs": "reference codes",
+  "slipMismatchBiller": "biller ID"
 }
