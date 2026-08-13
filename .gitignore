@@ -22,3 +22,6 @@ dist-ssr
 
 # Svelte
 *.tsbuildinfo
+CLAUDE.md
+repomix-output.xml
+*.claude

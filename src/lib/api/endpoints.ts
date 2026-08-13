@@ -1,11 +1,10 @@
 import { callAction, callGet, assertOk } from './client';
 import { rebuildPrisonerObjects } from '../utils/helpers';
-import { PROMPTPAY_DEFAULTS } from '../utils/promptpay-biller';
 import type {
   ApiResult,
   Note,
+  PaymentQrResponse,
   Prisoner,
-  PromptPayConfig,
   PublicReservation,
   SaveReservationPayload,
   SlipVerifyResult,
@@ -112,13 +111,19 @@ export async function getNotes(ref: string): Promise<Note[]> {
   return data.notes ?? [];
 }
 
-/** Public PromptPay biller config saved from the Dashboard (admin_settings.promptpay). */
-export async function getPromptPayConfig(): Promise<PromptPayConfig> {
-  const data = await callAction<{ status: string; config?: PromptPayConfig }>(
-    'getPromptPayConfig',
+/** Per-booking PromptPay Bill Payment QR (rendered server-side, Pillar 1).
+ *  The worker mints this booking's ref1 on first call and renders the QR, so
+ *  the client never touches the biller config or EMVCo payloads. */
+export async function getPaymentQr(ref: string): Promise<PaymentQrResponse> {
+  const data = await callGet<{ status: string; payload?: string; qrDataUrl?: string; amount?: number; message?: string }>(
+    '/api/promptpay/qr',
+    { ref },
   );
   assertOk(data);
-  return data.config ?? { ...PROMPTPAY_DEFAULTS };
+  if (!data.payload || !data.qrDataUrl) {
+    throw new Error(data.message || 'QR generation failed');
+  }
+  return { payload: data.payload, qrDataUrl: data.qrDataUrl, amount: data.amount ?? 0 };
 }
 
 /** Scan + parse the slip QR and compare it against the booking's expected

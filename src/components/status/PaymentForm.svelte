@@ -1,11 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import * as QRCode from 'qrcode';
   import { t, tc } from '../../lib/i18n/i18n.svelte';
-  import { uploadSlip, updateSlipAndStatus, getPromptPayConfig, verifySlip } from '../../lib/api/endpoints';
-  import type { PublicReservation, PromptPayConfig, SlipVerifyResult } from '../../lib/api/types';
-  import { buildPromptPayBillPayment } from '../../lib/utils/promptpay-emvco.js';
-  import { PROMPTPAY_DEFAULTS } from '../../lib/utils/promptpay-biller.js';
+  import { uploadSlip, updateSlipAndStatus, getPaymentQr, verifySlip } from '../../lib/api/endpoints';
+  import type { PublicReservation, SlipVerifyResult } from '../../lib/api/types';
 
   let {
     booking,
@@ -37,34 +34,15 @@
 
   const SLIP_MAX_BASE64 = 2 * 1024 * 1024 - 1024;
 
-  // Generate the bill-payment QR (in-memory, transient) for the amount this
-  // booking needs to pay. Nothing is persisted; it is regenerated on demand.
-  // Uses the biller config saved in the Dashboard settings (with local
-  // defaults as a fallback when the server config cannot be loaded).
+  // Fetch the per-booking bill-payment QR (rendered server-side, Pillar 1).
+  // The worker mints this booking's stable ref1 on first request; nothing is
+  // generated or persisted client-side anymore.
   onMount(async () => {
-    let cfg: PromptPayConfig = { ...PROMPTPAY_DEFAULTS };
     try {
-      cfg = await getPromptPayConfig();
+      const qr = await getPaymentQr(booking.ref);
+      qrSrc = qr.qrDataUrl;
     } catch (err) {
-      console.warn('Failed to load PromptPay config, using defaults:', err);
-    }
-    try {
-      const hasAmount = total > 0;
-      const payload = buildPromptPayBillPayment({
-        billerId: cfg.billerId,
-        ref1: cfg.ref1,
-        ref2: cfg.ref2,
-        ref3: cfg.ref3,
-        pointOfInitiation: hasAmount ? '12' : cfg.pointOfInitiation,
-        amount: total,
-      });
-      qrSrc = await QRCode.toDataURL(payload, {
-        width: 300,
-        margin: 1,
-        errorCorrectionLevel: 'M',
-      });
-    } catch (err) {
-      console.error('Failed to generate PromptPay QR:', err);
+      console.error('Failed to load PromptPay QR:', err);
       qrError = true;
     }
   });
@@ -146,7 +124,8 @@
   function mismatchFields(result: SlipVerifyResult | null): string {
     const labels: Record<string, string> = {
       amount: t('slipMismatchAmount'),
-      refs: t('slipMismatchRefs'),
+      ref1: t('slipMismatchRefs'),
+      ref2: t('slipMismatchRefs'),
       biller: t('slipMismatchBiller'),
     };
     return (result?.mismatch ?? []).map((f) => labels[f] || f).join(', ');

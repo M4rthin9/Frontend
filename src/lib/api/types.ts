@@ -21,13 +21,15 @@ export interface SlipVerifyResult {
   duplicateOfRef?: string;
 }
 
-/** PromptPay biller config saved from the Dashboard (admin_settings.promptpay). */
-export interface PromptPayConfig {
-  billerId: string;
-  ref1: string;
-  ref2: string;
-  ref3: string;
-  pointOfInitiation: '11' | '12';
+/** Per-booking PromptPay Bill Payment QR rendered server-side (Pillar 1). */
+export interface PaymentQrResponse {
+  payload: string;
+  qrDataUrl: string;
+  amount: number;
+  billerId?: string;
+  ref1?: string;
+  ref2?: string;
+  ref3?: string;
 }
 
 export interface ApiResult {
