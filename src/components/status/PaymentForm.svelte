@@ -24,6 +24,7 @@
   let submitting = $state(false);
   let fileInput = $state<HTMLInputElement | null>(null);
   let qrSrc = $state('');
+  let qrCardSvg = $state('');
   let qrError = $state(false);
   let verifyResult = $state<SlipVerifyResult | null>(null);
   let verifyChecking = $state(false);
@@ -41,6 +42,7 @@
     try {
       const qr = await getPaymentQr(booking.ref);
       qrSrc = qr.qrDataUrl;
+      qrCardSvg = qr.qrCardSvg ?? '';
     } catch (err) {
       console.error('Failed to load PromptPay QR:', err);
       qrError = true;
@@ -140,6 +142,17 @@
     return t('slipVerifyUnreadable');
   }
 
+  // Tag-62 fields the worker read back off the slip's payment QR (bill number
+  // + store label) — shown under the verify badge as extra confirmation.
+  const slipQrRefs = $derived.by(() => {
+    const ad = verifyResult?.detail?.additionalData as Record<string, unknown> | undefined;
+    if (!ad) return '';
+    const parts: string[] = [];
+    if (ad.billNumber) parts.push(`${t('slipQrBillNumber')}: ${String(ad.billNumber)}`);
+    if (ad.storeLabel) parts.push(`${t('slipQrStoreLabel')}: ${String(ad.storeLabel)}`);
+    return parts.join(' · ');
+  });
+
   function onFileChange(event: Event & { currentTarget: HTMLInputElement }): void {
     const file = event.currentTarget.files?.[0];
     if (file) processFile(file);
@@ -229,15 +242,22 @@
   <div class="pay-bank-card">
     <div class="promptpay-tag">📱 {t('promptpayTag')}</div>
 
-    <div class="qr-frame">
-      {#if qrSrc}
-        <img src={qrSrc} alt={t('promptpayTag')} />
+    <div class="qr-card-box">
+      {#if qrCardSvg}
+        {@html qrCardSvg}
+        <div class="qr-card-hint">{t('qrCardHint')}</div>
       {:else}
-        <div class="qr-pending">
-          {#if qrError}
-            ⚠️
+        <div class="qr-frame">
+          {#if qrSrc}
+            <img src={qrSrc} alt={t('promptpayTag')} />
           {:else}
-            <span class="spinner"></span>
+            <div class="qr-pending">
+              {#if qrError}
+                ⚠️
+              {:else}
+                <span class="spinner"></span>
+              {/if}
+            </div>
           {/if}
         </div>
       {/if}
@@ -311,6 +331,9 @@
       <div class="slip-verify-badge {verifyResult.status}">
         {verifyNotice(verifyResult)}
       </div>
+      {#if slipQrRefs}
+        <div class="slip-qr-refs">{slipQrRefs}</div>
+      {/if}
     {/if}
 
     {#if alertMsg}
@@ -355,6 +378,35 @@
     justify-content: center;
     width: 100%;
     height: 100%;
+  }
+
+  .qr-card-box {
+    margin: 1rem auto 1.25rem;
+    max-width: 300px;
+  }
+
+  .qr-card-box :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+  }
+
+  .qr-card-hint {
+    margin-top: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--app-text-secondary);
+  }
+
+  .slip-qr-refs {
+    margin-top: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.6;
+    background: rgba(46, 160, 67, 0.08);
+    color: var(--app-text-secondary);
   }
 
   .slip-verify-checking {

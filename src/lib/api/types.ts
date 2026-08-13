@@ -25,7 +25,11 @@ export interface SlipVerifyResult {
 export interface PaymentQrResponse {
   payload: string;
   qrDataUrl: string;
+  /** Branded SVG card (Thai QR Payment header + caption), server-rendered. */
+  qrCardSvg?: string;
   amount: number;
+  /** Tag-62 sub-fields (billNumber, storeLabel, …) carried by the payload. */
+  additionalData?: Record<string, string> | null;
   billerId?: string;
   ref1?: string;
   ref2?: string;

@@ -115,15 +115,26 @@ export async function getNotes(ref: string): Promise<Note[]> {
  *  The worker mints this booking's ref1 on first call and renders the QR, so
  *  the client never touches the biller config or EMVCo payloads. */
 export async function getPaymentQr(ref: string): Promise<PaymentQrResponse> {
-  const data = await callGet<{ status: string; payload?: string; qrDataUrl?: string; amount?: number; message?: string }>(
-    '/api/promptpay/qr',
-    { ref },
-  );
+  const data = await callGet<{
+    status: string;
+    payload?: string;
+    qrDataUrl?: string;
+    qrCardSvg?: string;
+    amount?: number;
+    additionalData?: Record<string, string> | null;
+    message?: string;
+  }>('/api/promptpay/qr', { ref });
   assertOk(data);
   if (!data.payload || !data.qrDataUrl) {
     throw new Error(data.message || 'QR generation failed');
   }
-  return { payload: data.payload, qrDataUrl: data.qrDataUrl, amount: data.amount ?? 0 };
+  return {
+    payload: data.payload,
+    qrDataUrl: data.qrDataUrl,
+    qrCardSvg: data.qrCardSvg,
+    amount: data.amount ?? 0,
+    additionalData: data.additionalData ?? null,
+  };
 }
 
 /** Scan + parse the slip QR and compare it against the booking's expected
