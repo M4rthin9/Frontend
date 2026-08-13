@@ -221,6 +221,7 @@
   "slipVerifyOk": "✅ Verified: slip QR matches booking",
   "slipVerifyReview": "🧾 Only a slip-reference QR found — staff will verify the amount",
   "slipVerifyMismatch": "❌ Slip QR mismatch: {fields}",
+  "slipVerifyDuplicate": "🚫 This slip was already used to confirm payment for another booking",
   "slipVerifyUnreadable": "❌ Could not read a QR on the slip — please upload a clearer photo",
   "slipVerifyBlocked": "Payment confirmation blocked — slip verification failed. Please check and retry.",
   "slipMismatchAmount": "amount",

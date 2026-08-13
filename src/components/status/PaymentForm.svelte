@@ -157,6 +157,7 @@
     if (result.status === 'ok') return t('slipVerifyOk');
     if (result.status === 'slip_verify') return t('slipVerifyReview');
     if (result.status === 'mismatch') return tc('slipVerifyMismatch', { fields: mismatchFields(result) });
+    if (result.status === 'duplicate') return t('slipVerifyDuplicate');
     return t('slipVerifyUnreadable');
   }
 
@@ -212,7 +213,7 @@
       progress = 70;
 
       const v = verifyResult;
-      if (v && (v.status === 'mismatch' || v.status === 'unreadable')) {
+      if (v && (v.status === 'mismatch' || v.status === 'unreadable' || v.status === 'duplicate')) {
         showAlert(
           'err',
           `${verifyNotice(v)}<br/><span style="font-size:12px">${t('slipVerifyBlocked')}</span>`,
@@ -407,7 +408,8 @@
   }
 
   .slip-verify-badge.mismatch,
-  .slip-verify-badge.unreadable {
+  .slip-verify-badge.unreadable,
+  .slip-verify-badge.duplicate {
     background: rgba(248, 81, 73, 0.12);
     color: #f85149;
     border: 1px solid rgba(248, 81, 73, 0.4);

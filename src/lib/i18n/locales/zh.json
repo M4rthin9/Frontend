@@ -221,6 +221,7 @@
   "slipVerifyOk": "✅ 校验通过：回单二维码与预约信息一致",
   "slipVerifyReview": "🧾 仅检测到回单参考二维码 — 将由工作人员核对金额",
   "slipVerifyMismatch": "❌ 回单二维码不匹配：{fields}",
+  "slipVerifyDuplicate": "🚫 该回单已用于确认其他预约的付款",
   "slipVerifyUnreadable": "❌ 无法读取回单上的二维码 — 请上传更清晰的照片",
   "slipVerifyBlocked": "支付确认被阻止 — 回单校验未通过，请检查后重试",
   "slipMismatchAmount": "金额",
