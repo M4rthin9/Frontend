@@ -13,7 +13,7 @@
   const colors: Record<string, string> = {
     success: 'border-emerald-500 text-emerald-600 dark:text-emerald-400',
     error: 'border-rose-500 text-rose-600 dark:text-rose-400',
-    warning: 'border-amber-500 text-amber-600 dark:text-amber-400',
+    warning: 'border-amber-500 text-amber-800 dark:text-amber-400',
     info: 'border-sky-500 text-sky-600 dark:text-sky-400',
   };
 

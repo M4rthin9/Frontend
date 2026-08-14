@@ -127,7 +127,7 @@
         <div class="result-ref">
           {t('resultRefLabel')} · <strong>{booking.ref}</strong>
         </div>
-        <div style="font-size:12px;color:var(--text-tertiary)">
+        <div style="font-size:12px;color:var(--app-text-tertiary)">
           {tc('bookedAt', { timestamp: booking.timestamp || '—' })}
         </div>
       </div>
@@ -187,9 +187,9 @@
           <h3>{statusNotice.title}</h3>
           <p>{statusNotice.text}</p>
           <div style="text-align:center;margin-bottom:1rem">
-            <div style="font-size:13px;color:var(--text-tertiary)">{t('amountDue')}</div>
+            <div style="font-size:13px;color:var(--app-text-tertiary)">{t('amountDue')}</div>
             <div style="font-size:28px;font-weight:700;color:var(--text);margin:8px 0">{total.toLocaleString()} บาท</div>
-            <div style="font-size:12px;color:var(--text-tertiary)">{tc('perPerson', { n: totalPersons })}</div>
+            <div style="font-size:12px;color:var(--app-text-tertiary)">{tc('perPerson', { n: totalPersons })}</div>
           </div>
           <button type="button" class="btn-primary" onclick={() => (showPayment = true)}>
             💳 {t('payNow')}

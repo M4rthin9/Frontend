@@ -7,7 +7,15 @@
 <footer class="border-t border-border-subtle bg-surface">
   <div class="mx-auto max-w-3xl px-4 py-10 text-center sm:px-6">
     <div class="mb-4 flex items-center justify-center gap-2">
-      <img src="/cida-logo.png" alt="กรมราชทัณฑ์" class="h-8 w-8 rounded-full object-cover opacity-70" />
+      <img
+        src="/cida-logo-64.webp"
+        srcset="/cida-logo-64.webp 64w, /cida-logo-128.webp 128w, /cida-logo-192.webp 192w"
+        sizes="32px"
+        width="64"
+        height="64"
+        alt="กรมราชทัณฑ์"
+        class="h-8 w-8 rounded-full object-cover opacity-70"
+      />
       <span class="text-sm font-semibold text-text-secondary">{@html t('appName')}</span>
     </div>
     <p class="text-sm leading-relaxed text-text-tertiary">{@html t('footer')}</p>

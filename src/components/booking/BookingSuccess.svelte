@@ -76,7 +76,7 @@
         {/if}
       </div>
 
-      <div style="font-size:11px;color:var(--text-tertiary);text-align:center;margin-top:12px">
+      <div style="font-size:11px;color:var(--app-text-tertiary);text-align:center;margin-top:12px">
         ใช้ปุ่ม "ตรวจสอบสถานะ" เพื่อติดตาม หรือคัดลอก Ref ด้านบน
       </div>
 

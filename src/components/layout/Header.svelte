@@ -23,7 +23,15 @@
       aria-label={t('home')}
       onclick={() => navigate('home')}
     >
-      <img src="/cida-logo.png" alt="กรมราชทัณฑ์" class="h-9 w-9 rounded-full object-cover ring-2 ring-indigo-100" />
+      <img
+        src="/cida-logo-64.webp"
+        srcset="/cida-logo-64.webp 64w, /cida-logo-128.webp 128w, /cida-logo-192.webp 192w"
+        sizes="36px"
+        width="64"
+        height="64"
+        alt="กรมราชทัณฑ์"
+        class="h-9 w-9 rounded-full object-cover ring-2 ring-indigo-100"
+      />
       <span class="hidden text-sm font-bold text-text-primary sm:block">{@html t('appName')}</span>
     </button>
 

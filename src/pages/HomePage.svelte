@@ -69,11 +69,28 @@
     <!-- logos -->
     <div class="flex items-center justify-center gap-3 sm:gap-5">
       <div class="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/15 bg-white/10 p-1.5 shadow-xl shadow-red-950/40 ring-1 ring-amber-400/40 backdrop-blur-md transition-transform duration-300 hover:scale-105 sm:h-24 sm:w-24">
-        <img src="/cida-logo.png" alt="กรมราชทัณฑ์" class="h-full w-full rounded-xl object-cover" />
+        <img
+          src="/cida-logo-192.webp"
+          srcset="/cida-logo-64.webp 64w, /cida-logo-128.webp 128w, /cida-logo-192.webp 192w"
+          sizes="96px"
+          width="192"
+          height="192"
+          fetchpriority="high"
+          alt="กรมราชทัณฑ์"
+          class="h-full w-full rounded-xl object-cover"
+        />
       </div>
       <div aria-hidden="true" class="h-10 w-px bg-white/25 sm:h-16"></div>
       <div class="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/15 bg-white/10 p-1.5 shadow-xl shadow-red-950/40 ring-1 ring-amber-400/40 backdrop-blur-md transition-transform duration-300 hover:scale-105 sm:h-24 sm:w-24">
-        <img src="/Logo-white.png" alt="CC Cafe" class="h-full w-full rounded-xl object-cover" />
+        <img
+          src="/logo-white-128.webp"
+          srcset="/logo-white-64.webp 64w, /logo-white-128.webp 128w, /logo-white-192.webp 192w"
+          sizes="96px"
+          width="192"
+          height="192"
+          alt="CC Cafe"
+          class="h-full w-full rounded-xl object-cover"
+        />
       </div>
     </div>
 
@@ -106,7 +123,7 @@
           </span>
           <span class="flex-1">
             <span class="block text-base font-bold leading-tight">{@html t('btnBook')}</span>
-            <small class="mt-0.5 block text-xs font-medium text-red-900/70">{@html t('btnBookSub')}</small>
+            <small class="mt-0.5 block text-xs font-medium text-red-900/80">{@html t('btnBookSub')}</small>
           </span>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
