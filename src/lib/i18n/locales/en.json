@@ -151,6 +151,8 @@
   "amountDue": "Amount Due",
   "perPerson": "{n} people × 1,000 THB",
   "payNow": "Proceed to Payment",
+  "paymentClosedTitle": "Payments temporarily closed",
+  "paymentClosedText": "Online payment is temporarily closed. Your booking is still held — please come back later to pay.",
   "noticeRejected": "❌ Booking Rejected",
   "noticeRejectedText": "Officers could not approve this booking due to related disciplinary records. If you have questions, please contact officers at the institution.",
   "disciplineReason": "📌 Disciplinary Reason",

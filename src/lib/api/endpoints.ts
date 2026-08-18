@@ -111,6 +111,30 @@ export async function getNotes(ref: string): Promise<Note[]> {
   return data.notes ?? [];
 }
 
+export interface PublicSettings {
+  paymentEnabled: boolean;
+  paymentClosedMessage: string;
+}
+
+/** Public read of the booking-site settings. Fails open: if the backend is
+ *  unreachable we must never wrongly tell a visitor that payment is closed. */
+export async function getPublicSettings(): Promise<PublicSettings> {
+  try {
+    const data = await callGet<{
+      status: string;
+      paymentEnabled?: boolean;
+      paymentClosedMessage?: string;
+    }>('/api/public-settings', {});
+    if (data.status !== 'ok') return { paymentEnabled: true, paymentClosedMessage: '' };
+    return {
+      paymentEnabled: data.paymentEnabled !== false,
+      paymentClosedMessage: data.paymentClosedMessage ?? '',
+    };
+  } catch {
+    return { paymentEnabled: true, paymentClosedMessage: '' };
+  }
+}
+
 /** Per-booking PromptPay Bill Payment QR (rendered server-side, Pillar 1).
  *  The worker mints this booking's ref1 on first call and renders the QR, so
  *  the client never touches the biller config or EMVCo payloads. */

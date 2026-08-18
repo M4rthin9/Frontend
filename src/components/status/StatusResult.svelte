@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { t, tc } from '../../lib/i18n/i18n.svelte';
-  import { getNotes, publicCancelBooking } from '../../lib/api/endpoints';
+  import { getNotes, publicCancelBooking, getPublicSettings } from '../../lib/api/endpoints';
   import type { Note, PublicReservation } from '../../lib/api/types';
   import { ui } from '../../lib/store/ui.svelte';
   import {
@@ -30,6 +30,9 @@
   let notes = $state<Note[]>([]);
   let showPayment = $state(false);
   let cancelling = $state(false);
+  // Fails open: payment stays available unless the backend says otherwise.
+  let paymentEnabled = $state(true);
+  let paymentClosedMessage = $state('');
 
   const displayStatus = $derived(statusOverride ?? booking.status ?? '');
   const normalized = $derived(normalizeStatus(displayStatus));
@@ -38,7 +41,16 @@
     if (normalized === 'ยกเลิก') {
       void loadNotes();
     }
+    void loadPaymentWindow();
   });
+
+  async function loadPaymentWindow(): Promise<void> {
+    const settings = await getPublicSettings();
+    paymentEnabled = settings.paymentEnabled;
+    paymentClosedMessage = settings.paymentClosedMessage;
+    // Close the form if the window shut while this view was open.
+    if (!paymentEnabled) showPayment = false;
+  }
 
   async function loadNotes(): Promise<void> {
     try {
@@ -191,9 +203,16 @@
             <div style="font-size:28px;font-weight:700;color:var(--text);margin:8px 0">{total.toLocaleString()} บาท</div>
             <div style="font-size:12px;color:var(--app-text-tertiary)">{tc('perPerson', { n: totalPersons })}</div>
           </div>
-          <button type="button" class="btn-primary" onclick={() => (showPayment = true)}>
-            💳 {t('payNow')}
-          </button>
+          {#if paymentEnabled}
+            <button type="button" class="btn-primary" onclick={() => (showPayment = true)}>
+              💳 {t('payNow')}
+            </button>
+          {:else}
+            <div class="payment-closed">
+              <strong>⏳ {t('paymentClosedTitle')}</strong>
+              <p>{paymentClosedMessage || t('paymentClosedText')}</p>
+            </div>
+          {/if}
         </div>
       {:else if statusNotice.kind === 'reject' || statusNotice.kind === 'cancel'}
         <div class="rejected-notice">
@@ -249,7 +268,7 @@
         </div>
       {/if}
     </div>
-  {:else}
+  {:else if paymentEnabled}
     <PaymentForm booking={booking} onpaid={onpaid} oncancel={() => (showPayment = false)} />
   {/if}
 

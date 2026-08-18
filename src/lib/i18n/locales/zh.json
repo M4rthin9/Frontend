@@ -151,6 +151,8 @@
   "amountDue": "应付金额",
   "perPerson": "{n} 人 × 1,000 泰铢",
   "payNow": "进行支付",
+  "paymentClosedTitle": "暂停收款",
+  "paymentClosedText": "目前暂停线上付款。您的预约仍然有效，请稍后再回来付款。",
   "noticeRejected": "❌ 预约被拒绝",
   "noticeRejectedText": "由于相关纪律记录，官员无法批准此预约。如有疑问，请联系监所官员。",
   "disciplineReason": "📌 纪律原因",
