@@ -3,6 +3,7 @@
   import { router } from './lib/router.svelte';
   import { i18n, t } from './lib/i18n/i18n.svelte';
   import { ui } from './lib/store/ui.svelte';
+  import DevBanner from './components/layout/DevBanner.svelte';
   import Footer from './components/layout/Footer.svelte';
   import Toast from './components/ui/Toast.svelte';
   import ChatWidget from './components/chat/ChatWidget.svelte';
@@ -39,6 +40,8 @@
 </svelte:head>
 
 <div class="flex min-h-screen flex-col bg-background">
+  <DevBanner />
+
   <main class="flex-1">
     {#if router.route === 'home'}
       <HomePage />

@@ -60,8 +60,31 @@ public/              # static files (รวม _headers สำหรับ Cloud
 
 ## Deployment (Cloudflare Pages)
 
-1. สร้าง Pages project: `wrangler pages project create ccc-frontend --production-branch=main`
-2. เพิ่ม secrets ใน GitHub repo: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
-3. push ที่ branch `main` → workflow `.github/workflows/deploy.yml` ทำงานอัตโนมัติ (`npm run check` + `npm run build` + `pages deploy`)
+Deploy ทำโดย **Cloudflare Pages native GitHub integration** ไม่ใช่ GitHub Actions —
+workflow `.github/workflows/deploy.yml` ทำแค่ `check` / `lint` / `build` เป็น CI gate
+(step `pages deploy` ถูกถอดออกตั้งแต่ commit `6195623`)
 
-Service worker (`dist/sw.js`) ลงทะเบียนเฉพาะ production (`import.meta.env.PROD`) — ถูก stamp ด้วย version + รายการ asset จริงตอน build (`plugins/sw-stamp.ts`) ใช้ app-shell + stale-while-revalidate สำหรับ static assets, ไม่แตะ `/api/*`
+| Environment | Branch | URL                                         | Pages environment |
+| ----------- | ------ | ------------------------------------------- | ----------------- |
+| Production  | `main` | `ccc-frontend.pages.dev` / `cida.dpdns.org` | Production        |
+| Development | `dev`  | `dev.ccc-frontend.pages.dev`                | Preview           |
+
+Push ที่ branch ไหน Pages ก็ build branch นั้นให้อัตโนมัติ
+
+**Environment variables** ตั้งใน Cloudflare dashboard → Pages → `ccc-frontend` → Settings →
+Environment variables เป็น **build-time** variables (Vite inline ค่า `VITE_*` ตอน build —
+Pages _runtime_ variables ใช้ไม่ได้กับ static SPA)
+
+| Variable                 | Production                                   | Preview (dev)                                    |
+| ------------------------ | -------------------------------------------- | ------------------------------------------------ |
+| `VITE_API_BASE`          | `https://ccc-backend.pongsinbas.workers.dev` | `https://ccc-backend-dev.pongsinbas.workers.dev` |
+| `VITE_TURNSTILE_SITEKEY` | production site key                          | `1x00000000000000000000AA` (test key)            |
+
+ถ้าไม่ตั้ง `VITE_API_BASE` โค้ดจะ fallback ไปที่ **production** worker เงียบ ๆ
+(`src/lib/api/client.ts`) — ตรวจใน Network tab เสมอว่ายิงไป `ccc-backend-dev` จริง
+ดูค่าตัวอย่างที่ `.env.development.example`
+
+Service worker (`dist/sw.js`) ลงทะเบียนเฉพาะ production เท่านั้น — `src/lib/env.ts`
+กัน dev deployment ไว้ด้วย (`import.meta.env.PROD` เป็น true ทั้ง prod และ dev build จึงใช้แยกไม่ได้)
+ถูก stamp ด้วย version + รายการ asset จริงตอน build (`plugins/sw-stamp.ts`)
+ใช้ app-shell + stale-while-revalidate สำหรับ static assets, ไม่แตะ `/api/*`
