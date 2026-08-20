@@ -97,7 +97,7 @@ export async function updateSlipAndStatus(input: {
   const data = await callAction<{ status: string; message?: string }>(
     'updateSlipAndStatus',
     input as unknown as Record<string, unknown>,
-    { timeoutMs: 120000 },
+    { timeoutMs: 600000 },
   );
   assertOk(data);
 }
