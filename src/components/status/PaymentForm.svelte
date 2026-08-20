@@ -32,7 +32,17 @@
   const totalPersons = $derived(visitorCount + 1);
   const total = $derived(parseInt(String(booking.total)) || totalPersons * 1000);
 
+  // What a visitor may pick. Phone cameras routinely produce 8-15MB files, and
+  // rejecting those outright just left people unable to pay.
+  const SLIP_MAX_FILE_BYTES = 15 * 1024 * 1024;
+  // What may actually be *stored*: a D1 cell caps at 2,000,000 bytes, so
+  // whatever is chosen above is re-encoded to fit under this before upload.
   const SLIP_MAX_BASE64 = 2 * 1024 * 1024 - 1024;
+  // Longest edge we send. The server downsamples to 1600px before scanning the
+  // QR anyway, so nothing is lost — and normalising here is what stops a
+  // 12MP photo (which can still be a *small* file) from reaching the decoder
+  // at full resolution.
+  const SLIP_MAX_EDGE = 1600;
 
   // Fetch the per-booking bill-payment QR (rendered server-side, Pillar 1).
   // The worker mints this booking's stable ref1 on first request; nothing is
@@ -66,33 +76,58 @@
     });
   }
 
+  function renderToDataUrl(img: HTMLImageElement, edge: number, quality: number): string | null {
+    const w0 = img.naturalWidth || edge;
+    const h0 = img.naturalHeight || Math.round(edge * 0.75);
+    const scale = Math.min(1, edge / Math.max(w0, h0));
+    const w = Math.max(1, Math.round(w0 * scale));
+    const h = Math.max(1, Math.round(h0 * scale));
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+    ctx.drawImage(img, 0, 0, w, h);
+    return canvas.toDataURL('image/jpeg', quality);
+  }
+
+  /**
+   * Turn whatever the visitor picked into something that fits a D1 cell.
+   *
+   * The old version only re-encoded when the *encoded size* was too big, so a
+   * heavily-compressed 12MP photo — small file, enormous pixel count — went up
+   * untouched and blew up the decoder on the server. Pixel count is what
+   * matters, so it is checked first; the size loop then guarantees the result
+   * is storable.
+   */
   async function toUploadableDataUrl(file: File): Promise<string> {
     const dataUrl = await readAsDataURL(file);
-    if (dataUrl.length <= SLIP_MAX_BASE64) return dataUrl;
+    let img: HTMLImageElement;
     try {
-      const img = await loadImage(dataUrl);
-      const MAX_EDGE = 1600;
-      let w = img.naturalWidth || MAX_EDGE;
-      let h = img.naturalHeight || Math.round(MAX_EDGE * 0.75);
-      const scale = Math.min(1, MAX_EDGE / Math.max(w, h));
-      w = Math.max(1, Math.round(w * scale));
-      h = Math.max(1, Math.round(h * scale));
-      const canvas = document.createElement('canvas');
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return dataUrl;
-      ctx.drawImage(img, 0, 0, w, h);
-      let quality = 0.85;
-      let out = canvas.toDataURL('image/jpeg', quality);
-      while (out.length > SLIP_MAX_BASE64 && quality > 0.35) {
-        quality -= 0.1;
-        out = canvas.toDataURL('image/jpeg', quality);
-      }
-      return out;
+      img = await loadImage(dataUrl);
     } catch {
+      // Unreadable by the canvas (some HEIC files): send as-is and let the
+      // server's own size check decide.
       return dataUrl;
     }
+
+    const longestEdge = Math.max(img.naturalWidth || 0, img.naturalHeight || 0);
+    if (longestEdge > 0 && longestEdge <= SLIP_MAX_EDGE && dataUrl.length <= SLIP_MAX_BASE64) {
+      return dataUrl;
+    }
+
+    // Shrink by quality first, then by dimension — a 15MB camera photo needs
+    // both before it fits.
+    for (const edge of [SLIP_MAX_EDGE, 1200, 900]) {
+      let quality = 0.85;
+      while (quality >= 0.35) {
+        const out = renderToDataUrl(img, edge, quality);
+        if (!out) return dataUrl;
+        if (out.length <= SLIP_MAX_BASE64) return out;
+        quality -= 0.1;
+      }
+    }
+    return dataUrl;
   }
 
   function showAlert(type: 'err' | 'success', msg: string): void {
@@ -105,7 +140,7 @@
   }
 
   function processFile(file: File): void {
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > SLIP_MAX_FILE_BYTES) {
       showAlert('err', t('fileTooBig'));
       return;
     }

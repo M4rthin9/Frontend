@@ -177,7 +177,7 @@
   "uploadSlipNote": "📋 附上凭证后，请在预订日 9:00 探视时间前到接待处登记。",
   "uploadPrompt": "点击或轻触选择凭证图片",
   "uploadHint": "支持 JPG、PNG · 最大 10MB · 支持拖放",
-  "fileTooBig": "❌ 文件超过 10MB，请选择较小的文件。",
+  "fileTooBig": "❌ 文件超过 15MB，请选择较小的文件。",
   "fileTypeInvalid": "❌ 仅支持图片文件（JPG、PNG）",
   "fileSelected": "✓ 已选择文件：{name}",
   "sizeKB": "大小：{size} KB",

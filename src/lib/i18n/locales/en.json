@@ -177,7 +177,7 @@
   "uploadSlipNote": "📋 After attaching the slip, please come to register on the booking date before the visit time at 9.00 AM at the reception.",
   "uploadPrompt": "Tap or click to select slip image",
   "uploadHint": "Supports JPG, PNG · Max 10MB · Drag & drop accepted",
-  "fileTooBig": "❌ File exceeds 10MB. Please choose a smaller file.",
+  "fileTooBig": "❌ File exceeds 15MB. Please choose a smaller file.",
   "fileTypeInvalid": "❌ Only image files (JPG, PNG) are supported",
   "fileSelected": "✓ File selected: {name}",
   "sizeKB": "Size: {size} KB",
