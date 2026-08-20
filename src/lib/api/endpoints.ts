@@ -73,14 +73,19 @@ export async function uploadSlip(input: {
   fileName: string;
   mimeType: string;
   base64Data: string;
-}): Promise<string> {
-  const data = await callAction<{ status: string; url?: string; message?: string }>(
+}): Promise<{ url: string; verify?: SlipVerifyResult }> {
+  const data = await callAction<{
+    status: string;
+    url?: string;
+    verify?: SlipVerifyResult;
+    message?: string;
+  }>(
     'uploadSlip',
     input as unknown as Record<string, unknown>,
     { timeoutMs: 120000 },
   );
   assertOk(data);
-  return data.url ?? '';
+  return { url: data.url ?? '', verify: data.verify };
 }
 
 /** Mark a booking as paid with the uploaded slip image. */
@@ -92,6 +97,7 @@ export async function updateSlipAndStatus(input: {
   const data = await callAction<{ status: string; message?: string }>(
     'updateSlipAndStatus',
     input as unknown as Record<string, unknown>,
+    { timeoutMs: 120000 },
   );
   assertOk(data);
 }

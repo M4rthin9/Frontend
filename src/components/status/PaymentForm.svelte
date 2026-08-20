@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { t, tc } from '../../lib/i18n/i18n.svelte';
-  import { uploadSlip, updateSlipAndStatus, getPaymentQr, verifySlip } from '../../lib/api/endpoints';
+  import { uploadSlip, updateSlipAndStatus, getPaymentQr } from '../../lib/api/endpoints';
   import type { PublicReservation, SlipVerifyResult } from '../../lib/api/types';
 
   let {
@@ -27,7 +27,6 @@
   let qrCardSvg = $state('');
   let qrError = $state(false);
   let verifyResult = $state<SlipVerifyResult | null>(null);
-  let verifyChecking = $state(false);
 
   const visitorCount = $derived(parseInt(String(booking.visitorCount)) || 1);
   const totalPersons = $derived(visitorCount + 1);
@@ -188,30 +187,27 @@
     try {
       const base64Data = await toUploadableDataUrl(slipFile);
       const mimeType = base64Data.slice(base64Data.indexOf(':') + 1, base64Data.indexOf(';'));
-      const url = await uploadSlip({
+
+      progress = 30;
+      const { url, verify } = await uploadSlip({
         ref: booking.ref,
         fileName: slipFile.name,
         mimeType,
         base64Data,
       });
-      progress = 55;
-
-      verifyChecking = true;
-      try {
-        verifyResult = await verifySlip({ ref: booking.ref, base64Data });
-      } finally {
-        verifyChecking = false;
-      }
       progress = 70;
 
-      const v = verifyResult;
-      if (v && (v.status === 'mismatch' || v.status === 'unreadable' || v.status === 'duplicate')) {
-        showAlert(
-          'err',
-          `${verifyNotice(v)}<br/><span style="font-size:12px">${t('slipVerifyBlocked')}</span>`,
-        );
-        progressVisible = false;
-        return;
+      if (verify) {
+        verifyResult = verify;
+        const v = verify;
+        if (v.status === 'mismatch' || v.status === 'unreadable' || v.status === 'duplicate') {
+          showAlert(
+            'err',
+            `${verifyNotice(v)}<br/><span style="font-size:12px">${t('slipVerifyBlocked')}</span>`,
+          );
+          progressVisible = false;
+          return;
+        }
       }
 
       await updateSlipAndStatus({
@@ -321,12 +317,6 @@
       </div>
     {/if}
 
-    {#if verifyChecking}
-      <div class="slip-verify-checking">
-        <span class="spinner"></span> {t('slipVerifyChecking')}
-      </div>
-    {/if}
-
     {#if verifyResult}
       <div class="slip-verify-badge {verifyResult.status}">
         {verifyNotice(verifyResult)}
@@ -407,15 +397,6 @@
     line-height: 1.6;
     background: rgba(46, 160, 67, 0.08);
     color: var(--app-text-secondary);
-  }
-
-  .slip-verify-checking {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 12px;
-    font-size: 13px;
-    color: var(--text-secondary);
   }
 
   .slip-verify-badge {
