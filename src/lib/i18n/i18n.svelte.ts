@@ -1,17 +1,19 @@
 import th from './locales/th.json';
 import en from './locales/en.json';
 import zh from './locales/zh.json';
+import vi from './locales/vi.json';
 import { safeGetItem, safeSetItem } from '../utils/storage';
 
-export type Lang = 'th' | 'en' | 'zh';
+export type Lang = 'th' | 'en' | 'zh' | 'vi';
 
-const dictionaries: Record<Lang, Record<string, string>> = { th, en, zh };
-const langNames: Record<Lang, string> = { th: 'ไทย', en: 'EN', zh: '中文' };
+const dictionaries: Record<Lang, Record<string, string>> = { th, en, zh, vi };
+const langNames: Record<Lang, string> = { th: 'ไทย', en: 'EN', zh: '中文', vi: 'Tiếng Việt' };
 
 function detectInitial(): Lang {
   const stored = safeGetItem(window.localStorage, 'lang');
-  if (stored === 'th' || stored === 'en' || stored === 'zh') return stored;
+  if (stored === 'th' || stored === 'en' || stored === 'zh' || stored === 'vi') return stored;
   const browser = (navigator.language || '').toLowerCase();
+  if (browser.startsWith('vi')) return 'vi';
   if (browser.startsWith('zh')) return 'zh';
   if (browser.startsWith('en')) return 'en';
   return 'th';
@@ -29,7 +31,7 @@ class I18nStore {
   }
 
   toggleLanguage(): void {
-    const order: Lang[] = ['th', 'en', 'zh'];
+    const order: Lang[] = ['th', 'en', 'zh', 'vi'];
     const i = order.indexOf(this.lang);
     this.setLanguage(order[(i + 1) % order.length]);
   }

@@ -170,7 +170,7 @@
   "accountName": "账户名：囚犯福利商店",
   "amountDueShort": "应付金额：",
   "refOnTransfer": "📝 转账时请在备注中输入参考编号 <strong>{ref}</strong>",
-  "qrCardHint": "打开银行或 PromptPay 应用扫码",
+  "qrCardHint": "使用泰国或支持跨境的境外银行App扫码",
   "slipQrBillNumber": "账单编号",
   "slipQrStoreLabel": "商户",
   "uploadSlipTitle": "上传转账凭证",
@@ -231,5 +231,15 @@
   "slipVerifyBlocked": "支付确认被阻止 — 回单校验未通过，请检查后重试",
   "slipMismatchAmount": "金额",
   "slipMismatchRefs": "参考编号",
-  "slipMismatchBiller": "收款人编号"
+  "slipMismatchBiller": "收款人编号",
+  "crossBorderTitle": "使用境外银行App付款",
+  "crossBorderHint": "使用您本地的银行App扫描此PromptPay二维码 — 无需国际卡",
+  "crossBorderFootnote": "通过东盟跨境二维码（泰国银行）支付，按您银行的汇率以本币扣款。",
+  "countryID": "印度尼西亚",
+  "countryMY": "马来西亚",
+  "countryKH": "柬埔寨",
+  "countrySG": "新加坡",
+  "countryVN": "越南",
+  "countryHK": "香港",
+  "countryLA": "老挝"
 }

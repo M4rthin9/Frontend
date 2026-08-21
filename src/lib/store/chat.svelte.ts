@@ -7,6 +7,11 @@ import { i18n } from '../i18n/i18n.svelte';
 
 type ChatLang = 'th' | 'en' | 'zh';
 
+function toChatLang(lang: string): ChatLang {
+  if (lang === 'vi') return 'en';
+  return lang as ChatLang;
+}
+
 export interface ChatMessage {
   id: number;
   text: string;
@@ -407,7 +412,7 @@ function formatBookingDetails(booking: PublicReservation, langCode: ChatLang): s
 }
 
 async function getBotResponse(message: string): Promise<string> {
-  const activeLang = detectLanguage(message, i18n.lang);
+  const activeLang = detectLanguage(message, toChatLang(i18n.lang));
   const lower = message.toLowerCase();
 
   const refMatch = message.match(/([Vv][Ii][Ss]-[0-9]{5})/i);
@@ -487,7 +492,7 @@ class ChatStore {
     this.open = true;
     this.restoreChatHistory();
     if (this.messages.length === 0) {
-      this.addMessage(getI18n('chatGreeting', i18n.lang), 'bot');
+      this.addMessage(getI18n('chatGreeting', toChatLang(i18n.lang)), 'bot');
     }
   }
 
@@ -511,11 +516,11 @@ class ChatStore {
   }
 
   placeholder(): string {
-    return getI18n('chatPlaceholder', i18n.lang);
+    return getI18n('chatPlaceholder', toChatLang(i18n.lang));
   }
 
   closeLabel(): string {
-    return getI18n('chatClose', i18n.lang);
+    return getI18n('chatClose', toChatLang(i18n.lang));
   }
 }
 

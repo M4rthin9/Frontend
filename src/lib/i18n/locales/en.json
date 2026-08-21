@@ -170,7 +170,7 @@
   "accountName": "Account Name: Prisoner Welfare Shop",
   "amountDueShort": "Amount Due:",
   "refOnTransfer": "📝 Please enter reference <strong>{ref}</strong> in the transfer note",
-  "qrCardHint": "Open your bank or PromptPay app and scan",
+  "qrCardHint": "Open your Thai or participating foreign bank app and scan",
   "slipQrBillNumber": "Bill No.",
   "slipQrStoreLabel": "Store",
   "uploadSlipTitle": "Upload Payment Slip",
@@ -231,5 +231,15 @@
   "slipVerifyBlocked": "Payment confirmation blocked — slip verification failed. Please check and retry.",
   "slipMismatchAmount": "amount",
   "slipMismatchRefs": "reference codes",
-  "slipMismatchBiller": "biller ID"
+  "slipMismatchBiller": "biller ID",
+  "crossBorderTitle": "Pay with your foreign bank app",
+  "crossBorderHint": "Scan this PromptPay QR with your local bank or wallet — no international card needed",
+  "crossBorderFootnote": "Cross-border via ASEAN QR (Bank of Thailand). Charged in your local currency at your bank's rate.",
+  "countryID": "Indonesia",
+  "countryMY": "Malaysia",
+  "countryKH": "Cambodia",
+  "countrySG": "Singapore",
+  "countryVN": "Vietnam",
+  "countryHK": "Hong Kong",
+  "countryLA": "Laos"
 }

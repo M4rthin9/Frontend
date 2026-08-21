@@ -2,7 +2,7 @@
   import { i18n } from '../../lib/i18n/i18n.svelte';
   import type { Lang } from '../../lib/i18n/i18n.svelte';
 
-  const languages: Lang[] = ['th', 'en', 'zh'];
+  const languages: Lang[] = ['th', 'en', 'zh', 'vi'];
 </script>
 
 <div class="flex items-center gap-1 rounded-full border border-border-strong bg-background-subtle p-0.5">

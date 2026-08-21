@@ -6,6 +6,8 @@
   import CreditCard from '@lucide/svelte/icons/credit-card';
   import QrCode from '@lucide/svelte/icons/qr-code';
   import Upload from '@lucide/svelte/icons/upload';
+  import Globe from '@lucide/svelte/icons/globe';
+  import { CROSS_BORDER_GROUPS } from '../../lib/utils/crossBorderBanks';
 
   let {
     booking,
@@ -307,6 +309,54 @@
     </div>
 
     <div class="pay-ref-note">{@html tc('refOnTransfer', { ref: booking.ref })}</div>
+
+    <!-- Cross-border: foreign bank apps can scan the same QR -->
+    <div class="cross-border">
+      <div class="cross-border-head">
+        <Globe class="h-4 w-4 text-gold-600" />
+        <span class="cross-border-title">{t('crossBorderTitle')}</span>
+      </div>
+      <p class="cross-border-hint">{t('crossBorderHint')}</p>
+      <div class="cross-border-flags" aria-hidden="true">
+        {#each CROSS_BORDER_GROUPS as g (g.code)}
+          <span class="flag-chip" title={t(g.nameKey)}>
+            <img src={g.flag} alt={t(g.nameKey)} width="20" height="14" loading="lazy" class="flag-img" />
+            <span class="flag-code">{g.code}</span>
+          </span>
+        {/each}
+      </div>
+      <div class="cross-border-groups">
+        {#each CROSS_BORDER_GROUPS as g (g.code)}
+          <details class="cross-group">
+            <summary class="cross-group-summary">
+              <img src={g.flag} alt="" width="20" height="14" loading="lazy" class="flag-img" />
+              <span>{t(g.nameKey)}</span>
+              <span class="cross-count">{g.banks.length}</span>
+            </summary>
+            <div class="cross-banks">
+              {#each g.banks as b (b.name)}
+                <span class="bank-chip">
+                  <img
+                    src={b.logo}
+                    alt=""
+                    width="20"
+                    height="20"
+                    loading="lazy"
+                    class="bank-logo"
+                    onerror={(e) => {
+                      const img = e.currentTarget as HTMLImageElement;
+                      img.style.display = 'none';
+                    }}
+                  />
+                  {b.name}
+                </span>
+              {/each}
+            </div>
+          </details>
+        {/each}
+      </div>
+      <p class="cross-border-footnote">{t('crossBorderFootnote')}</p>
+    </div>
   </div>
 
   <div class="upload-card">
@@ -463,5 +513,144 @@
     background: rgba(248, 81, 73, 0.12);
     color: #f85149;
     border: 1px solid rgba(248, 81, 73, 0.4);
+  }
+
+  .cross-border {
+    margin-top: 1.25rem;
+    padding: 1rem;
+    border: 1px solid var(--app-border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--app-bg-subtle);
+  }
+
+  .cross-border-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--app-text);
+  }
+
+  .cross-border-hint {
+    margin: 0.375rem 0 0.75rem;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--app-text-secondary);
+  }
+
+  .cross-border-flags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .flag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--app-border-strong);
+    border-radius: 9999px;
+    background: var(--surface);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--app-text-secondary);
+  }
+
+  .flag-img {
+    display: block;
+    width: 20px;
+    height: 14px;
+    object-fit: cover;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .flag-code {
+    letter-spacing: 0.03em;
+  }
+
+  .cross-border-groups {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .cross-group {
+    border: 1px solid var(--app-border-subtle);
+    border-radius: 0.5rem;
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .cross-group-summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    cursor: pointer;
+    list-style: none;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--app-text);
+  }
+
+  .cross-group-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .cross-group[open] .cross-group-summary {
+    border-bottom: 1px solid var(--app-border-subtle);
+    background: var(--app-bg-subtle);
+  }
+
+  .cross-count {
+    margin-left: auto;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: var(--app-text-tertiary);
+    background: var(--app-bg-muted);
+    padding: 0.15rem 0.45rem;
+    border-radius: 9999px;
+  }
+
+  .cross-banks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .bank-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.3rem 0.55rem;
+    border: 1px solid var(--app-border-subtle);
+    border-radius: 9999px;
+    background: var(--app-bg-subtle);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--app-text-secondary);
+    line-height: 1;
+  }
+
+  .bank-logo {
+    display: block;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    border-radius: 9999px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .cross-border-footnote {
+    margin: 0.75rem 0 0;
+    font-size: 0.6875rem;
+    line-height: 1.6;
+    color: var(--app-text-tertiary);
+    font-style: italic;
   }
 </style>
