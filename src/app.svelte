@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { fade } from 'svelte/transition';
   import { router } from './lib/router.svelte';
   import { i18n, t } from './lib/i18n/i18n.svelte';
   import { ui } from './lib/store/ui.svelte';
@@ -43,13 +44,25 @@
   <DevBanner />
 
   <main class="flex-1">
-    {#if router.route === 'home'}
-      <HomePage />
-    {:else if router.route === 'booking'}
-      <BookingPage />
-    {:else}
-      <StatusPage />
-    {/if}
+    {#key router.route}
+      <div
+        in:fade={{
+          duration:
+            typeof window !== 'undefined' &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches
+              ? 0
+              : 150,
+        }}
+      >
+        {#if router.route === 'home'}
+          <HomePage />
+        {:else if router.route === 'booking'}
+          <BookingPage />
+        {:else}
+          <StatusPage />
+        {/if}
+      </div>
+    {/key}
   </main>
 
   <Footer />

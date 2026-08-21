@@ -152,27 +152,27 @@
 
     <div class="result-body">
       <div class="info-row">
-        <span class="lbl">👤 {t('lblVisitor')}</span>
+        <span class="lbl">{t('lblVisitor')}</span>
         <span class="val">{booking.visitorName || '—'}</span>
       </div>
       <div class="info-row">
-        <span class="lbl">🔒 {t('lblPrisoner')}</span>
+        <span class="lbl">{t('lblPrisoner')}</span>
         <span class="val">{maskPrisonerName(booking.prisonerName) || '—'} (#{booking.prisonerId || '—'})</span>
       </div>
       <div class="info-row">
-        <span class="lbl">🏢 {t('lblWing')}</span>
+        <span class="lbl">{t('lblWing')}</span>
         <span class="val">{booking.wing || '—'}</span>
       </div>
       <div class="info-row">
-        <span class="lbl">📅 {t('lblVisitDate')}</span>
+        <span class="lbl">{t('lblVisitDate')}</span>
         <span class="val">{booking.visitDate || '—'}</span>
       </div>
       <div class="info-row">
-        <span class="lbl">👥 {t('lblCount')}</span>
+        <span class="lbl">{t('lblCount')}</span>
         <span class="val">{tc('countFormat', { n: visitorCount, total: totalPersons })}</span>
       </div>
       <div class="info-row">
-        <span class="lbl">💰 {t('lblCost')}</span>
+        <span class="lbl">{t('lblCost')}</span>
         <span class="val">{total.toLocaleString()} บาท</span>
       </div>
 
@@ -181,7 +181,7 @@
           <div class="visitor-section-label">{t('visitorsApprovedTitle')}</div>
           {#each visitors as v, i (i)}
             <div class="visitor-item">
-              <span>👤 {v.name}</span>
+              <span>{v.name}</span>
               {#if v.state !== 'pending'}
                 <span class="approval-badge {v.state}">{approvalLabel(v.state)}</span>
               {/if}
@@ -205,7 +205,7 @@
           </div>
           {#if paymentEnabled}
             <button type="button" class="btn-primary" onclick={() => (showPayment = true)}>
-              💳 {t('payNow')}
+              {t('payNow')}
             </button>
           {:else}
             <div class="payment-closed">
@@ -262,7 +262,7 @@
       {#if showCancelBtn}
         <div class="cancel-section">
           <button type="button" class="btn-danger" disabled={cancelling} onclick={() => void cancelBooking()}>
-            ✕ {t('cancelBooking')}
+            {t('cancelBooking')}
           </button>
           <p class="cancel-hint">{t('cancelHint')}</p>
         </div>
@@ -273,6 +273,6 @@
   {/if}
 
   <button type="button" class="btn-secondary" style="margin-top:4px" onclick={() => onsearchagain()}>
-    🔍 {t('searchAgain')}
+    {t('searchAgain')}
   </button>
 </div>

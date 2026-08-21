@@ -25,9 +25,9 @@
   } = $props();
 
   const variants: Record<string, string> = {
-    primary: 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm hover:shadow-md',
-    gold: 'bg-amber-500 text-white hover:bg-amber-600 shadow-sm hover:shadow-md',
-    secondary: 'bg-surface text-text-primary border border-border-strong hover:bg-background-subtle hover:border-indigo-300',
+    primary: 'bg-red-700 text-white hover:bg-red-800 shadow-sm hover:shadow-md',
+    gold: 'bg-gold-500 text-white hover:bg-gold-600 shadow-sm hover:shadow-md',
+    secondary: 'bg-surface text-text-primary border border-border-strong hover:bg-background-subtle hover:border-red-200',
     danger: 'bg-rose-600 text-white hover:bg-rose-700 shadow-sm hover:shadow-md',
     ghost: 'bg-transparent text-text-secondary hover:bg-background-subtle hover:text-text-primary',
   };
@@ -44,7 +44,7 @@
   {disabled}
   {onclick}
   {style}
-  class="inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 select-none disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 {variants[variant]} {sizes[size]} {fullWidth ? 'w-full' : ''} {className}"
+  class="inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 select-none disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700 {variants[variant]} {sizes[size]} {fullWidth ? 'w-full' : ''} {className}"
   {...rest}
 >
   {@render children?.()}

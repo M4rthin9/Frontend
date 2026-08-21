@@ -9,6 +9,12 @@
   import { escHtml, maskPrisonerName } from '../lib/utils/helpers';
   import { safeGetItem } from '../lib/utils/storage';
   import StatusResult from '../components/status/StatusResult.svelte';
+  import Search from '@lucide/svelte/icons/search';
+  import FileText from '@lucide/svelte/icons/file-text';
+  import User from '@lucide/svelte/icons/user';
+  import CircleCheck from '@lucide/svelte/icons/circle-check';
+  import EmptySearchIllustration from '../components/illustrations/EmptySearchIllustration.svelte';
+  import ErrorIllustration from '../components/illustrations/ErrorIllustration.svelte';
 
   type Mode = 'ref' | 'prisoner';
   type View = 'idle' | 'result' | 'notfound' | 'error';
@@ -123,15 +129,15 @@
     </button>
     <div class="status-badge">
       <span class="h-1.5 w-1.5 rounded-full bg-white animate-pulse"></span>
-      🔍 {t('statusSearch')}
+      <span class="inline-flex items-center gap-1.5"><Search class="h-3.5 w-3.5" />{t('statusSearch')}</span>
     </div>
-    <h1 class="status-h1">{t('statusH1')}</h1>
+    <h1 class="status-h1" style="font-family: var(--font-display);">{t('statusH1')}</h1>
     <p class="status-sub">{t('statusP')}</p>
   </div>
 
   <div class="section status-search-section">
     <div class="section-title">
-      <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-sm">🔍</span>
+      <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-navy-50 text-navy-700 border border-navy-100"><Search class="h-4 w-4" /></span>
       {t('statusSearch')}
     </div>
 
@@ -143,7 +149,7 @@
         aria-selected={mode === 'ref'}
         onclick={() => switchMode('ref')}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <FileText class="h-4 w-4" />
         {t('refTab')}
       </button>
       <button
@@ -153,7 +159,7 @@
         aria-selected={mode === 'prisoner'}
         onclick={() => switchMode('prisoner')}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <User class="h-4 w-4" />
         {t('prisonerTab')}
       </button>
     </div>
@@ -189,15 +195,17 @@
       <button type="button" class="btn-primary" disabled={searching} onclick={() => void doSearch()}>
         {#if searching}
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+        {:else}
+          <Search class="h-4 w-4" />
         {/if}
-        🔍 {t('checkStatus')}
+        {t('checkStatus')}
       </button>
     </div>
   </div>
 
   {#if showThankYou && found}
     <div class="success-page status-thankyou">
-      <div class="success-icon">🎉</div>
+      <div class="success-icon text-emerald-600"><CircleCheck class="h-10 w-10" /></div>
       <h2 class="text-xl font-bold text-text-primary mb-2">{t('successPage')}</h2>
       <p class="text-sm text-text-secondary mb-5">{t('successPageSub')}</p>
 
@@ -208,41 +216,41 @@
 
       <div class="booking-details">
         <div class="detail-row">
-          <span class="detail-label">📋 Ref No.</span>
+          <span class="detail-label">{t('resultRefLabel')}</span>
           <span class="detail-value">{found.ref}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">👤 {t('lblVisitor')}</span>
+          <span class="detail-label">{t('lblVisitor')}</span>
           <span class="detail-value">{found.visitorName || '—'}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">🔒 {t('lblPrisoner')}</span>
+          <span class="detail-label">{t('lblPrisoner')}</span>
           <span class="detail-value">{maskPrisonerName(found.prisonerName) || '—'} (#{found.prisonerId || '—'})</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">🏢 {t('lblWing')}</span>
+          <span class="detail-label">{t('lblWing')}</span>
           <span class="detail-value">{found.wing || '—'}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">📅 {t('lblVisitDate')}</span>
+          <span class="detail-label">{t('lblVisitDate')}</span>
           <span class="detail-value">{found.visitDate || '—'}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">👥 {t('lblCount')}</span>
+          <span class="detail-label">{t('lblCount')}</span>
           <span class="detail-value">{tc('countFormat', { n: thankYouCount, total: thankYouCount + 1 })}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">💰 {t('lblCost')}</span>
-          <span class="detail-value">{thankYouTotal.toLocaleString()} บาท ✓</span>
+          <span class="detail-label">{t('lblCost')}</span>
+          <span class="detail-value">{thankYouTotal.toLocaleString()} บาท</span>
         </div>
       </div>
 
       <div class="flex flex-wrap gap-3 justify-center mt-6">
         <button type="button" class="btn-secondary" style="flex:1;min-width:160px" onclick={() => resetSearch()}>
-          🔍 {t('searchAgain')}
+          {t('searchAgain')}
         </button>
         <button type="button" class="btn-primary" style="flex:1;min-width:160px" onclick={() => navigate('home')}>
-          🏠 {t('backHomeShort')}
+          {t('backHomeShort')}
         </button>
       </div>
     </div>
@@ -257,16 +265,16 @@
     />
   {:else if view === 'notfound'}
     <div class="not-found show">
-      <div class="not-found-icon">🔍</div>
+      <div class="not-found-icon text-navy-300"><EmptySearchIllustration size={96} /></div>
       <h3>{t('notFoundTitle')}</h3>
       <p>{@html tc('notFoundText', { query: escHtml(notFoundQuery) })}</p>
       <button type="button" class="btn-primary" style="max-width:320px;margin:0 auto" onclick={() => navigate('booking')}>
-        ＋ {t('bookNew')}
+        {t('bookNew')}
       </button>
     </div>
   {:else if view === 'error'}
     <div class="error-card">
-      <div class="error-icon">⚠️</div>
+      <div class="error-icon text-rose-300"><ErrorIllustration size={96} /></div>
       <div class="error-title">{t('errorTitle')}</div>
       <div class="error-message">{errorMsg}</div>
       <div class="mt-4 flex gap-2 justify-center">

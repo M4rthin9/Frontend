@@ -16,9 +16,9 @@
         <div
           class="flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-bold transition-all duration-300
             {step < current
-              ? 'border-indigo-600 bg-indigo-600 text-white shadow-md'
+              ? 'border-red-700 bg-red-700 text-white shadow-md'
               : step === current
-                ? 'border-indigo-600 bg-surface text-text-primary shadow-sm'
+                ? 'border-red-700 bg-surface text-text-primary shadow-sm'
                 : 'border-border-strong bg-surface text-text-tertiary'}"
         >
           {#if step < current}
@@ -30,7 +30,7 @@
         <span class="mt-2 text-center text-xs font-semibold {step <= current ? 'text-text-primary' : 'text-text-tertiary'}">{label}</span>
       </div>
       {#if i < steps.length - 1}
-        <div class="mx-2 mb-6 h-0.5 flex-1 rounded {step < current ? 'bg-indigo-600' : 'bg-background-muted'}"></div>
+        <div class="mx-2 mb-6 h-0.5 flex-1 rounded {step < current ? 'bg-red-700' : 'bg-background-muted'}"></div>
       {/if}
     </li>
   {/each}

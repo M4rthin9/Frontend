@@ -77,7 +77,7 @@ export function calcCost(
   count: number,
   extras: ExtraVisitor[],
   mainRelation = '',
-  mainAge = ''
+  mainAge = '',
 ): CostSummary {
   let extraFees = 0;
   const discountNotes: string[] = [];
@@ -530,13 +530,18 @@ class BookingStore {
       await new Promise((r) => setTimeout(r, 200));
     }
     try {
-      this.turnstileWidgetId = renderTurnstileWidget(el, TURNSTILE_SITEKEY, (token: string) => {
-        this.turnstileToken = token;
-        this.turnstileError = '';
-      }, (error: string) => {
-        this.turnstileError = error;
-        this.turnstileToken = '';
-      });
+      this.turnstileWidgetId = renderTurnstileWidget(
+        el,
+        TURNSTILE_SITEKEY,
+        (token: string) => {
+          this.turnstileToken = token;
+          this.turnstileError = '';
+        },
+        (error: string) => {
+          this.turnstileError = error;
+          this.turnstileToken = '';
+        },
+      );
     } catch (e) {
       this.turnstileError = e instanceof Error ? e.message : 'render_failed';
     }
@@ -559,7 +564,8 @@ class BookingStore {
       return;
     }
     if (this.turnstileError) {
-      this.inlineError = '⚠️ ระบบตรวจสอบความปลอดภัย (Turnstile) ไม่สามารถโหลดได้ — กรุณาตรวจสอบว่าอยู่ในหน้าต่างที่อนุญาตแล้วลองใหม่อีกครั้ง';
+      this.inlineError =
+        '⚠️ ระบบตรวจสอบความปลอดภัย (Turnstile) ไม่สามารถโหลดได้ — กรุณาตรวจสอบว่าอยู่ในหน้าต่างที่อนุญาตแล้วลองใหม่อีกครั้ง';
       return;
     }
     if (!token) {

@@ -79,11 +79,7 @@ export async function uploadSlip(input: {
     url?: string;
     verify?: SlipVerifyResult;
     message?: string;
-  }>(
-    'uploadSlip',
-    input as unknown as Record<string, unknown>,
-    { timeoutMs: 120000 },
-  );
+  }>('uploadSlip', input as unknown as Record<string, unknown>, { timeoutMs: 120000 });
   assertOk(data);
   return { url: data.url ?? '', verify: data.verify };
 }

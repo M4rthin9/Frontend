@@ -94,11 +94,13 @@
 
 /* ============================================================
    GLOBALS.CSS — Design System
-   Department of Corrections palette — Crimson + Gold + Warm
+   Official palette — Crimson + Muted Gold + Ink (Phase 1)
+   Crimson #A92928 • Muted Gold #C68A00 • Cool Slate base
    ============================================================ */
 
 @theme {
   --font-sans: 'Kanit', 'Sarabun', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Noto Serif Thai', 'Sarabun', Georgia, serif;
   --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
 
   /* === Red (primary) — #A92928 === */
@@ -114,18 +116,29 @@
   --color-red-900: #6b1818;
   --color-red-950: #4a0f0f;
 
-  /* === Gold (accent) — #FFA000 === */
-  --color-gold-50: #fff8e6;
-  --color-gold-100: #ffedaa;
-  --color-gold-200: #ffe080;
-  --color-gold-300: #ffd050;
-  --color-gold-400: #ffb820;
-  --color-gold-500: #ffa000;
-  --color-gold-600: #e69000;
-  --color-gold-700: #cc8000;
-  --color-gold-800: #996000;
-  --color-gold-900: #664000;
-  --color-gold-950: #4d3000;
+  /* === Gold (accent) — muted official #C68A00 (desaturated) === */
+  --color-gold-50: #fffbeb;
+  --color-gold-100: #fef3c7;
+  --color-gold-200: #fde68a;
+  --color-gold-300: #fcd34d;
+  --color-gold-400: #eab308;
+  --color-gold-500: #c68a00;
+  --color-gold-600: #a67300;
+  --color-gold-700: #8a5f00;
+  --color-gold-800: #6b4a00;
+  --color-gold-900: #4d3600;
+  --color-gold-950: #332400;
+
+  /* === Ink / Navy (official) === */
+  --color-ink: #0f172a;
+  --color-navy-50: #f8fafc;
+  --color-navy-100: #f1f5f9;
+  --color-navy-200: #e2e8f0;
+  --color-navy-300: #cbd5e1;
+  --color-navy-700: #334155;
+  --color-navy-800: #1e293b;
+  --color-navy-900: #0f172a;
+  --color-navy-950: #020617;
 
   /* === Warm Gray (neutral) === */
   --color-warm-50: #faf9f7;
@@ -227,24 +240,25 @@
 :root {
   color-scheme: light;
   --surface: #ffffff;
-  --app-bg: #f6f4ef;
-  --app-bg-subtle: #f0eee8;
-  --app-bg-muted: #e4e1d8;
-  --app-border-subtle: #ece8df;
-  --app-border-strong: #c8c2b2;
-  --app-text: #1b1816;
-  --app-text-secondary: #555049;
-  --app-text-tertiary: #655e54;
+  --app-bg: #f8fafc;
+  --app-bg-subtle: #f1f5f9;
+  --app-bg-muted: #e2e8f0;
+  --app-border-subtle: #e2e8f0;
+  --app-border-strong: #cbd5e1;
+  --app-text: #0f172a;
+  --app-text-secondary: #475569;
+  --app-text-tertiary: #64748b;
   --primary: #a92928;
   --primary-dark: #8b2020;
-  --primary-light: #fde8e8;
-  --accent: #ffa000;
-  --accent-light: #fff8e6;
-  --accent-dark: #cc8000;
+  --primary-light: #fef2f2;
+  --accent: #c68a00;
+  --accent-light: #fffbeb;
+  --accent-dark: #8a5f00;
   --success: #047857;
-  --warning: #ffa000;
+  --warning: #c68a00;
   --error: #b91c1c;
   --info: #0369a1;
+  --ink: #0f172a;
 
   /* Legacy aliases — booking-flow CSS + inline styles still reference these */
   --indigo-50: var(--color-red-50);
@@ -292,18 +306,18 @@
 
 .dark {
   color-scheme: dark;
-  --surface: #1a1414;
-  --app-bg: #120e0e;
-  --app-bg-subtle: #1e1616;
-  --app-bg-muted: #2c2222;
-  --app-border-subtle: #2e2424;
-  --app-border-strong: #4a3c3c;
-  --app-text: #f5f0eb;
-  --app-text-secondary: #c4b8ac;
-  --app-text-tertiary: #8e8278;
+  --surface: #0f172a;
+  --app-bg: #0f172a;
+  --app-bg-subtle: #1e293b;
+  --app-bg-muted: #334155;
+  --app-border-subtle: #1e293b;
+  --app-border-strong: #334155;
+  --app-text: #f1f5f9;
+  --app-text-secondary: #cbd5e1;
+  --app-text-tertiary: #94a3b8;
   --primary-light: rgba(169, 41, 40, 0.22);
-  --accent-light: rgba(255, 160, 0, 0.16);
-  --accent-dark: #ffb820;
+  --accent-light: rgba(198, 138, 0, 0.16);
+  --accent-dark: #eab308;
 }
 
 /* === Base Styles === */
@@ -1253,9 +1267,9 @@
   background: var(--rose-50);
 }
 
-/* === Rules === */
+/* === Rules — official: navy tint, not indigo wash === */
 .booking-app .rules {
-  background: var(--indigo-50);
+  background: var(--color-navy-50);
   border-left: 3px solid var(--indigo-500);
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
   padding: 1rem 1.25rem;
@@ -1292,9 +1306,10 @@
   transition: all var(--duration-fast) var(--ease-default);
 }
 
-.booking-app .consent-row:has(input:checked) {
+.booking-app .consent-row:has(input:checked),
+.booking-app .consent-row.consent-checked {
   border-color: var(--primary);
-  background: var(--indigo-50);
+  background: var(--color-navy-50);
 }
 
 .booking-app .consent-row input[type='checkbox'] {

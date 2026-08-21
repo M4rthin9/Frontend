@@ -3,6 +3,9 @@
   import { t, tc } from '../../lib/i18n/i18n.svelte';
   import { uploadSlip, updateSlipAndStatus, getPaymentQr } from '../../lib/api/endpoints';
   import type { PublicReservation, SlipVerifyResult } from '../../lib/api/types';
+  import CreditCard from '@lucide/svelte/icons/credit-card';
+  import QrCode from '@lucide/svelte/icons/qr-code';
+  import Upload from '@lucide/svelte/icons/upload';
 
   let {
     booking,
@@ -266,12 +269,12 @@
 </script>
 
 <div>
-  <div class="section-title" style="margin-top:0.5rem">
-    💳 {t('paymentTitle')}
+  <div class="section-title flex items-center gap-2" style="margin-top:0.5rem">
+    <CreditCard class="h-5 w-5 text-red-700" />{t('paymentTitle')}
   </div>
 
-  <div class="pay-bank-card">
-    <div class="promptpay-tag">📱 {t('promptpayTag')}</div>
+  <div class="pay-bank-card border-t-2 border-gold-200">
+    <div class="promptpay-tag flex items-center justify-center gap-2"><QrCode class="h-4 w-4" />{t('promptpayTag')}</div>
 
     <div class="qr-card-box">
       {#if qrCardSvg}
@@ -298,17 +301,17 @@
     <div class="account-name">{t('accountName')}</div>
 
     <div class="pay-amount-box">
-      💰 {t('amountDueShort')} <strong>{total.toLocaleString()} บาท</strong>
+      {t('amountDueShort')} <strong>{total.toLocaleString()} บาท</strong>
       <br />
       <span class="pay-per-person">{tc('perPerson', { n: totalPersons })}</span>
     </div>
 
-    <div class="pay-ref-note">📝 {@html tc('refOnTransfer', { ref: booking.ref })}</div>
+    <div class="pay-ref-note">{@html tc('refOnTransfer', { ref: booking.ref })}</div>
   </div>
 
   <div class="upload-card">
-    <div class="section-title" style="margin-top:0">
-      📤 {t('uploadSlipTitle')}
+    <div class="section-title flex items-center gap-2" style="margin-top:0">
+      <Upload class="h-5 w-5 text-red-700" />{t('uploadSlipTitle')}
     </div>
 
     <div class="upload-note">{t('uploadSlipNote')}</div>

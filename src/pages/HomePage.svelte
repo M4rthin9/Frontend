@@ -33,42 +33,41 @@
 
   const colorMap: Record<string, { tile: string; soft: string }> = {
     crimson: {
-      tile: 'bg-gradient-to-br from-red-600 to-red-800 shadow-red-700/30',
+      tile: 'bg-red-700 shadow-red-900/20',
       soft: 'bg-red-50',
     },
     gold: {
-      tile: 'bg-gradient-to-br from-amber-400 to-amber-600 shadow-amber-500/30',
-      soft: 'bg-amber-50',
+      tile: 'bg-gold-500 shadow-gold-700/20',
+      soft: 'bg-gold-50',
     },
   };
 
   const arrowSvg =
-    '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-amber-400/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+    '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-gold-300/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
 </script>
 
 <!-- ================= HERO ================= -->
 <section
-  class="relative overflow-hidden rounded-b-[2.5rem] bg-gradient-to-br from-red-950 via-red-900 to-red-700 text-white shadow-2xl shadow-red-900/30"
+  class="relative overflow-hidden rounded-b-[1.5rem] bg-gradient-to-br from-red-950 via-red-900 to-red-800 text-white shadow-xl shadow-red-900/20"
 >
-  <!-- glow orbs -->
-  <div aria-hidden="true" class="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-amber-400/20 blur-3xl"></div>
-  <div aria-hidden="true" class="pointer-events-none absolute -right-20 top-16 h-96 w-96 rounded-full bg-red-400/20 blur-3xl"></div>
-  <div aria-hidden="true" class="pointer-events-none absolute -bottom-32 left-1/3 h-80 w-80 rounded-full bg-amber-600/15 blur-3xl"></div>
+  <!-- glow orbs — reduced for official tone -->
+  <div aria-hidden="true" class="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-gold-400/8 blur-3xl"></div>
+  <div aria-hidden="true" class="pointer-events-none absolute -right-20 top-16 h-96 w-96 rounded-full bg-red-400/8 blur-3xl"></div>
 
   <!-- dot grid overlay -->
   <div
     aria-hidden="true"
-    class="absolute inset-0 opacity-[0.06]"
+    class="absolute inset-0 opacity-[0.03]"
     style="background-image: radial-gradient(circle at 1.5px 1.5px, rgba(255,255,255,0.9) 1.5px, transparent 0); background-size: 34px 34px;"
   ></div>
 
   <!-- gold accent line at top -->
-  <div aria-hidden="true" class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-80"></div>
+  <div aria-hidden="true" class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-300 to-transparent opacity-40"></div>
 
   <div class="relative mx-auto max-w-3xl px-4 pb-16 pt-12 text-center sm:px-6 sm:pb-20 sm:pt-16">
     <!-- logos -->
     <div class="flex items-center justify-center gap-3 sm:gap-5">
-      <div class="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/15 bg-white/10 p-1.5 shadow-xl shadow-red-950/40 ring-1 ring-amber-400/40 backdrop-blur-md transition-transform duration-300 hover:scale-105 sm:h-24 sm:w-24">
+      <div class="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/15 bg-white/10 p-1.5 shadow-lg shadow-red-950/20 ring-1 ring-gold-300/30 backdrop-blur-md sm:h-24 sm:w-24">
         <img
           src="/cida-logo-192.webp"
           srcset="/cida-logo-64.webp 64w, /cida-logo-128.webp 128w, /cida-logo-192.webp 192w"
@@ -81,7 +80,7 @@
         />
       </div>
       <div aria-hidden="true" class="h-10 w-px bg-white/25 sm:h-16"></div>
-      <div class="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/15 bg-white/10 p-1.5 shadow-xl shadow-red-950/40 ring-1 ring-amber-400/40 backdrop-blur-md transition-transform duration-300 hover:scale-105 sm:h-24 sm:w-24">
+      <div class="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/15 bg-white/10 p-1.5 shadow-lg shadow-red-950/20 ring-1 ring-gold-300/30 backdrop-blur-md sm:h-24 sm:w-24">
         <img
           src="/logo-white-128.webp"
           srcset="/logo-white-64.webp 64w, /logo-white-128.webp 128w, /logo-white-192.webp 192w"
@@ -95,18 +94,18 @@
     </div>
 
     <!-- badge -->
-    <div class="mt-6 inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-400/10 px-4 py-1.5 text-xs font-bold tracking-wide text-amber-300 backdrop-blur-sm">
+    <div class="mt-6 inline-flex items-center gap-2 rounded-full border border-gold-300/30 bg-white/10 px-4 py-1.5 text-xs font-bold tracking-wide text-gold-200 backdrop-blur-sm">
       <span class="relative flex h-1.5 w-1.5">
-        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75"></span>
-        <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-400"></span>
+        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold-400 opacity-60"></span>
+        <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-gold-400"></span>
       </span>
       {t('heroBadge')}
     </div>
 
-    <h1 class="mx-auto mt-5 max-w-2xl text-2xl font-bold leading-snug tracking-tight sm:text-3xl lg:text-4xl">
+    <h1 class="mx-auto mt-5 max-w-2xl text-2xl font-bold leading-snug tracking-tight sm:text-3xl lg:text-4xl [text-wrap:balance]" style="font-family: var(--font-display);">
       {@html t('heroTitle')}
     </h1>
-    <p class="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-red-200/80 sm:text-base">
+    <p class="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-red-100/75 sm:text-base [text-wrap:balance]">
       {@html t('heroSub')}
     </p>
 
@@ -114,47 +113,47 @@
     <div class="mt-9 grid gap-3.5 sm:grid-cols-2 sm:gap-4">
       <button
         type="button"
-        class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-400 to-amber-500 px-5 py-5 text-left text-red-950 shadow-lg shadow-amber-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-amber-500/30"
+        class="group relative overflow-hidden rounded-2xl bg-gold-500 px-5 py-5 text-left text-white shadow-md transition-colors duration-200 hover:bg-gold-600"
         onclick={() => navigate('booking')}
       >
         <div class="relative z-10 flex items-center gap-3.5">
-          <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/25 backdrop-blur-sm">
+          <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6M9 4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1M9 11h6m-6 4h4"/></svg>
           </span>
           <span class="flex-1">
             <span class="block text-base font-bold leading-tight">{@html t('btnBook')}</span>
-            <small class="mt-0.5 block text-xs font-medium text-red-900/80">{@html t('btnBookSub')}</small>
+            <small class="mt-0.5 block text-xs font-medium text-white/80">{@html t('btnBookSub')}</small>
           </span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
       </button>
 
       <button
         type="button"
-        class="group rounded-2xl border border-white/20 bg-white/10 px-5 py-5 text-left text-white shadow-lg backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/20 hover:shadow-xl"
+        class="group rounded-2xl border border-white/15 bg-white/5 px-5 py-5 text-left text-white backdrop-blur-sm transition-colors duration-200 hover:bg-white/10"
         onclick={() => navigate('status')}
       >
         <div class="flex items-center gap-3.5">
-          <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+          <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
           </span>
           <span class="flex-1">
             <span class="block text-base font-bold leading-tight">{@html t('btnStatus')}</span>
-            <small class="mt-0.5 block text-xs font-medium text-red-200/70">{@html t('btnStatusSub')}</small>
+            <small class="mt-0.5 block text-xs font-medium text-red-100/60">{@html t('btnStatusSub')}</small>
           </span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
       </button>
     </div>
 
-    <!-- steps strip -->
-    <div class="mt-12 flex items-start justify-center gap-2 sm:gap-3">
+    <!-- steps strip — hidden on sm, guide below is the primary steps UI for official tone -->
+    <div class="mt-10 hidden items-start justify-center gap-2 sm:flex sm:gap-3">
       {#each steps as label, i (i)}
         <div class="flex flex-col items-center gap-2.5">
-          <span class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-amber-400 bg-amber-400/20 text-sm font-bold text-amber-300 ring-4 ring-amber-400/10 backdrop-blur-sm">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full border border-gold-300/40 bg-white/10 text-sm font-bold text-gold-200">
             {i + 1}
           </span>
-          <span class="hidden w-20 text-center text-[11px] font-semibold leading-snug text-red-200/70 sm:block">
+          <span class="hidden w-20 text-center text-[11px] font-semibold leading-snug text-red-100/60 sm:block">
             {@html label}
           </span>
         </div>
@@ -170,20 +169,20 @@
 <section class="app-container py-12 sm:py-16">
   <div class="mx-auto max-w-4xl">
     <div class="text-center">
-      <h2 class="text-xl font-bold text-text-primary sm:text-2xl">{t('infoHeading')}</h2>
-      <div class="mx-auto mt-3 h-1 w-14 rounded-full bg-gradient-to-r from-red-600 to-amber-400"></div>
+      <h2 class="text-xl font-bold text-text-primary sm:text-2xl" style="font-family: var(--font-display);">{t('infoHeading')}</h2>
+      <div class="mx-auto mt-3 h-1 w-14 rounded-full bg-gradient-to-r from-red-600 to-gold-400"></div>
     </div>
 
     <div class="mt-8 grid gap-4 sm:grid-cols-2">
       {#each infoCards as card, i (i)}
-        <div class="group relative overflow-hidden rounded-2xl border border-border-subtle bg-surface p-5 shadow-[0_4px_24px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
+        <div class="group relative overflow-hidden rounded-2xl border border-border-subtle bg-surface p-5 shadow-sm transition-shadow duration-200 hover:shadow-md">
           <div
             aria-hidden="true"
-            class="absolute -right-6 -top-6 h-24 w-24 rounded-full {colorMap[card.color].soft} opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100"
+            class="absolute -right-6 -top-6 h-24 w-24 rounded-full {colorMap[card.color].soft} opacity-0 blur-xl transition-opacity duration-200 group-hover:opacity-100"
           ></div>
           <div class="relative flex items-start gap-4">
             <div
-              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-white shadow-lg {colorMap[card.color].tile} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-white shadow-md {colorMap[card.color].tile}"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{@html card.icon}</svg>
             </div>
@@ -202,15 +201,15 @@
 <section class="app-container pb-4">
   <div class="mx-auto max-w-4xl">
     <div class="text-center">
-      <h2 class="text-xl font-bold text-text-primary sm:text-2xl">{t('stepsHeading')}</h2>
-      <div class="mx-auto mt-3 h-1 w-14 rounded-full bg-gradient-to-r from-red-600 to-amber-400"></div>
+      <h2 class="text-xl font-bold text-text-primary sm:text-2xl" style="font-family: var(--font-display);">{t('stepsHeading')}</h2>
+      <div class="mx-auto mt-3 h-1 w-14 rounded-full bg-gradient-to-r from-red-600 to-gold-400"></div>
     </div>
 
     <div class="mt-8 grid gap-4 sm:grid-cols-4">
       {#each steps as label, i (i)}
-        <div class="relative rounded-2xl border border-border-subtle bg-surface p-4 pt-7 text-center shadow-[0_4px_24px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
+        <div class="relative rounded-2xl border border-border-subtle bg-surface p-4 pt-7 text-center shadow-sm">
           <div class="absolute inset-x-0 -top-5 flex justify-center">
-            <span class="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-red-600 to-red-800 text-sm font-bold text-white shadow-lg shadow-red-600/30 ring-4 ring-white dark:ring-slate-950">
+            <span class="flex h-11 w-11 items-center justify-center rounded-full bg-red-700 text-sm font-bold text-white shadow-md ring-4 ring-white dark:ring-slate-950">
               {i + 1}
             </span>
           </div>
@@ -223,9 +222,9 @@
 
 <!-- ================= GUIDE ================= -->
 <section class="app-container py-10">
-  <div class="mx-auto max-w-4xl rounded-2xl border border-red-100 bg-gradient-to-br from-red-50/70 to-amber-50/70 p-6 shadow-sm sm:p-8">
+  <div class="mx-auto max-w-4xl rounded-2xl border border-border-subtle bg-gradient-to-br from-navy-50 to-white p-6 shadow-sm sm:p-8">
     <div class="flex items-start gap-4">
-      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-600 to-red-800 text-white shadow-md shadow-red-600/30">
+      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-700 text-white shadow-md">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>
       </div>
       <div class="min-w-0 flex-1">
@@ -238,33 +237,32 @@
 
 <!-- ================= CTA BANNER ================= -->
 <section class="app-container pb-16 sm:pb-20">
-  <div class="relative mx-auto max-w-4xl overflow-hidden rounded-3xl bg-gradient-to-br from-red-950 via-red-900 to-red-700 px-6 py-12 text-center text-white shadow-xl shadow-red-600/20 sm:px-10">
-    <div aria-hidden="true" class="pointer-events-none absolute -right-10 -top-16 h-56 w-56 rounded-full bg-amber-400/20 blur-3xl"></div>
-    <div aria-hidden="true" class="pointer-events-none absolute -bottom-16 left-0 h-56 w-56 rounded-full bg-red-400/20 blur-3xl"></div>
+  <div class="relative mx-auto max-w-4xl overflow-hidden rounded-3xl bg-gradient-to-br from-red-950 via-red-900 to-red-800 px-6 py-12 text-center text-white shadow-lg sm:px-10">
+    <div aria-hidden="true" class="pointer-events-none absolute -right-10 -top-16 h-56 w-56 rounded-full bg-gold-400/10 blur-3xl"></div>
     <div
       aria-hidden="true"
-      class="absolute inset-0 opacity-[0.05]"
+      class="absolute inset-0 opacity-[0.03]"
       style="background-image: radial-gradient(circle at 1.5px 1.5px, rgba(255,255,255,0.9) 1.5px, transparent 0); background-size: 28px 28px;"
     ></div>
     <!-- gold top line -->
-    <div aria-hidden="true" class="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-70"></div>
+    <div aria-hidden="true" class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-300 to-transparent opacity-40"></div>
 
     <div class="relative">
-      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M8.5 13.5L6 21l6-3 6 3-2.5-7.5"/></svg>
-      <h2 class="mx-auto mt-4 max-w-md text-xl font-bold leading-snug sm:text-2xl">{t('appName')}</h2>
-      <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-red-200/80">{@html t('heroSub')}</p>
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gold-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M8.5 13.5L6 21l6-3 6 3-2.5-7.5"/></svg>
+      <h2 class="mx-auto mt-4 max-w-md text-xl font-bold leading-snug sm:text-2xl" style="font-family: var(--font-display);">{t('appName')}</h2>
+      <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-red-100/70">{@html t('heroSub')}</p>
 
       <div class="mt-8 flex flex-wrap justify-center gap-3">
         <button
           type="button"
-          class="rounded-xl bg-gradient-to-br from-amber-400 to-amber-500 px-7 py-3 text-sm font-bold text-red-950 shadow-lg shadow-amber-500/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-amber-500/40"
+          class="rounded-xl bg-gold-500 px-7 py-3 text-sm font-bold text-white shadow-md transition-colors duration-200 hover:bg-gold-600"
           onclick={() => navigate('booking')}
         >
           {t('ctaJoin')}
         </button>
         <button
           type="button"
-          class="rounded-xl border border-white/25 bg-white/10 px-7 py-3 text-sm font-bold text-white backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/20"
+          class="rounded-xl border border-white/15 bg-white/5 px-7 py-3 text-sm font-bold text-white backdrop-blur-sm transition-colors duration-200 hover:bg-white/10"
           onclick={() => navigate('status')}
         >
           {t('ctaCheck')}

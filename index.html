@@ -8,14 +8,20 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" href="/favicon-64.png" />
     <link rel="preload" as="image" href="/cida-logo-192.webp" fetchpriority="high" />
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/kanit-700-thai.woff2" crossorigin />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/kanit-700-thai.woff2"
+      crossorigin
+    />
     <title>ระบบจองคิวเพื่อร่วมกิจกรรม</title>
     <style>
-      /* Pre-paint: light indigo tint — avoids flash before app mounts */
+      /* Pre-paint: cool slate tint (official) — avoids flash before app mounts */
       html,
       body {
         margin: 0;
-        background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
       }
     </style>
     <script>
@@ -25,7 +31,7 @@
           var saved = localStorage.getItem('ccc_dark_mode');
           if (saved === '1') {
             document.documentElement.classList.add('dark');
-            document.documentElement.style.background = '#0b1220';
+            document.documentElement.style.background = '#0f172a';
           }
         } catch (e) {
           /* storage unavailable — fall through */

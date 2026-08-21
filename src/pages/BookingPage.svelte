@@ -174,14 +174,14 @@
       {#if booking.visitorCount > 1}
         <div class="extra-visitors-wrap">
           <div class="extra-visitors-title">
-            <span class="flex h-6 w-6 items-center justify-center rounded-md bg-indigo-100 text-xs font-bold text-indigo-700">+</span>
+            <span class="flex h-6 w-6 items-center justify-center rounded-md bg-red-50 text-xs font-bold text-red-700">+</span>
             {t('extraVisitorTitle')} <span style="font-weight:400;color:var(--app-text-secondary)">({t('extraVisitorSub')})</span>
           </div>
           {#each booking.extras as extra, i (i)}
             {@const num = i + 2}
             <div class="extra-visitor-block">
               <div class="extra-visitor-num">
-                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">{num}</span>
+                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-red-700 text-xs font-bold text-white">{num}</span>
                 ผู้เข้าร่วมกิจกรรม {num}
               </div>
               <div class="form-grid">
@@ -296,7 +296,7 @@
       </div>
     </div>
 
-    <div class="consent-row">
+    <div class="consent-row" class:consent-checked={booking.consent}>
       <input
         type="checkbox"
         id="consent"
