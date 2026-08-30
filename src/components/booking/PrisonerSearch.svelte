@@ -1,7 +1,15 @@
 <script lang="ts">
-  import { booking, RESTRICTED_STATUS } from '../../lib/store/booking.svelte';
+  import {
+    booking as defaultBooking,
+    RESTRICTED_STATUS,
+    type BookingStore,
+  } from '../../lib/store/booking.svelte';
   import { t } from '../../lib/i18n/i18n.svelte';
   import Button from '../ui/Button.svelte';
+
+  // The page decides which flow this belongs to; defaults to the prisoner-visit
+  // store so existing usages keep working unchanged.
+  let { store = defaultBooking }: { store?: BookingStore } = $props();
 </script>
 
 <div>
@@ -16,18 +24,18 @@
         id="prisonerSearch"
         type="text"
         placeholder="พิมพ์เลขผู้ต้องขัง หรือ ชื่อ-นามสกุล..."
-        bind:value={booking.search}
-        oninput={() => booking.onSearchInput()}
+        bind:value={store.search}
+        oninput={() => store.onSearchInput()}
         onfocus={() => {
-          if (booking.search) booking.filterSuggestions();
+          if (store.search) store.filterSuggestions();
         }}
-        onblur={() => setTimeout(() => booking.hideSuggestions(), 150)}
+        onblur={() => setTimeout(() => store.hideSuggestions(), 150)}
         class="prisoner-search-input"
-        aria-invalid={booking.errors.prisonerSearch ? 'true' : undefined}
+        aria-invalid={store.errors.prisonerSearch ? 'true' : undefined}
       />
-      {#if booking.showSuggestions && booking.suggestions.length > 0}
+      {#if store.showSuggestions && store.suggestions.length > 0}
         <div class="suggestions-dropdown" role="listbox">
-          {#each booking.suggestions as p (p.prisonerId)}
+          {#each store.suggestions as p (p.prisonerId)}
             <div
               class="suggestion-item"
               role="option"
@@ -35,11 +43,11 @@
               aria-selected="false"
               onmousedown={(e) => {
                 e.preventDefault();
-                booking.selectPrisoner(p);
+                store.selectPrisoner(p);
               }}
             >
               <div class="suggestion-main">
-                <strong>{booking.maskName(p.prisonerName)}</strong>
+                <strong>{store.maskName(p.prisonerName)}</strong>
               </div>
               <div class="suggestion-meta">
                 #{p.prisonerId}<br />
@@ -61,57 +69,57 @@
       {/if}
     </div>
 
-    {#if booking.prisonerLoadState === 'loading'}
-      <div class="prisoner-load-status">{booking.prisonerLoadMsg}</div>
-    {:else if booking.prisonerLoadState === 'error'}
+    {#if store.prisonerLoadState === 'loading'}
+      <div class="prisoner-load-status">{store.prisonerLoadMsg}</div>
+    {:else if store.prisonerLoadState === 'error'}
       <div class="prisoner-load-status load-error">
-        <span>{booking.prisonerLoadMsg}</span>
+        <span>{store.prisonerLoadMsg}</span>
         <Button
           size="sm"
           variant="ghost"
           onclick={() => {
-            booking.prisonerLoadMsg = '⏳ กำลังโหลดรายชื่อผู้ต้องขังจากฐานข้อมูล...';
-            booking.prisonerLoadState = 'loading';
-            void booking.loadPrisonerMaster();
+            store.prisonerLoadMsg = '⏳ กำลังโหลดรายชื่อผู้ต้องขังจากฐานข้อมูล...';
+            store.prisonerLoadState = 'loading';
+            void store.loadPrisonerMaster();
           }}
         >
           ลองใหม่
         </Button>
       </div>
     {:else}
-      <div class="prisoner-load-status load-ok">{booking.prisonerLoadMsg}</div>
+      <div class="prisoner-load-status load-ok">{store.prisonerLoadMsg}</div>
     {/if}
 
-    {#if booking.errors.prisonerSearch}
-      <div class="error-text">{booking.errors.prisonerSearch}</div>
+    {#if store.errors.prisonerSearch}
+      <div class="error-text">{store.errors.prisonerSearch}</div>
     {/if}
   </div>
 
-  {#if booking.prisoner}
+  {#if store.prisoner}
     <div class="selected-prisoner-display">
       <div class="selected-prisoner-check">
         {t('prisonerInfoConfirm')}
         <button
           type="button"
           class="selected-prisoner-clear"
-          onclick={() => booking.clearPrisoner()}
+          onclick={() => store.clearPrisoner()}
           aria-label="ยกเลิกการเลือกผู้ต้องขัง"
         >
           ✕
         </button>
       </div>
-      <div class="selected-prisoner-name">{booking.maskName(booking.prisoner.prisonerName)}</div>
+      <div class="selected-prisoner-name">{store.maskName(store.prisoner.prisonerName)}</div>
       <div class="selected-prisoner-id">
-        {t('idLabel')}: <span class="mono">{booking.prisoner.prisonerId}</span> &nbsp;·&nbsp;
-        <span class="selected-prisoner-wing">{booking.prisoner.wing || ''}</span>
+        {t('idLabel')}: <span class="mono">{store.prisoner.prisonerId}</span> &nbsp;·&nbsp;
+        <span class="selected-prisoner-wing">{store.prisoner.wing || ''}</span>
       </div>
-      {#if booking.prisoner.status}
+      {#if store.prisoner.status}
         <div
-          class="selected-prisoner-status {booking.prisoner.status === RESTRICTED_STATUS
+          class="selected-prisoner-status {store.prisoner.status === RESTRICTED_STATUS
             ? 'text-crimson'
             : ''}"
         >
-          {booking.prisoner.status}
+          {store.prisoner.status}
         </div>
       {/if}
     </div>

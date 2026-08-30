@@ -1,6 +1,6 @@
-export type RouteName = 'home' | 'booking' | 'status';
+export type RouteName = 'home' | 'booking' | 'table-booking' | 'status';
 
-const validRoutes = new Set<string>(['home', 'booking', 'status']);
+const validRoutes = new Set<string>(['home', 'booking', 'table-booking', 'status']);
 
 function parseHash(): void {
   const raw = window.location.hash.replace(/^#\/?/, '').replace(/\/+$/, '');

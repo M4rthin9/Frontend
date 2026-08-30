@@ -7,6 +7,8 @@ import type {
   Prisoner,
   PublicReservation,
   SaveReservationPayload,
+  SaveTableReservationPayload,
+  TableCounts,
   SlipVerifyResult,
   SlipVerifyStatus,
 } from './types';
@@ -43,6 +45,22 @@ export async function getCountsByDate(): Promise<Record<string, number>> {
   return data.counts ?? {};
 }
 
+/**
+ * Availability for the parallel no-prisoner table flow: used slots per date plus
+ * the day's capacity. Deliberately separate from getCountsByDate — the two pools
+ * are independent.
+ */
+export async function getTableCountsByDate(): Promise<TableCounts> {
+  const data = await callAction<{ status: string } & Partial<TableCounts>>('getTableCountsByDate');
+  assertOk(data);
+  return {
+    counts: data.counts ?? {},
+    perDay: data.perDay ?? 10,
+    holdMinutes: data.holdMinutes ?? 60,
+    enabled: data.enabled !== false,
+  };
+}
+
 /** Public status lookup by ref number or prisoner ID. */
 export async function lookupByRef(query: {
   ref?: string;
@@ -65,6 +83,25 @@ export async function saveReservation(payload: SaveReservationPayload): Promise<
   );
   assertOk(data);
   return { ref: data.ref ?? '' };
+}
+
+/**
+ * Submit a no-prisoner table booking (Turnstile token required). The server
+ * assigns the ref (TBL- prefix) and creates the booking directly in 'รอชำระเงิน',
+ * held for `holdMinutes` while the visitor pays.
+ */
+export async function saveTableReservation(
+  payload: SaveTableReservationPayload,
+): Promise<{ ref: string; holdExpiresAt?: string; holdMinutes?: number }> {
+  const data = await callAction<{
+    status: string;
+    ref?: string;
+    holdExpiresAt?: string;
+    holdMinutes?: number;
+    message?: string;
+  }>('saveTableReservation', payload as unknown as Record<string, unknown>, { timeoutMs: 45000 });
+  assertOk(data);
+  return { ref: data.ref ?? '', holdExpiresAt: data.holdExpiresAt, holdMinutes: data.holdMinutes };
 }
 
 /** Upload a slip image (base64 data URI) for a booking ref. */

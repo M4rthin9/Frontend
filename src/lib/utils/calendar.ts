@@ -1,6 +1,8 @@
 import { toLocalDateStr, addDays } from './date';
 
-/** Maximum number of bookings (tables) per day. */
+/** Default maximum number of bookings (tables) per day for the prisoner-visit
+ *  flow. The parallel no-prisoner table flow supplies its own, smaller quota
+ *  from the server (admin_settings.tableBooking.perDay). */
 export const QUOTA = 20;
 
 /** Fixed 2026 holidays & special blocked dates (ported verbatim from booking.js). */
@@ -58,6 +60,7 @@ export function buildCalendarCells(
   month: number,
   selectedDate: string | null,
   bookings: Record<string, number>,
+  perDay: number = QUOTA,
 ): CalendarCell[] {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -77,8 +80,8 @@ export function buildCalendarCells(
     const isPast = dateStr < todayStr;
     const isWknd = dow === 0 || dow === 6;
     const isHol = HOLIDAYS[dateStr];
-    const quota = bookings[dateStr] || 0;
-    const isFull = quota >= QUOTA;
+    const used = bookings[dateStr] || 0;
+    const isFull = used >= perDay;
     const isNotWithinWindow = dateStr < minAllowedStr || dateStr > maxAllowedStr;
 
     let kind: CalendarCellKind = 'available';
@@ -92,7 +95,7 @@ export function buildCalendarCells(
       date: dateStr,
       day: d,
       kind,
-      quota,
+      quota: used,
       label: isHol,
       blocked: isPast || isNotWithinWindow || !!isHol || isWknd || isFull,
     });

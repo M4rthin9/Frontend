@@ -126,6 +126,22 @@ export interface SaveReservationPayload {
   ip: string;
 }
 
+/**
+ * A no-prisoner table booking. Structurally the same wire shape as a visit
+ * booking; `ref` may be blank (the server mints a TBL- one) and the prisoner
+ * fields are ignored by the server's table field whitelist.
+ */
+export type SaveTableReservationPayload = Omit<SaveReservationPayload, 'ref'> & { ref?: string };
+
+export interface TableCounts {
+  counts: Record<string, number>;
+  /** Tables sellable per visit date. */
+  perDay: number;
+  /** Minutes an unpaid booking holds its slot. */
+  holdMinutes: number;
+  enabled: boolean;
+}
+
 export interface CostSummary {
   total: number;
   extraFees: number;

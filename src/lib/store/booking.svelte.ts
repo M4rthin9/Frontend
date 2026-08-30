@@ -1,4 +1,11 @@
-import { getPrisoners, getCountsByDate, lookupByRef, saveReservation } from '../api/endpoints';
+import {
+  getPrisoners,
+  getCountsByDate,
+  getTableCountsByDate,
+  lookupByRef,
+  saveReservation,
+  saveTableReservation,
+} from '../api/endpoints';
 import { ApiError } from '../api/errors';
 import type { CostSummary, Prisoner } from '../api/types';
 import {
@@ -78,6 +85,9 @@ export function calcCost(
   extras: ExtraVisitor[],
   mainRelation = '',
   mainAge = '',
+  /** False for a no-prisoner table booking — mirrors applyServerPricing's
+   *  includePrisonerFee on the backend so the quote matches the charge. */
+  includePrisonerFee = true,
 ): CostSummary {
   let extraFees = 0;
   const discountNotes: string[] = [];
@@ -134,7 +144,8 @@ export function calcCost(
     }
   });
 
-  const total = mainFee + PRICE_PER_PERSON + extraFees; // ผู้จอง + ผู้ต้องขัง + เพิ่มเติม
+  // ผู้จอง + ผู้ต้องขัง (เฉพาะการจองเยี่ยม) + เพิ่มเติม
+  const total = mainFee + (includePrisonerFee ? PRICE_PER_PERSON : 0) + extraFees;
   return {
     total,
     extraFees,
@@ -149,7 +160,25 @@ export function calcCost(
   };
 }
 
-class BookingStore {
+/**
+ * 'prisoner' — the original visit flow: pick a prisoner, then participant and
+ *              discipline checks before payment.
+ * 'table'    — the parallel no-prisoner seating flow: book straight into payment,
+ *              capped at a small number of tables per day.
+ */
+export type BookingMode = 'prisoner' | 'table';
+
+class BookingStoreImpl {
+  readonly mode: BookingMode;
+
+  constructor(mode: BookingMode = 'prisoner') {
+    this.mode = mode;
+  }
+
+  get isTable(): boolean {
+    return this.mode === 'table';
+  }
+
   step = $state(1); // 1=form, 2=confirm, 3=success
 
   // ——— Visitor form ———
@@ -178,6 +207,10 @@ class BookingStore {
   calMonth = $state(new Date().getMonth());
   selectedDate = $state<string | null>(null);
   bookings = $state<Record<string, number>>({});
+  /** Tables sellable per day. Overwritten from the server in table mode. */
+  perDay = $state(QUOTA);
+  /** Minutes an unpaid table booking holds its slot (table mode only). */
+  holdMinutes = $state(60);
   countsState = $state<'loading' | 'ready' | 'error'>('loading');
   countsMsg = $state('');
 
@@ -196,20 +229,35 @@ class BookingStore {
 
   // ——— Derived ———
   get cells() {
-    return buildCalendarCells(this.calYear, this.calMonth, this.selectedDate, this.bookings);
+    return buildCalendarCells(
+      this.calYear,
+      this.calMonth,
+      this.selectedDate,
+      this.bookings,
+      this.perDay,
+    );
   }
   get calTitle(): string {
     return calendarTitle(this.calYear, this.calMonth);
   }
   get cost(): CostSummary {
-    return calcCost(this.visitorCount, this.extras, this.relation, this.visitorAge);
+    return calcCost(this.visitorCount, this.extras, this.relation, this.visitorAge, !this.isTable);
+  }
+
+  /** Seats on the booking: a table booking has no prisoner occupying one. */
+  get totalPersons(): number {
+    return this.isTable ? this.visitorCount : this.visitorCount + 1;
   }
 
   private debouncedFilter = debounce(() => this.filterSuggestions(), 250);
 
   // ——— Init (called on mount) ———
   init(): void {
-    void Promise.allSettled([this.loadBookingCounts(), this.loadPrisonerMaster()]);
+    // No prisoner on a table booking, so the (large) prisoner master is not fetched.
+    const tasks = this.isTable
+      ? [this.loadBookingCounts()]
+      : [this.loadBookingCounts(), this.loadPrisonerMaster()];
+    void Promise.allSettled(tasks);
   }
 
   // ===== CALENDAR =====
@@ -235,7 +283,17 @@ class BookingStore {
     this.countsState = 'loading';
     this.countsMsg = '⏳ กำลังโหลดข้อมูลการจอง...';
     try {
-      const counts = await getCountsByDate();
+      // The two pools are independent: table availability must not be affected by
+      // prisoner-visit volume, so each mode reads its own counts endpoint.
+      let counts: Record<string, number>;
+      if (this.isTable) {
+        const res = await getTableCountsByDate();
+        counts = res.counts;
+        this.perDay = res.perDay;
+        this.holdMinutes = res.holdMinutes;
+      } else {
+        counts = await getCountsByDate();
+      }
       this.bookings = {};
       for (const [dk, v] of Object.entries(counts)) {
         if (/^\d{4}-\d{2}-\d{2}$/.test(dk)) this.bookings[dk] = Number(v) || 0;
@@ -396,8 +454,8 @@ class BookingStore {
     this.clearErrors();
     const errs: Record<string, string> = {};
 
-    // Prisoner selection first
-    if (!this.prisoner) {
+    // Prisoner selection first — a table booking has none to select.
+    if (!this.isTable && !this.prisoner) {
       errs.prisonerSearch = 'กรุณาเลือกผู้ต้องขังจากรายการค้นหา';
       this.errors = errs;
       return false;
@@ -457,14 +515,14 @@ class BookingStore {
       this.errors = errs;
       return false;
     }
-    if ((this.bookings[this.selectedDate] || 0) >= QUOTA) {
+    if ((this.bookings[this.selectedDate] || 0) >= this.perDay) {
       this.inlineError = 'วันที่เลือกเต็มแล้ว กรุณาเลือกวันอื่น';
       this.errors = errs;
       return false;
     }
 
-    // Soft validation against master
-    if (this.prisonerMaster.length > 0 && this.prisoner) {
+    // Soft validation against master (prisoner mode only)
+    if (!this.isTable && this.prisonerMaster.length > 0 && this.prisoner) {
       const exists = this.prisonerMaster.some(
         (p) =>
           p.prisonerId === this.prisoner!.prisonerId ||
@@ -486,14 +544,15 @@ class BookingStore {
   // ===== CONFIRM =====
   goToConfirm(): boolean {
     if (!this.validate()) return false;
-    if (!this.prisoner || !this.selectedDate) return false;
+    if (!this.selectedDate) return false;
+    if (!this.isTable && !this.prisoner) return false;
     this.confirmData = {
       visitDate: toThaiLong(parseLocalDateFromStr(this.selectedDate)),
       visitDateISO: this.selectedDate,
-      totalPersons: this.visitorCount + 1,
-      prisonerName: this.prisoner.prisonerName,
-      prisonerId: this.prisoner.prisonerId,
-      wing: this.prisoner.wing || '',
+      totalPersons: this.totalPersons,
+      prisonerName: this.prisoner?.prisonerName ?? '',
+      prisonerId: this.prisoner?.prisonerId ?? '',
+      wing: this.prisoner?.wing ?? '',
     };
     this.inlineError = '';
     this.step = 2;
@@ -556,7 +615,8 @@ class BookingStore {
   // ===== SUBMIT =====
   async submit(): Promise<void> {
     if (this.submitting) return;
-    if (!this.confirmData || !this.prisoner || !this.selectedDate) return;
+    if (!this.confirmData || !this.selectedDate) return;
+    if (!this.isTable && !this.prisoner) return;
 
     const token = getTurnstileResponse(this.turnstileWidgetId);
     if (typeof window.turnstile !== 'object') {
@@ -577,25 +637,31 @@ class BookingStore {
     this.inlineError = '';
 
     // ── Duplicate check for the same prisoner on the same day ──
+    // Table bookings have no prisoner, so there is nothing to duplicate: the same
+    // person may legitimately book several tables on the same day.
     let existingRefs: string[] = [];
-    try {
-      const rows = await lookupByRef({ prisonerId: this.prisoner.prisonerId });
-      existingRefs = rows.map((r) => r.ref).filter(Boolean);
-      const duplicate = rows.find(
-        (r) =>
-          r.visitDateISO === this.selectedDate && ACTIVE_STATUSES.includes(String(r.status || '')),
-      );
-      if (duplicate) {
-        this.submitting = false;
-        this.resetTurnstile();
-        this.inlineError = `⚠️ ไม่สามารถจองได้ — มีการจองผู้ต้องขังหมายเลข "${this.prisoner.prisonerId}" ในวันนี้อยู่แล้ว (Ref: ${duplicate.ref})`;
-        return;
+    if (!this.isTable && this.prisoner) {
+      try {
+        const rows = await lookupByRef({ prisonerId: this.prisoner.prisonerId });
+        existingRefs = rows.map((r) => r.ref).filter(Boolean);
+        const duplicate = rows.find(
+          (r) =>
+            r.visitDateISO === this.selectedDate &&
+            ACTIVE_STATUSES.includes(String(r.status || '')),
+        );
+        if (duplicate) {
+          this.submitting = false;
+          this.resetTurnstile();
+          this.inlineError = `⚠️ ไม่สามารถจองได้ — มีการจองผู้ต้องขังหมายเลข "${this.prisoner.prisonerId}" ในวันนี้อยู่แล้ว (Ref: ${duplicate.ref})`;
+          return;
+        }
+      } catch (err) {
+        console.warn('Duplicate check skipped:', err);
       }
-    } catch (err) {
-      console.warn('Duplicate check skipped:', err);
     }
 
-    const ref = generateUniqueRef(existingRefs);
+    // Table bookings let the server mint the ref (it uses a TBL- prefix).
+    const ref = this.isTable ? '' : generateUniqueRef(existingRefs);
     const cost = this.cost;
     const extras = this.extras;
     const extraNamesStr = extras.map((v) => [v.name, v.id, v.relation, v.age].join('|')).join(';;');
@@ -604,6 +670,7 @@ class BookingStore {
     const now = new Date().toLocaleString('th-TH');
 
     const payload = {
+      // '' in table mode — the server mints the TBL- ref itself.
       ref,
       timestamp: now,
       visitorName: this.visitorName.trim(),
@@ -616,9 +683,11 @@ class BookingStore {
       visitorAge: this.visitorAge.trim(),
       extraVisitorReligions: extraReligionsStr,
       extraVisitorAllergies: extraAllergiesStr,
-      prisonerName: this.prisoner.prisonerName,
-      prisonerId: this.prisoner.prisonerId,
-      wing: this.prisoner.wing || '',
+      // Empty in table mode. The server's table whitelist drops these outright,
+      // so they can never end up on a no-prisoner booking.
+      prisonerName: this.prisoner?.prisonerName ?? '',
+      prisonerId: this.prisoner?.prisonerId ?? '',
+      wing: this.prisoner?.wing ?? '',
       visitDate: this.confirmData.visitDate,
       visitDateISO: this.confirmData.visitDateISO,
       visitorCount: this.visitorCount,
@@ -627,7 +696,8 @@ class BookingStore {
       adultCount: cost.adults,
       child5to8Count: cost.kids5_8,
       childUnder5Count: cost.kidsUnder5,
-      status: 'รอตรวจสอบผู้เข้าร่วม',
+      // The server clamps this anyway; sending the right one keeps the payload honest.
+      status: this.isTable ? 'รอชำระเงิน' : 'รอตรวจสอบผู้เข้าร่วม',
       slipImage: '',
       turnstileToken: token,
       ip: '',
@@ -636,7 +706,9 @@ class BookingStore {
     let savedRef = ref;
     let submitError = '';
     try {
-      const resp = await saveReservation(payload);
+      const resp = this.isTable
+        ? await saveTableReservation(payload)
+        : await saveReservation(payload);
       savedRef = String(resp.ref || '').trim() || ref;
     } catch (err) {
       submitError =
@@ -665,15 +737,15 @@ class BookingStore {
       visitDate: this.confirmData.visitDate,
       visitorCount: this.visitorCount,
       totalPersons: this.confirmData.totalPersons,
-      prisonerName: this.prisoner.prisonerName,
-      prisonerId: this.prisoner.prisonerId,
-      wing: this.prisoner.wing || '',
+      prisonerName: this.prisoner?.prisonerName ?? '',
+      prisonerId: this.prisoner?.prisonerId ?? '',
+      wing: this.prisoner?.wing ?? '',
       visitorName: this.visitorName.trim(),
       extras,
     };
 
     safeSetItem(sessionStorage, 'lastRef', savedRef);
-    safeSetItem(sessionStorage, 'lastPrisonerId', this.prisoner.prisonerId);
+    if (this.prisoner) safeSetItem(sessionStorage, 'lastPrisonerId', this.prisoner.prisonerId);
 
     this.step = 3;
     window.scrollTo(0, 0);
@@ -727,4 +799,10 @@ function parseLocalDateFromStr(dateStr: string): Date {
   return new Date(y, m - 1, d);
 }
 
-export const booking = new BookingStore();
+/** The original prisoner-visit booking flow. */
+export const booking = new BookingStoreImpl('prisoner');
+/** The parallel no-prisoner table booking flow (book → pay → staff confirm). */
+export const tableBooking = new BookingStoreImpl('table');
+
+/** Prop type for the shared booking components, which work against either store. */
+export type BookingStore = typeof booking;

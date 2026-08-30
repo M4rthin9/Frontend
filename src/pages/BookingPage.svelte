@@ -1,6 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { booking, CHILD_RELATIONS, RELIGION_OPTIONS } from '../lib/store/booking.svelte';
+  import {
+    booking as defaultBooking,
+    CHILD_RELATIONS,
+    RELIGION_OPTIONS,
+    type BookingStore,
+  } from '../lib/store/booking.svelte';
   import { t } from '../lib/i18n/i18n.svelte';
   import { navigate } from '../lib/router.svelte';
   import Stepper from '../components/ui/Stepper.svelte';
@@ -13,8 +18,13 @@
   import BookingSuccess from '../components/booking/BookingSuccess.svelte';
   import { toThaiLong } from '../lib/utils/date';
 
+  // One page serves both flows. `store.mode` decides whether the prisoner step
+  // is shown and which endpoint the submit hits — see BookingStore.
+  let { store = defaultBooking }: { store?: BookingStore } = $props();
+  const isTable = $derived(store.isTable);
+
   onMount(() => {
-    booking.init();
+    store.init();
   });
 
   const steps = $derived([t('stepBooking'), t('stepConfirm'), t('stepRef')]);
@@ -38,10 +48,10 @@
   }
 
   const visitDateLabel = $derived(
-    booking.selectedDate ? toThaiLong(parseLocalDate(booking.selectedDate)) : ''
+    store.selectedDate ? toThaiLong(parseLocalDate(store.selectedDate)) : ''
   );
-  const totalPersons = $derived(booking.visitorCount + 1);
-  const totalCost = $derived(booking.cost.total);
+  const totalPersons = $derived(store.totalPersons);
+  const totalCost = $derived(store.cost.total);
 </script>
 
 <div class="booking-app">
@@ -60,19 +70,19 @@
     </button>
 
     <div class="booking-head-title">
-      <span class="booking-badge">{t('bookingBadge')}</span>
-      <h1 class="booking-h1">{t('bookingTitle')}</h1>
-      <p class="booking-p">{t('bookingP')}</p>
+      <span class="booking-badge">{isTable ? t('tableBookingBadge') : t('bookingBadge')}</span>
+      <h1 class="booking-h1">{isTable ? t('tableBookingTitle') : t('bookingTitle')}</h1>
+      <p class="booking-p">{isTable ? t('tableBookingP') : t('bookingP')}</p>
     </div>
   </div>  <div class="mb-6">
-    <Stepper steps={steps} current={booking.step} />
+    <Stepper steps={steps} current={store.step} />
   </div>
 
-  {#if booking.inlineError && booking.step === 1}
-    <div class="error-text-inline">{booking.inlineError}</div>
+  {#if store.inlineError && store.step === 1}
+    <div class="error-text-inline">{store.inlineError}</div>
   {/if}
 
-  {#if booking.step === 1}
+  {#if store.step === 1}
     <!-- ===== STEP 1: FORM ===== -->
     <div class="section">
       <div class="section-title">
@@ -85,8 +95,8 @@
           label={t('nameLabel')}
           required
           placeholder="เช่น สมชาย ใจดี"
-          bind:value={booking.visitorName}
-          error={booking.errors.visitorName}
+          bind:value={store.visitorName}
+          error={store.errors.visitorName}
         />
         <Input
           id="visitorId"
@@ -94,8 +104,8 @@
           required
           placeholder="X-XXXX-XXXXX-XX-X หรือ Passport No."
           maxlength={20}
-          bind:value={booking.visitorId}
-          error={booking.errors.visitorId}
+          bind:value={store.visitorId}
+          error={store.errors.visitorId}
           hint="สามารถกรอกเลขบัตรประชาชน หรือ Passport No."
         />
         <Input
@@ -104,15 +114,15 @@
           required
           type="tel"
           placeholder="08X-XXX-XXXX"
-          bind:value={booking.visitorPhone}
-          error={booking.errors.visitorPhone}
+          bind:value={store.visitorPhone}
+          error={store.errors.visitorPhone}
         />
         <Select
           id="relation"
           label={t('relationLabel')}
           required
-          bind:value={booking.relation}
-          error={booking.errors.relation}
+          bind:value={store.relation}
+          error={store.errors.relation}
         >
           <option value="">{t('relationPlaceholder')}</option>
           {#each RELATION_KEYS as key (key)}
@@ -123,8 +133,8 @@
           id="visitorReligion"
           label={t('religionLabel')}
           required
-          bind:value={booking.religion}
-          error={booking.errors.religion}
+          bind:value={store.religion}
+          error={store.errors.religion}
         >
           {#each RELIGION_OPTIONS as r (r)}
             <option value={r === '-- เลือก --' ? '' : r}>{r}</option>
@@ -135,10 +145,10 @@
           label={t('allergyLabel')}
           required
           placeholder={t('allergyPlaceholder')}
-          bind:value={booking.allergy}
-          error={booking.errors.allergy}
+          bind:value={store.allergy}
+          error={store.errors.allergy}
         />
-        {#if CHILD_RELATIONS.includes(booking.relation)}
+        {#if CHILD_RELATIONS.includes(store.relation)}
           <Input
             id="visitorAge"
             label="อายุ (ปี)"
@@ -147,8 +157,8 @@
             min={0}
             max={120}
             placeholder={t('ageChildRule')}
-            bind:value={booking.visitorAge}
-            error={booking.errors.visitorAge}
+            bind:value={store.visitorAge}
+            error={store.errors.visitorAge}
           />
         {/if}
         <div class="form-group full">
@@ -160,9 +170,9 @@
             {#each COUNT_OPTIONS as n (n)}
               <button
                 type="button"
-                class="count-btn {n === booking.visitorCount ? 'active' : ''}"
-                onclick={() => booking.updateVisitorCount(n)}
-                aria-pressed={n === booking.visitorCount}
+                class="count-btn {n === store.visitorCount ? 'active' : ''}"
+                onclick={() => store.updateVisitorCount(n)}
+                aria-pressed={n === store.visitorCount}
               >
                 {n}
               </button>
@@ -171,13 +181,13 @@
         </div>
       </div>
 
-      {#if booking.visitorCount > 1}
+      {#if store.visitorCount > 1}
         <div class="extra-visitors-wrap">
           <div class="extra-visitors-title">
             <span class="flex h-6 w-6 items-center justify-center rounded-md bg-red-50 text-xs font-bold text-red-700">+</span>
             {t('extraVisitorTitle')} <span style="font-weight:400;color:var(--app-text-secondary)">({t('extraVisitorSub')})</span>
           </div>
-          {#each booking.extras as extra, i (i)}
+          {#each store.extras as extra, i (i)}
             {@const num = i + 2}
             <div class="extra-visitor-block">
               <div class="extra-visitor-num">
@@ -191,7 +201,7 @@
                   required
                   placeholder="เช่น สมหญิง ใจดี"
                   bind:value={extra.name}
-                  error={booking.errors[`extraName${num}`]}
+                  error={store.errors[`extraName${num}`]}
                 />
                 <Input
                   id="extraVisitorId{num}"
@@ -200,14 +210,14 @@
                   placeholder="เลขบัตร ปชช. หรือ Passport"
                   maxlength={20}
                   bind:value={extra.id}
-                  error={booking.errors[`extraId${num}`]}
+                  error={store.errors[`extraId${num}`]}
                 />
                 <Select
                   id="extraVisitorReligion{num}"
                   label="ศาสนา"
                   required
                   bind:value={extra.religion}
-                  error={booking.errors[`extraReligion${num}`]}
+                  error={store.errors[`extraReligion${num}`]}
                 >
                   {#each RELIGION_OPTIONS as r (r)}
                     <option value={r === '-- เลือก --' ? '' : r}>{r}</option>
@@ -219,14 +229,14 @@
                   required
                   placeholder={t('allergyPlaceholder')}
                   bind:value={extra.allergy}
-                  error={booking.errors[`extraAllergy${num}`]}
+                  error={store.errors[`extraAllergy${num}`]}
                 />
                 <Select
                   id="extraVisitorRelation{num}"
                   label="ความสัมพันธ์"
                   required
                   bind:value={extra.relation}
-                  error={booking.errors[`extraRelation${num}`]}
+                  error={store.errors[`extraRelation${num}`]}
                 >
                   <option value="">{t('relationPlaceholder')}</option>
                   {#each RELATION_KEYS as key (key)}
@@ -245,7 +255,7 @@
                     max={120}
                     placeholder={t('ageChildRule')}
                     bind:value={extra.age}
-                    error={booking.errors[`extraAge${num}`]}
+                    error={store.errors[`extraAge${num}`]}
                   />
                 </div>
               {/if}
@@ -255,26 +265,38 @@
       {/if}
     </div>
 
-    <div class="section">
-      <div class="section-title">
-        <span class="section-num">2</span>
-        {t('prisonerInfo')}
+    {#if !isTable}
+      <div class="section">
+        <div class="section-title">
+          <span class="section-num">2</span>
+          {t('prisonerInfo')}
+        </div>
+        <PrisonerSearch {store} />
       </div>
-      <PrisonerSearch />
-    </div>
+    {/if}
 
     <div class="section">
       <div class="section-title">
-        <span class="section-num">3</span>
+        <span class="section-num">{isTable ? 2 : 3}</span>
         {t('selectDate')}
       </div>
-      <Calendar />
+      <Calendar {store} />
     </div>
 
     <div class="rules">
       <strong>{t('confirmRules')}</strong><br />
       <span>{t('rulesDesc')}</span><br />
-      รับจองวันละ <strong>20 โต๊ะ</strong> · ค่าร่วมกิจกรรม <strong>1,000 บาท / คน</strong> (คิดรวมผู้ต้องขัง 1 คนด้วย)<br />
+      {#if isTable}
+        รับจองวันละ <strong>{store.perDay} โต๊ะ</strong> · ค่าร่วมกิจกรรม
+        <strong>1,000 บาท / คน</strong> (ไม่มีผู้ต้องขังร่วมโต๊ะ)<br />
+        <span style="color:var(--emerald-600)">
+          จองแล้วชำระเงินได้ทันที — ระบบจะกันโต๊ะไว้ให้ <strong>{store.holdMinutes} นาที</strong>
+          หากยังไม่ชำระเงินภายในเวลาดังกล่าว การจองจะถูกยกเลิกอัตโนมัติ</span
+        ><br />
+      {:else}
+        รับจองวันละ <strong>{store.perDay} โต๊ะ</strong> · ค่าร่วมกิจกรรม
+        <strong>1,000 บาท / คน</strong> (คิดรวมผู้ต้องขัง 1 คนด้วย)<br />
+      {/if}
       <span style="color:var(--emerald-600)" class="child-price-note">บุตร/ธิดา (ผู้เข้าร่วมคนที่ 2+): อายุ &lt;5 ปี ฟรี, 5-8 ปี 500 บาท, &gt;8 ปี 1,000 บาท</span><br />
       <strong>{t('selectDate')}:</strong> <br />
       <span>{t('extraVisitorSub')}</span><br />
@@ -296,26 +318,26 @@
       </div>
     </div>
 
-    <div class="consent-row" class:consent-checked={booking.consent}>
+    <div class="consent-row" class:consent-checked={store.consent}>
       <input
         type="checkbox"
         id="consent"
-        bind:checked={booking.consent}
+        bind:checked={store.consent}
         onchange={() => {
-          if (booking.consent) {
-            const errs = { ...booking.errors };
+          if (store.consent) {
+            const errs = { ...store.errors };
             delete errs.consent;
-            booking.errors = errs;
+            store.errors = errs;
           }
         }}
       />
       <label for="consent">{t('confirmRules')}</label>
     </div>
 
-    <Button variant="primary" size="lg" fullWidth onclick={() => booking.goToConfirm()}>
+    <Button variant="primary" size="lg" fullWidth onclick={() => store.goToConfirm()}>
       {t('stepConfirm')} →
     </Button>
-  {:else if booking.step === 2}
+  {:else if store.step === 2}
     <!-- ===== STEP 2: CONFIRM ===== -->
     <div class="section">
       <div class="section-title">
@@ -332,14 +354,14 @@
         </span>
         {t('confirmInfo')}
       </div>
-      <BookingConfirm />
+      <BookingConfirm {store} />
     </div>
-  {:else if booking.step === 3}
+  {:else if store.step === 3}
     <!-- ===== STEP 3: SUCCESS ===== -->
-    <BookingSuccess />
+    <BookingSuccess {store} />
   {/if}
 
-  {#if booking.submitting}
+  {#if store.submitting}
     <div class="overlay show">
       <div class="spinner"></div>
       <p>กำลังส่งคำขอจอง...</p>

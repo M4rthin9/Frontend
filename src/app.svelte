@@ -10,11 +10,13 @@
   import ChatWidget from './components/chat/ChatWidget.svelte';
   import HomePage from './pages/HomePage.svelte';
   import BookingPage from './pages/BookingPage.svelte';
+  import { tableBooking } from './lib/store/booking.svelte';
   import StatusPage from './pages/StatusPage.svelte';
 
   const titles: Record<string, () => string> = {
     home: () => t('appName'),
     booking: () => t('bookingTitle'),
+    'table-booking': () => t('tableBookingTitle'),
     status: () => t('btnStatus'),
   };
 
@@ -58,6 +60,9 @@
           <HomePage />
         {:else if router.route === 'booking'}
           <BookingPage />
+        {:else if router.route === 'table-booking'}
+          <!-- Same page, driven by the no-prisoner store. -->
+          <BookingPage store={tableBooking} />
         {:else}
           <StatusPage />
         {/if}
