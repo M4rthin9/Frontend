@@ -22,8 +22,8 @@
           stroke="currentColor"
           stroke-width="2.5"
           stroke-linecap="round"
-          stroke-linejoin="round"
-        ><path d="M20 6L9 17l-5-5" /></svg>
+          stroke-linejoin="round"><path d="M20 6L9 17l-5-5" /></svg
+        >
       </div>
       <h2 style="font-size:22px;font-weight:700;margin-bottom:6px">{t('successTitle')}</h2>
       <p style="font-size:14px;color:var(--text-secondary);margin-bottom:1rem">{t('successSub')}</p>
@@ -79,7 +79,7 @@
             <span class="detail-label">รายชื่อผู้เข้าร่วมเพิ่มเติม</span>
             <span class="detail-value" style="line-height:1.8">
               {#each success.extras as v, i (v.name + i)}
-                <div>{i + 2}. {v.name} ({v.relation})</div>
+                <div>{i + 2}. {v.name}{store.isTable ? '' : ` (${v.relation})`}</div>
               {/each}
             </span>
           </div>
@@ -99,7 +99,12 @@
         >
           {t('checkStatusBtn')}
         </Button>
-        <Button variant="secondary" size="lg" style="flex:0.6;min-width:130px" onclick={() => void store.copyRef()}>
+        <Button
+          variant="secondary"
+          size="lg"
+          style="flex:0.6;min-width:130px"
+          onclick={() => void store.copyRef()}
+        >
           {store.copied ? 'คัดลอกแล้ว' : t('copyRef')}
         </Button>
       </div>

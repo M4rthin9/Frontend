@@ -34,7 +34,7 @@
           relation: v.relation,
           ageNote: CHILD_RELATIONS.includes(v.relation) && v.age ? ` (อายุ ${v.age} ปี)` : '',
         }))
-      : []
+      : [],
   );
 
   async function copySummary(): Promise<void> {
@@ -63,9 +63,7 @@
 <div>
   {#if data}
     <div class="confirm-hero">
-      <div class="confirm-hero-date">
-        วันที่เข้าร่วม
-      </div>
+      <div class="confirm-hero-date">วันที่เข้าร่วม</div>
       <div class="confirm-hero-main">{thDate}</div>
       <div class="confirm-hero-meta">
         {totalPersons} คน{store.isTable ? '' : ' (รวมผู้ต้องขัง)'} &nbsp;•&nbsp;
@@ -77,7 +75,9 @@
       <div class="review-section">
         <div class="review-label">ผู้จองหลัก (ผู้ติดต่อ)</div>
         <div class="review-value">{store.visitorName.trim()}</div>
-        <div class="review-sub">{store.visitorPhone.trim()} • {store.relation}</div>
+        <div class="review-sub">
+          {store.visitorPhone.trim()}{store.isTable ? '' : ` • ${store.relation}`}
+        </div>
       </div>
 
       <div class="review-section">
@@ -86,7 +86,7 @@
           1. {store.visitorName.trim()} (ผู้จอง)
           {#if extrasList.length > 0}
             {#each extrasList as v, i (i)}
-              <div>• {v.name} — {v.relation}{v.ageNote}</div>
+              <div>• {v.name}{store.isTable ? '' : ` — ${v.relation}${v.ageNote}`}</div>
             {/each}
           {:else}
             <div class="review-none">ไม่มีผู้เข้าร่วมเพิ่มเติม</div>
@@ -136,19 +136,20 @@
     {/if}
   </div>
 
-   <div class="turnstile-wrap">
-     <div class="turnstile-box-title">{t('captchaTitle')}</div>
-     {#if store.turnstileError}
-       <div class="error-text-inline" style="white-space:pre-line">
-        ⚠️ ระบบตรวจสอบความปลอดภัย (Turnstile) ไม่สามารถโหลดได้ — กรุณาตรวจสอบว่าอยู่ในหน้าต่างที่อนุญาตแล้วลองใหม่อีกครั้ง
-       </div>
-     {:else if !store.turnstileToken}
-       <div class="text-xs text-text-tertiary text-center py-2">
-         กำลังโหลดระบบตรวจสอบความปลอดภัย...
-       </div>
-     {/if}
-     <div bind:this={turnstileEl}></div>
-   </div>
+  <div class="turnstile-wrap">
+    <div class="turnstile-box-title">{t('captchaTitle')}</div>
+    {#if store.turnstileError}
+      <div class="error-text-inline" style="white-space:pre-line">
+        ⚠️ ระบบตรวจสอบความปลอดภัย (Turnstile) ไม่สามารถโหลดได้ —
+        กรุณาตรวจสอบว่าอยู่ในหน้าต่างที่อนุญาตแล้วลองใหม่อีกครั้ง
+      </div>
+    {:else if !store.turnstileToken}
+      <div class="text-xs text-text-tertiary text-center py-2">
+        กำลังโหลดระบบตรวจสอบความปลอดภัย...
+      </div>
+    {/if}
+    <div bind:this={turnstileEl}></div>
+  </div>
 
   {#if store.inlineError}
     <div class="error-text-inline" style="white-space:pre-line">{store.inlineError}</div>

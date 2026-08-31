@@ -48,7 +48,7 @@
   }
 
   const visitDateLabel = $derived(
-    store.selectedDate ? toThaiLong(parseLocalDate(store.selectedDate)) : ''
+    store.selectedDate ? toThaiLong(parseLocalDate(store.selectedDate)) : '',
   );
   const totalPersons = $derived(store.totalPersons);
   const totalCost = $derived(store.cost.total);
@@ -64,8 +64,8 @@
         stroke="currentColor"
         stroke-width="2.5"
         stroke-linecap="round"
-        stroke-linejoin="round"
-      ><path d="M19 12H5" /><path d="M12 19l-7-7 7-7" /></svg>
+        stroke-linejoin="round"><path d="M19 12H5" /><path d="M12 19l-7-7 7-7" /></svg
+      >
       {t('backHomeShort')}
     </button>
 
@@ -74,8 +74,9 @@
       <h1 class="booking-h1">{isTable ? t('tableBookingTitle') : t('bookingTitle')}</h1>
       <p class="booking-p">{isTable ? t('tableBookingP') : t('bookingP')}</p>
     </div>
-  </div>  <div class="mb-6">
-    <Stepper steps={steps} current={store.step} />
+  </div>
+  <div class="mb-6">
+    <Stepper {steps} current={store.step} />
   </div>
 
   {#if store.inlineError && store.step === 1}
@@ -117,18 +118,20 @@
           bind:value={store.visitorPhone}
           error={store.errors.visitorPhone}
         />
-        <Select
-          id="relation"
-          label={t('relationLabel')}
-          required
-          bind:value={store.relation}
-          error={store.errors.relation}
-        >
-          <option value="">{t('relationPlaceholder')}</option>
-          {#each RELATION_KEYS as key (key)}
-            <option value={t(key)}>{t(key)}</option>
-          {/each}
-        </Select>
+        {#if !isTable}
+          <Select
+            id="relation"
+            label={t('relationLabel')}
+            required
+            bind:value={store.relation}
+            error={store.errors.relation}
+          >
+            <option value="">{t('relationPlaceholder')}</option>
+            {#each RELATION_KEYS as key (key)}
+              <option value={t(key)}>{t(key)}</option>
+            {/each}
+          </Select>
+        {/if}
         <Select
           id="visitorReligion"
           label={t('religionLabel')}
@@ -164,7 +167,9 @@
         <div class="form-group full">
           <label for="visitorCount" class="mb-1.5 block text-sm font-semibold text-text-primary">
             {t('visitorCountLabel')} <span class="text-rose-500 ml-0.5">*</span>
-            <span style="font-weight:400;color:var(--app-text-secondary)">({t('visitorCountSub')})</span>
+            <span style="font-weight:400;color:var(--app-text-secondary)"
+              >({t('visitorCountSub')})</span
+            >
           </label>
           <div class="count-grid" role="group" aria-label={t('visitorCountLabel')}>
             {#each COUNT_OPTIONS as n (n)}
@@ -184,14 +189,23 @@
       {#if store.visitorCount > 1}
         <div class="extra-visitors-wrap">
           <div class="extra-visitors-title">
-            <span class="flex h-6 w-6 items-center justify-center rounded-md bg-red-50 text-xs font-bold text-red-700">+</span>
-            {t('extraVisitorTitle')} <span style="font-weight:400;color:var(--app-text-secondary)">({t('extraVisitorSub')})</span>
+            <span
+              class="flex h-6 w-6 items-center justify-center rounded-md bg-red-50 text-xs font-bold text-red-700"
+              >+</span
+            >
+            {t('extraVisitorTitle')}
+            <span style="font-weight:400;color:var(--app-text-secondary)"
+              >({t('extraVisitorSub')})</span
+            >
           </div>
           {#each store.extras as extra, i (i)}
             {@const num = i + 2}
             <div class="extra-visitor-block">
               <div class="extra-visitor-num">
-                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-red-700 text-xs font-bold text-white">{num}</span>
+                <span
+                  class="flex h-6 w-6 items-center justify-center rounded-full bg-red-700 text-xs font-bold text-white"
+                  >{num}</span
+                >
                 ผู้เข้าร่วมกิจกรรม {num}
               </div>
               <div class="form-grid">
@@ -231,18 +245,20 @@
                   bind:value={extra.allergy}
                   error={store.errors[`extraAllergy${num}`]}
                 />
-                <Select
-                  id="extraVisitorRelation{num}"
-                  label="ความสัมพันธ์"
-                  required
-                  bind:value={extra.relation}
-                  error={store.errors[`extraRelation${num}`]}
-                >
-                  <option value="">{t('relationPlaceholder')}</option>
-                  {#each RELATION_KEYS as key (key)}
-                    <option value={t(key)}>{t(key)}</option>
-                  {/each}
-                </Select>
+                {#if !isTable}
+                  <Select
+                    id="extraVisitorRelation{num}"
+                    label="ความสัมพันธ์"
+                    required
+                    bind:value={extra.relation}
+                    error={store.errors[`extraRelation${num}`]}
+                  >
+                    <option value="">{t('relationPlaceholder')}</option>
+                    {#each RELATION_KEYS as key (key)}
+                      <option value={t(key)}>{t(key)}</option>
+                    {/each}
+                  </Select>
+                {/if}
               </div>
               {#if CHILD_RELATIONS.includes(extra.relation)}
                 <div class="mt-3">
@@ -288,7 +304,7 @@
       <span>{t('rulesDesc')}</span><br />
       {#if isTable}
         รับจองวันละ <strong>{store.perDay} โต๊ะ</strong> · ค่าร่วมกิจกรรม
-        <strong>1,000 บาท / คน</strong> (ไม่มีผู้ต้องขังร่วมโต๊ะ)<br />
+        <strong>1,000 บาท / คน</strong><br />
         <span style="color:var(--emerald-600)">
           จองแล้วชำระเงินได้ทันที — ระบบจะกันโต๊ะไว้ให้ <strong>{store.holdMinutes} นาที</strong>
           หากยังไม่ชำระเงินภายในเวลาดังกล่าว การจองจะถูกยกเลิกอัตโนมัติ</span
@@ -297,7 +313,11 @@
         รับจองวันละ <strong>{store.perDay} โต๊ะ</strong> · ค่าร่วมกิจกรรม
         <strong>1,000 บาท / คน</strong> (คิดรวมผู้ต้องขัง 1 คนด้วย)<br />
       {/if}
-      <span style="color:var(--emerald-600)" class="child-price-note">บุตร/ธิดา (ผู้เข้าร่วมคนที่ 2+): อายุ &lt;5 ปี ฟรี, 5-8 ปี 500 บาท, &gt;8 ปี 1,000 บาท</span><br />
+      {#if !isTable}
+        <span style="color:var(--emerald-600)" class="child-price-note"
+          >บุตร/ธิดา (ผู้เข้าร่วมคนที่ 2+): อายุ &lt;5 ปี ฟรี, 5-8 ปี 500 บาท, &gt;8 ปี 1,000 บาท</span
+        ><br />
+      {/if}
       <strong>{t('selectDate')}:</strong> <br />
       <span>{t('extraVisitorSub')}</span><br />
       <span>{t('paymentInfoText')}</span>
@@ -349,8 +369,8 @@
             stroke="currentColor"
             stroke-width="2.5"
             stroke-linecap="round"
-            stroke-linejoin="round"
-          ><path d="M20 6L9 17l-5-5" /></svg>
+            stroke-linejoin="round"><path d="M20 6L9 17l-5-5" /></svg
+          >
         </span>
         {t('confirmInfo')}
       </div>

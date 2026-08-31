@@ -88,6 +88,9 @@ export function calcCost(
   /** False for a no-prisoner table booking — mirrors applyServerPricing's
    *  includePrisonerFee on the backend so the quote matches the charge. */
   includePrisonerFee = true,
+  /** Table bookings have no prisoner, so no relationship (and no child
+   *  discount) applies — everyone pays the standard adult price. */
+  allowChildDiscount = true,
 ): CostSummary {
   let extraFees = 0;
   const discountNotes: string[] = [];
@@ -99,7 +102,7 @@ export function calcCost(
 
   // Main visitor (person #1) — child discount applies when relation is child.
   let mainFee = PRICE_PER_PERSON;
-  if (CHILD_RELATIONS.includes(mainRelation)) {
+  if (allowChildDiscount && CHILD_RELATIONS.includes(mainRelation)) {
     const a = parseInt(mainAge, 10);
     if (!isNaN(a)) {
       if (a < 5) {
@@ -114,14 +117,14 @@ export function calcCost(
     }
   }
   if (mainFee === PRICE_PER_PERSON) adults = 1;
-  if (CHILD_RELATIONS.includes(mainRelation) && mainFee < PRICE_PER_PERSON) {
+  if (allowChildDiscount && CHILD_RELATIONS.includes(mainRelation) && mainFee < PRICE_PER_PERSON) {
     discountNotes.push(`ผู้จอง: ${mainFee === 0 ? 'ฟรี' : mainFee + ' บาท'}`);
   }
 
   extras.forEach((v, idx) => {
     let fee = PRICE_PER_PERSON;
     let isChild = false;
-    if (CHILD_RELATIONS.includes(v.relation)) {
+    if (allowChildDiscount && CHILD_RELATIONS.includes(v.relation)) {
       const a = parseInt(v.age, 10);
       if (!isNaN(a)) {
         if (a < 5) {
@@ -139,7 +142,7 @@ export function calcCost(
     }
     extraFees += fee;
     if (!isChild) adults++;
-    if (CHILD_RELATIONS.includes(v.relation) && fee < PRICE_PER_PERSON) {
+    if (allowChildDiscount && CHILD_RELATIONS.includes(v.relation) && fee < PRICE_PER_PERSON) {
       discountNotes.push(`คนที่ ${idx + 2}: ${fee === 0 ? 'ฟรี' : fee + ' บาท'}`);
     }
   });
@@ -241,7 +244,14 @@ class BookingStoreImpl {
     return calendarTitle(this.calYear, this.calMonth);
   }
   get cost(): CostSummary {
-    return calcCost(this.visitorCount, this.extras, this.relation, this.visitorAge, !this.isTable);
+    return calcCost(
+      this.visitorCount,
+      this.extras,
+      this.relation,
+      this.visitorAge,
+      !this.isTable,
+      !this.isTable,
+    );
   }
 
   /** Seats on the booking: a table booking has no prisoner occupying one. */
@@ -474,12 +484,13 @@ class BookingStoreImpl {
       if (!phoneResult.valid && phoneResult.error) errs.visitorPhone = phoneResult.error;
     }
 
-    if (!this.relation) errs.relation = 'กรุณาเลือกความสัมพันธ์';
+    if (!this.isTable && !this.relation) errs.relation = 'กรุณาเลือกความสัมพันธ์';
     if (!this.religion.trim()) errs.religion = 'กรุณาเลือกศาสนา';
     if (!this.allergy.trim()) errs.allergy = 'กรุณาระบุการแพ้อาหาร (ถ้าไม่มีให้กรอก "ไม่มี")';
 
-    // Main visitor child discount requires age.
-    if (CHILD_RELATIONS.includes(this.relation)) {
+    // Main visitor child discount requires age — but only in the prisoner-visit
+    // flow; table bookings have no relationship so no child discount applies.
+    if (!this.isTable && CHILD_RELATIONS.includes(this.relation)) {
       const mainAgeNum = parseInt(this.visitorAge, 10);
       if (isNaN(mainAgeNum) || mainAgeNum < 0) {
         errs.visitorAge = 'กรุณากรอกอายุ (ปี) ของผู้จอง (บุตร/ธิดา)';
@@ -500,8 +511,9 @@ class BookingStoreImpl {
       if (!v.allergy.trim())
         errs[`extraAllergy${n}`] =
           `กรุณาระบุการแพ้อาหารสำหรับผู้เข้าร่วมกิจกรรมคนที่ ${n} (ถ้าไม่มีให้กรอก "ไม่มี")`;
-      if (!v.relation) errs[`extraRelation${n}`] = `กรุณาเลือกความสัมพันธ์ผู้ร่วมกิจกรรมคนที่ ${n}`;
-      if (CHILD_RELATIONS.includes(v.relation)) {
+      if (!this.isTable && !v.relation)
+        errs[`extraRelation${n}`] = `กรุณาเลือกความสัมพันธ์ผู้ร่วมกิจกรรมคนที่ ${n}`;
+      if (!this.isTable && CHILD_RELATIONS.includes(v.relation)) {
         const a = parseInt(v.age, 10);
         if (isNaN(a) || a < 0)
           errs[`extraAge${n}`] =
