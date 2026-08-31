@@ -94,6 +94,7 @@
   "allergyPlaceholder": "ระบุอาการแพ้ หรือ 'ไม่มี'",
   "visitorCountLabel": "จำนวนผู้เข้าร่วมกิจกรรม",
   "visitorCountSub": "(ไม่รวมผู้ต้องขัง · สูงสุด 10 คน)",
+  "visitorCountSubTable": "(รวมผู้จอง · 1 โต๊ะรับได้สูงสุด 5 คน)",
   "extraVisitorTitle": "ผู้เข้าร่วมกิจกรรมเพิ่มเติม",
   "extraVisitorSub": "(ผู้เข้าร่วมกิจกรรมคนที่ 2 เป็นต้นไป)",
   "extraVisitorName": "ชื่อ-นามสกุล",

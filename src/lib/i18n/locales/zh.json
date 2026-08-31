@@ -95,6 +95,7 @@
   "allergyPlaceholder": "说明过敏情况或 '无'",
   "visitorCountLabel": "参访者人数",
   "visitorCountSub": "(不含囚犯 · 最多 10 人)",
+  "visitorCountSubTable": "(含预约人 · 每桌最多 5 人)",
   "extraVisitorTitle": "额外参访者",
   "extraVisitorSub": "(参访者第 2 人起)",
   "extraVisitorName": "姓名",

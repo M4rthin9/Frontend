@@ -40,7 +40,9 @@
     'relationOther',
   ];
 
-  const COUNT_OPTIONS = Array.from({ length: 10 }, (_, i) => i + 1);
+  // One table seats 5 people (the person who books included). The prisoner-visit
+  // flow has no seat limit, so it keeps the original 1-10 picker.
+  const COUNT_OPTIONS = $derived(Array.from({ length: store.isTable ? 5 : 10 }, (_, i) => i + 1));
 
   function parseLocalDate(dateStr: string): Date {
     const [y, m, d] = dateStr.split('-').map(Number);
@@ -168,7 +170,7 @@
           <label for="visitorCount" class="mb-1.5 block text-sm font-semibold text-text-primary">
             {t('visitorCountLabel')} <span class="text-rose-500 ml-0.5">*</span>
             <span style="font-weight:400;color:var(--app-text-secondary)"
-              >({t('visitorCountSub')})</span
+              >({isTable ? t('visitorCountSubTable') : t('visitorCountSub')})</span
             >
           </label>
           <div class="count-grid" role="group" aria-label={t('visitorCountLabel')}>

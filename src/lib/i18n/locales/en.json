@@ -95,6 +95,7 @@
   "allergyPlaceholder": "Specify allergy or 'None'",
   "visitorCountLabel": "Number of Participants",
   "visitorCountSub": "(excludes prisoner · max 10 people)",
+  "visitorCountSubTable": "(incl. booker · max 5 per table)",
   "extraVisitorTitle": "Additional Participants",
   "extraVisitorSub": "(Participant #2 onwards)",
   "extraVisitorName": "Name",

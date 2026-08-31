@@ -95,6 +95,7 @@
   "allergyPlaceholder": "Ghi rõ dị ứng hoặc 'Không'",
   "visitorCountLabel": "Số người tham gia",
   "visitorCountSub": "(không tính phạm nhân · tối đa 10 người)",
+  "visitorCountSubTable": "(gồm người đặt · tối đa 5 người/bàn)",
   "extraVisitorTitle": "Người tham gia bổ sung",
   "extraVisitorSub": "(Người tham gia số 2 trở đi)",
   "extraVisitorName": "Họ tên",
