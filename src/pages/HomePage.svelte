@@ -110,55 +110,57 @@
     </p>
 
     <!-- primary CTAs -->
-    <div class="mt-9 grid gap-3.5 sm:grid-cols-2 sm:gap-4">
+    <div
+      class="mt-9 grid items-stretch gap-3.5 sm:grid-cols-3 sm:gap-4 lg:-mx-16 lg:w-[calc(100%+8rem)] xl:-mx-24 xl:w-[calc(100%+12rem)]"
+    >
       <button
         type="button"
-        class="group relative overflow-hidden rounded-2xl bg-gold-500 px-5 py-5 text-left text-white shadow-md transition-colors duration-200 hover:bg-gold-600"
+        class="group relative overflow-hidden rounded-2xl bg-gold-500 h-full px-4 py-5 lg:px-5 text-left text-white shadow-md transition-colors duration-200 hover:bg-gold-600"
         onclick={() => navigate('booking')}
       >
-        <div class="relative z-10 flex items-center gap-3.5">
-          <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20">
+        <div class="relative z-10 flex h-full items-center gap-3 lg:gap-3.5">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/20">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6M9 4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1M9 11h6m-6 4h4"/></svg>
           </span>
-          <span class="flex-1">
-            <span class="block text-base font-bold leading-tight">{@html t('btnBook')}</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-[15px] font-bold leading-tight lg:text-base">{@html t('btnBook')}</span>
             <small class="mt-0.5 block text-xs font-medium text-white/80">{@html t('btnBookSub')}</small>
           </span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="hidden h-5 w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 xl:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
       </button>
 
       <button
         type="button"
-        class="group relative overflow-hidden rounded-2xl bg-emerald-600 px-5 py-5 text-left text-white shadow-md transition-colors duration-200 hover:bg-emerald-700"
+        class="group relative overflow-hidden rounded-2xl bg-emerald-600 h-full px-4 py-5 lg:px-5 text-left text-white shadow-md transition-colors duration-200 hover:bg-emerald-700"
         onclick={() => navigate('table-booking')}
       >
-        <div class="relative z-10 flex items-center gap-3.5">
-          <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20">
+        <div class="relative z-10 flex h-full items-center gap-3 lg:gap-3.5">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/20">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18M5 10V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3M7 10v9m10-9v9"/></svg>
           </span>
-          <span class="flex-1">
-            <span class="block text-base font-bold leading-tight">{@html t('btnTableBook')}</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-[15px] font-bold leading-tight lg:text-base">{@html t('btnTableBook')}</span>
             <small class="mt-0.5 block text-xs font-medium text-white/80">{@html t('btnTableBookSub')}</small>
           </span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="hidden h-5 w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 xl:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
       </button>
 
       <button
         type="button"
-        class="group rounded-2xl border border-white/15 bg-white/5 px-5 py-5 text-left text-white backdrop-blur-sm transition-colors duration-200 hover:bg-white/10"
+        class="group rounded-2xl border border-white/15 bg-white/5 h-full px-4 py-5 lg:px-5 text-left text-white backdrop-blur-sm transition-colors duration-200 hover:bg-white/10"
         onclick={() => navigate('status')}
       >
-        <div class="flex items-center gap-3.5">
-          <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15">
+        <div class="relative z-10 flex h-full items-center gap-3 lg:gap-3.5">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/15">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
           </span>
-          <span class="flex-1">
-            <span class="block text-base font-bold leading-tight">{@html t('btnStatus')}</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-[15px] font-bold leading-tight lg:text-base">{@html t('btnStatus')}</span>
             <small class="mt-0.5 block text-xs font-medium text-red-100/60">{@html t('btnStatusSub')}</small>
           </span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="hidden h-5 w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 xl:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
       </button>
     </div>

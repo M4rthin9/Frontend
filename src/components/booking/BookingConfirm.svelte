@@ -129,7 +129,7 @@
          it must not promise a 1-2 day review — it goes straight to payment. -->
     <strong>{t('afterSubmit')}:</strong>
     <span>{store.isTable ? t('afterSubmitTextTable') : t('afterSubmitText')}</span><br />
-    <strong>{t('checkStatusInfo')}:</strong> <span>{t('checkStatusInfoText')}</span><br />
+    <strong>{t('checkStatusInfo')}:</strong> <span>{@html t('checkStatusInfoText')}</span><br />
     <strong>{t('paymentInfo')}:</strong> <span>{t('paymentInfoText')}</span><br />
     {#if !store.isTable}
       <strong>{t('vinaiInfo')}:</strong> <span>{t('vinaiInfoText')}</span>

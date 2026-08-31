@@ -301,7 +301,7 @@
 
     <div class="rules">
       <strong>{t('confirmRules')}</strong><br />
-      <span>{t('rulesDesc')}</span><br />
+      <span>{@html t('rulesDesc')}</span><br />
       {#if isTable}
         รับจองวันละ <strong>{store.perDay} โต๊ะ</strong> · ค่าร่วมกิจกรรม
         <strong>1,000 บาท / คน</strong><br />

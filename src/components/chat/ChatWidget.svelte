@@ -4,11 +4,20 @@
 
   let inputValue = $state('');
 
+  /** Some of these labels are stepper copy carrying a <br>. A quick-question
+   *  chip is a one-line pill, so flatten the markup rather than render it. */
+  const plain = (v: string): string =>
+    v
+      .replace(/<br\s*\/?>/gi, ' ')
+      .replace(/<[^>]+>/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
   const quickQuestions = $derived([
-    { label: t('price'), question: i18n.lang === 'th' ? 'ค่าใช้จ่ายเท่าไหร่' : i18n.lang === 'zh' ? '费用多少钱' : 'How much does it cost' },
-    { label: t('stepBooking'), question: i18n.lang === 'th' ? 'จองยังไง' : i18n.lang === 'zh' ? '怎么预约' : 'How to book' },
-    { label: t('step2'), question: i18n.lang === 'th' ? 'เช็คสถานะยังไง' : i18n.lang === 'zh' ? '怎么查询状态' : 'How to check status' },
-    { label: t('rules'), question: i18n.lang === 'th' ? 'ติดต่อเจ้าหน้าที่' : i18n.lang === 'zh' ? '联系工作人员' : 'Contact officers' },
+    { label: plain(t('price')), question: i18n.lang === 'th' ? 'ค่าใช้จ่ายเท่าไหร่' : i18n.lang === 'zh' ? '费用多少钱' : 'How much does it cost' },
+    { label: plain(t('stepBooking')), question: i18n.lang === 'th' ? 'จองยังไง' : i18n.lang === 'zh' ? '怎么预约' : 'How to book' },
+    { label: plain(t('step2')), question: i18n.lang === 'th' ? 'เช็คสถานะยังไง' : i18n.lang === 'zh' ? '怎么查询状态' : 'How to check status' },
+    { label: plain(t('rules')), question: i18n.lang === 'th' ? 'ติดต่อเจ้าหน้าที่' : i18n.lang === 'zh' ? '联系工作人员' : 'Contact officers' },
   ]);
 
   function ask(question: string) {
