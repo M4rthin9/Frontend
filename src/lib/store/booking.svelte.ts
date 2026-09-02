@@ -556,8 +556,11 @@ class BookingStoreImpl {
   // ===== PRISONER-NAME REJECTION (table mode) =====
   /**
    * Ensure a table booking has no participant whose name matches a prisoner
-   * in the system. Returns the offending name, or null when clear.
-   * Incidentally loads the prisoner master for table mode on first use.
+   * in the system. If the user typed a Thai honorific (นาย/นาง/น.ส./…) it is
+   * stripped for matching so the search still finds the prisoner, but the name
+   * is returned exactly as entered (title included) for display. Returns the
+   * offending name, or null when clear. Incidentally loads the prisoner master
+   * for table mode on first use.
    */
   async findPrisonerNameMatch(names: string[]): Promise<string | null> {
     if (!this.isTable) return null;
@@ -571,12 +574,26 @@ class BookingStoreImpl {
         return null;
       }
     }
-    const norm = (s: string): string => String(s || '').trim().toLowerCase().replace(/\s+/g, '');
-    const namesNorm = names.map(norm).filter(Boolean);
-    if (namesNorm.length === 0) return null;
+    // Normalize by removing Thai honorifics (นาย, นาง, น.ส., ด.ช., …) and any
+    // whitespace so typed names match the prisoner master regardless of title.
+    const norm = (s: string): string =>
+      String(s || '')
+        .trim()
+        .toLowerCase()
+        .replace(/^(นางสาว|นาง|นาย|น\.ส\.|ด\.ช\.|ด\.ญ\.|คุณ)\s*/, '')
+        .replace(/\s+/g, '');
+    const originalByNorm = new Map<string, string>();
+    for (const name of names) {
+      const n = norm(name);
+      if (n && !originalByNorm.has(n)) originalByNorm.set(n, name);
+    }
+    if (originalByNorm.size === 0) return null;
     for (const p of this.prisonerMaster) {
       const pName = norm(p.prisonerName);
-      if (pName && namesNorm.includes(pName)) return p.prisonerName;
+      if (pName && originalByNorm.has(pName)) {
+        // Return the name exactly as the user entered it (with its title still shown).
+        return originalByNorm.get(pName) ?? p.prisonerName;
+      }
     }
     return null;
   }
