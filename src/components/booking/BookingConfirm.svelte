@@ -17,10 +17,12 @@
   let turnstileEl: HTMLDivElement;
   let copiedSummary = $state(false);
   let showConfirmModal = $state(false);
+  let showTBLReminderModal = $state(false);
 
   onMount(() => {
     store.turnstileError = '';
     void store.setupTurnstile(turnstileEl);
+    if (store.isTable) showTBLReminderModal = true;
   });
 
   const data = $derived(store.confirmData);
@@ -258,3 +260,25 @@
     </Button>
   </div>
 </Modal>
+
+{#if store.isTable}
+  <Modal
+    bind:open={showTBLReminderModal}
+    title={t('tblReminderTitle')}
+    onClose={() => (showTBLReminderModal = false)}
+  >
+    <p class="confirm-modal-text">{t('tblReminderText')}</p>
+    <div style="display:flex;gap:10px;margin-top:1rem">
+      <Button
+        variant="primary"
+        size="lg"
+        style="flex:1"
+        onclick={() => {
+          showTBLReminderModal = false;
+        }}
+      >
+        ✓ {t('tblReminderOk')}
+      </Button>
+    </div>
+  </Modal>
+{/if}
