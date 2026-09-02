@@ -40,6 +40,8 @@
   "tableBookingBadge": "Book a Table",
   "tableBookingTitle": "Book a Table for External Visitors",
   "tableBookingP": "Central Special Correctional Institution · Book a table without naming an inmate, then pay straight away",
+  "tableExternalOnlyTitle": "External Visitors Only",
+  "tableExternalOnlyText": "This table booking is for external visitors only — no prisoner will join the meal at the table. You and your guests can enjoy the meal together in a private and comfortable setting.",
   "stepBooking": "Booking Info",
   "stepConfirm": "Confirm Info",
   "stepRef": "Get Reference No.",

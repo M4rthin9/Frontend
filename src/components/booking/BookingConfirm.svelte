@@ -62,6 +62,13 @@
 
 <div>
   {#if data}
+    {#if store.isTable}
+      <div class="table-external-notice" role="note">
+        <h3>{t('tableExternalOnlyTitle')}</h3>
+        <p>{t('tableExternalOnlyText')}</p>
+      </div>
+    {/if}
+
     <div class="confirm-hero">
       <div class="confirm-hero-date">วันที่เข้าร่วม</div>
       <div class="confirm-hero-main">{thDate}</div>

@@ -40,6 +40,8 @@
   "tableBookingBadge": "预约餐桌",
   "tableBookingTitle": "外部人士预约餐桌",
   "tableBookingP": "中央特别矫正院 · 无需填写在押人员即可预约餐桌，并立即付款",
+  "tableExternalOnlyTitle": "仅限外部访客预订",
+  "tableExternalOnlyText": "此餐桌预约仅供外部访客使用，不会有在押人员同桌用餐。您可以与同行者一起在私密舒适的环境中用餐。",
   "stepBooking": "预约信息",
   "stepConfirm": "确认信息",
   "stepRef": "获取参考编号",

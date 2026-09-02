@@ -2210,6 +2210,28 @@
   border-left: 4px solid var(--emerald-500);
 }
 
+.booking-app .table-external-notice {
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  background: var(--indigo-50);
+  border: 1px solid var(--indigo-200);
+  border-left: 4px solid var(--indigo-600);
+}
+
+.booking-app .table-external-notice h3 {
+  color: var(--indigo-800);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  margin-bottom: 0.375rem;
+}
+
+.booking-app .table-external-notice p {
+  font-size: 0.875rem;
+  color: var(--app-text-secondary);
+  line-height: 1.7;
+}
+
 .booking-app .paid-notice.done {
   background: var(--app-bg-subtle);
   border-color: var(--app-border-subtle);
@@ -2648,6 +2670,16 @@
   background: rgba(16, 185, 129, 0.1);
   border-color: #047857;
   border-left-color: #34d399;
+}
+
+.dark .booking-app .table-external-notice {
+  background: rgba(129, 140, 248, 0.1);
+  border-color: #3730a3;
+  border-left-color: #818cf8;
+}
+
+.dark .booking-app .table-external-notice h3 {
+  color: #a5b4fc;
 }
 
 .dark .booking-app .paid-notice.done {

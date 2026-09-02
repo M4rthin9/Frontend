@@ -40,6 +40,8 @@
   "tableBookingBadge": "Đặt bàn tham gia hoạt động",
   "tableBookingTitle": "Đặt bàn cho người ngoài",
   "tableBookingP": "Trại Cải huấn Đặc biệt Trung ương · Đặt bàn mà không cần nêu phạm nhân, rồi thanh toán ngay",
+  "tableExternalOnlyTitle": "Chỉ dành cho người bên ngoài",
+  "tableExternalOnlyText": "Đặt bàn này chỉ dành cho những người bên ngoài — sẽ không có phạm nhân dùng bữa cùng bàn. Quý khách có thể thưởng thức bữa ăn một cách riêng tư và thoải mái.",
   "stepBooking": "Thông tin đặt lịch",
   "stepConfirm": "Xác nhận thông tin",
   "stepRef": "Nhận mã tham chiếu",
