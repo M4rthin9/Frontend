@@ -582,17 +582,17 @@ class BookingStoreImpl {
         .toLowerCase()
         .replace(/^(นางสาว|นาง|นาย|น\.ส\.|ด\.ช\.|ด\.ญ\.|คุณ)\s*/, '')
         .replace(/\s+/g, '');
-    const originalByNorm = new Map<string, string>();
-    for (const name of names) {
-      const n = norm(name);
-      if (n && !originalByNorm.has(n)) originalByNorm.set(n, name);
-    }
-    if (originalByNorm.size === 0) return null;
+    const normalized = names
+      .map((name) => ({ original: name, key: norm(name) }))
+      .filter((x) => x.key.length > 0);
+    if (normalized.length === 0) return null;
     for (const p of this.prisonerMaster) {
       const pName = norm(p.prisonerName);
-      if (pName && originalByNorm.has(pName)) {
+      if (!pName) continue;
+      const hit = normalized.find((x) => x.key === pName);
+      if (hit) {
         // Return the name exactly as the user entered it (with its title still shown).
-        return originalByNorm.get(pName) ?? p.prisonerName;
+        return hit.original || p.prisonerName;
       }
     }
     return null;
