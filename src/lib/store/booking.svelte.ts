@@ -553,6 +553,34 @@ class BookingStoreImpl {
     return Object.keys(errs).length === 0 && this.inlineError === '';
   }
 
+  // ===== PRISONER-NAME REJECTION (table mode) =====
+  /**
+   * Ensure a table booking has no participant whose name matches a prisoner
+   * in the system. Returns the offending name, or null when clear.
+   * Incidentally loads the prisoner master for table mode on first use.
+   */
+  async findPrisonerNameMatch(names: string[]): Promise<string | null> {
+    if (!this.isTable) return null;
+    if (this.prisonerMaster.length === 0) {
+      try {
+        const prisoners = await getPrisoners();
+        this.prisonerMaster = prisoners;
+        this.savePrisonerToCache(prisoners);
+      } catch {
+        // If we cannot reach the prisoner list, fail open (do not block booking).
+        return null;
+      }
+    }
+    const norm = (s: string): string => String(s || '').trim().toLowerCase().replace(/\s+/g, '');
+    const namesNorm = names.map(norm).filter(Boolean);
+    if (namesNorm.length === 0) return null;
+    for (const p of this.prisonerMaster) {
+      const pName = norm(p.prisonerName);
+      if (pName && namesNorm.includes(pName)) return p.prisonerName;
+    }
+    return null;
+  }
+
   // ===== CONFIRM =====
   goToConfirm(): boolean {
     if (!this.validate()) return false;

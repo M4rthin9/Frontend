@@ -32,7 +32,13 @@
   let searchCount = 0;
 
   const thankYouCount = $derived(parseInt(String(found?.visitorCount)) || 1);
-  const thankYouTotal = $derived(parseInt(String(found?.total)) || (thankYouCount + 1) * 1000);
+  const thankYouIsTable = $derived(
+    String(found?.bookingType || '').trim().toLowerCase() === 'table' ||
+      String(found?.ref || '').toUpperCase().startsWith('TBL-'),
+  );
+  const thankYouTotal = $derived(
+    parseInt(String(found?.total)) || (thankYouIsTable ? thankYouCount : thankYouCount + 1) * 1000,
+  );
 
   onMount(() => {
     const lastRef = safeGetItem(sessionStorage, 'lastRef');
@@ -223,21 +229,23 @@
           <span class="detail-label">{t('lblVisitor')}</span>
           <span class="detail-value">{found.visitorName || '—'}</span>
         </div>
-        <div class="detail-row">
-          <span class="detail-label">{t('lblPrisoner')}</span>
-          <span class="detail-value">{maskPrisonerName(found.prisonerName) || '—'} (#{found.prisonerId || '—'})</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">{t('lblWing')}</span>
-          <span class="detail-value">{found.wing || '—'}</span>
-        </div>
+        {#if !thankYouIsTable}
+          <div class="detail-row">
+            <span class="detail-label">{t('lblPrisoner')}</span>
+            <span class="detail-value">{maskPrisonerName(found.prisonerName) || '—'} (#{found.prisonerId || '—'})</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">{t('lblWing')}</span>
+            <span class="detail-value">{found.wing || '—'}</span>
+          </div>
+        {/if}
         <div class="detail-row">
           <span class="detail-label">{t('lblVisitDate')}</span>
           <span class="detail-value">{found.visitDate || '—'}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">{t('lblCount')}</span>
-          <span class="detail-value">{tc('countFormat', { n: thankYouCount, total: thankYouCount + 1 })}</span>
+          <span class="detail-value">{thankYouIsTable ? tc('countFormatTable', { n: thankYouCount }) : tc('countFormat', { n: thankYouCount, total: thankYouCount + 1 })}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">{t('lblCost')}</span>

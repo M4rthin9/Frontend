@@ -55,6 +55,7 @@ export interface PublicReservation {
   ref: string;
   timestamp?: string;
   status?: string;
+  bookingType?: string;
   visitDate?: string;
   visitDateISO?: string;
   prisonerName?: string;

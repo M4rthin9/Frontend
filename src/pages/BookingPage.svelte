@@ -6,7 +6,7 @@
     RELIGION_OPTIONS,
     type BookingStore,
   } from '../lib/store/booking.svelte';
-  import { t } from '../lib/i18n/i18n.svelte';
+  import { t, tc } from '../lib/i18n/i18n.svelte';
   import { navigate } from '../lib/router.svelte';
   import Stepper from '../components/ui/Stepper.svelte';
   import Input from '../components/ui/Input.svelte';
@@ -332,7 +332,7 @@
       </div>
       <div class="bs-item">
         <span class="bs-label">{t('lblCount')}</span>
-        <span class="bs-value">{totalPersons} คน</span>
+        <span class="bs-value">{isTable ? tc('countFormatTable', { n: totalPersons }) : totalPersons + ' คน'}</span>
       </div>
       <div class="bs-item">
         <span class="bs-label">{t('lblCost')}</span>

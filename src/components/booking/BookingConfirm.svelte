@@ -5,8 +5,9 @@
     CHILD_RELATIONS,
     type BookingStore,
   } from '../../lib/store/booking.svelte';
-  import { t } from '../../lib/i18n/i18n.svelte';
+  import { t, tc } from '../../lib/i18n/i18n.svelte';
   import Button from '../ui/Button.svelte';
+  import Modal from '../ui/Modal.svelte';
   import Spinner from '../ui/Spinner.svelte';
 
   // The page decides which flow this belongs to; defaults to the prisoner-visit
@@ -15,6 +16,7 @@
 
   let turnstileEl: HTMLDivElement;
   let copiedSummary = $state(false);
+  let showConfirmModal = $state(false);
 
   onMount(() => {
     store.turnstileError = '';
@@ -36,6 +38,26 @@
         }))
       : [],
   );
+
+  let checkingNames = $state(false);
+
+  async function confirmAndSubmit(): Promise<void> {
+    if (store.submitting || checkingNames) return;
+    if (store.isTable) {
+      checkingNames = true;
+      const names = [store.visitorName, ...store.extras.map((e) => e.name)];
+      const match = await store.findPrisonerNameMatch(names);
+      checkingNames = false;
+      if (match) {
+        showConfirmModal = false;
+        store.inlineError = `⚠️ ${tc('prisonerNameRejectAlert', { name: match })}`;
+        window.scrollTo(0, 0);
+        return;
+      }
+    }
+    showConfirmModal = false;
+    void store.submit();
+  }
 
   async function copySummary(): Promise<void> {
     if (!data) return;
@@ -73,7 +95,8 @@
       <div class="confirm-hero-date">วันที่เข้าร่วม</div>
       <div class="confirm-hero-main">{thDate}</div>
       <div class="confirm-hero-meta">
-        {totalPersons} คน{store.isTable ? '' : ' (รวมผู้ต้องขัง)'} &nbsp;•&nbsp;
+        {store.isTable ? tc('countFormatTable', { n: totalPersons }) : totalPersons + ' คน'}
+        {store.isTable ? '' : ' (รวมผู้ต้องขัง)'} &nbsp;•&nbsp;
         <strong>{cost.total.toLocaleString()} บาท</strong>
       </div>
     </div>
@@ -171,7 +194,9 @@
       size="lg"
       style="flex:1"
       disabled={store.submitting}
-      onclick={() => void store.submit()}
+      onclick={() => {
+        showConfirmModal = true;
+      }}
     >
       {#if store.submitting}
         <Spinner size="sm" />
@@ -181,3 +206,55 @@
     </Button>
   </div>
 </div>
+
+<Modal bind:open={showConfirmModal} title={t('confirmBookingTitle')} onClose={() => (showConfirmModal = false)}>
+  <div class="review-grid">
+    <div class="review-section">
+      <div class="review-label">{t('lblVisitDate')}</div>
+      <div class="review-value">{thDate}</div>
+    </div>
+    <div class="review-section">
+      <div class="review-label">{t('lblCount')}</div>
+      <div class="review-value">{store.isTable ? tc('countFormatTable', { n: totalPersons }) : totalPersons + ' คน'}</div>
+    </div>
+    <div class="review-section cost">
+      <div class="review-label">{t('lblCost')}</div>
+      <div class="review-total">{cost.total.toLocaleString()} บาท</div>
+    </div>
+  </div>
+
+  {#if store.isTable}
+    <div class="table-external-notice confirm-popup-notice" role="note">
+      <h3>{t('tableExternalOnlyTitle')}</h3>
+      <p>{t('tableExternalOnlyText')}</p>
+    </div>
+  {/if}
+
+  <p class="confirm-modal-text">{t('confirmBookingText')}</p>
+
+  <div style="display:flex;gap:10px;margin-top:1rem">
+    <Button
+      variant="secondary"
+      size="lg"
+      style="flex:0.45"
+      onclick={() => {
+        showConfirmModal = false;
+      }}
+    >
+      ← {t('confirmBookingCancel')}
+    </Button>
+    <Button
+      variant="primary"
+      size="lg"
+      style="flex:1"
+      disabled={store.submitting || checkingNames}
+      onclick={() => void confirmAndSubmit()}
+    >
+      {#if store.submitting || checkingNames}
+        <Spinner size="sm" />
+      {:else}
+        ✓ {t('confirmBookingConfirm')}
+      {/if}
+    </Button>
+  </div>
+</Modal>

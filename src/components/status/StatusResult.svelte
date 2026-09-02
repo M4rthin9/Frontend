@@ -66,7 +66,11 @@
   }
 
   const visitorCount = $derived(parseInt(String(booking.visitorCount)) || 1);
-  const totalPersons = $derived(visitorCount + 1);
+  const isTable = $derived(
+    String(booking.bookingType || '').trim().toLowerCase() === 'table' ||
+      String(booking.ref || '').toUpperCase().startsWith('TBL-'),
+  );
+  const totalPersons = $derived(isTable ? visitorCount : visitorCount + 1);
   const total = $derived(parseInt(String(booking.total)) || totalPersons * 1000);
 
   const visitors = $derived.by(() => {
@@ -155,21 +159,23 @@
         <span class="lbl">{t('lblVisitor')}</span>
         <span class="val">{booking.visitorName || '—'}</span>
       </div>
-      <div class="info-row">
-        <span class="lbl">{t('lblPrisoner')}</span>
-        <span class="val">{maskPrisonerName(booking.prisonerName) || '—'} (#{booking.prisonerId || '—'})</span>
-      </div>
-      <div class="info-row">
-        <span class="lbl">{t('lblWing')}</span>
-        <span class="val">{booking.wing || '—'}</span>
-      </div>
+      {#if !isTable}
+        <div class="info-row">
+          <span class="lbl">{t('lblPrisoner')}</span>
+          <span class="val">{maskPrisonerName(booking.prisonerName) || '—'} (#{booking.prisonerId || '—'})</span>
+        </div>
+        <div class="info-row">
+          <span class="lbl">{t('lblWing')}</span>
+          <span class="val">{booking.wing || '—'}</span>
+        </div>
+      {/if}
       <div class="info-row">
         <span class="lbl">{t('lblVisitDate')}</span>
         <span class="val">{booking.visitDate || '—'}</span>
       </div>
       <div class="info-row">
         <span class="lbl">{t('lblCount')}</span>
-        <span class="val">{tc('countFormat', { n: visitorCount, total: totalPersons })}</span>
+        <span class="val">{isTable ? tc('countFormatTable', { n: visitorCount }) : tc('countFormat', { n: visitorCount, total: totalPersons })}</span>
       </div>
       <div class="info-row">
         <span class="lbl">{t('lblCost')}</span>

@@ -2232,6 +2232,17 @@
   line-height: 1.7;
 }
 
+.booking-app .confirm-popup-notice {
+  margin-bottom: 1rem;
+}
+
+.booking-app .confirm-modal-text {
+  font-size: 0.875rem;
+  color: var(--app-text-secondary);
+  line-height: 1.6;
+  margin-top: 0.25rem;
+}
+
 .booking-app .paid-notice.done {
   background: var(--app-bg-subtle);
   border-color: var(--app-border-subtle);
