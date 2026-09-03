@@ -5,6 +5,7 @@
   import { i18n, t } from './lib/i18n/i18n.svelte';
   import { ui } from './lib/store/ui.svelte';
   import DevBanner from './components/layout/DevBanner.svelte';
+  import Header from './components/layout/Header.svelte';
   import Footer from './components/layout/Footer.svelte';
   import Toast from './components/ui/Toast.svelte';
   import ChatWidget from './components/chat/ChatWidget.svelte';
@@ -44,6 +45,7 @@
 
 <div class="flex min-h-screen flex-col bg-background">
   <DevBanner />
+  <Header />
 
   <main class="flex-1">
     {#key router.route}

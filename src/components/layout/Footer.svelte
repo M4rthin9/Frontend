@@ -59,7 +59,7 @@
 
     <div class="mt-4 border-t border-border-subtle pt-4">
       <p class="text-xs text-text-tertiary">
-        ออกแบบและพัฒนาโดย <span class="font-semibold text-text-secondary">พงศ์สิน พวษ์วชิรินทร์</span>
+        ออกแบบและพัฒนาโดย <span class="font-semibold text-text-secondary">M4RTHIN9</span>
       </p>
     </div>
   </div>
