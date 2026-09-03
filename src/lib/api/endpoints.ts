@@ -150,10 +150,28 @@ export async function getNotes(ref: string): Promise<Note[]> {
   return data.notes ?? [];
 }
 
+export interface TableBookingPublicConfig {
+  enabled: boolean;
+  perDay: number;
+  holdMinutes: number;
+  seatsPerTable: number;
+  /** When true the booking page blocks table booking behind a maintenance popup. */
+  maintenance: boolean;
+}
+
 export interface PublicSettings {
   paymentEnabled: boolean;
   paymentClosedMessage: string;
+  tableBooking: TableBookingPublicConfig;
 }
+
+const DEFAULT_TABLE_BOOKING: TableBookingPublicConfig = {
+  enabled: true,
+  perDay: 10,
+  holdMinutes: 60,
+  seatsPerTable: 5,
+  maintenance: true,
+};
 
 /** Public read of the booking-site settings. Fails open: if the backend is
  *  unreachable we must never wrongly tell a visitor that payment is closed. */
@@ -163,14 +181,24 @@ export async function getPublicSettings(): Promise<PublicSettings> {
       status: string;
       paymentEnabled?: boolean;
       paymentClosedMessage?: string;
+      tableBooking?: Partial<TableBookingPublicConfig>;
     }>('/api/public-settings', {});
-    if (data.status !== 'ok') return { paymentEnabled: true, paymentClosedMessage: '' };
+    if (data.status !== 'ok') {
+      return { paymentEnabled: true, paymentClosedMessage: '', tableBooking: DEFAULT_TABLE_BOOKING };
+    }
     return {
       paymentEnabled: data.paymentEnabled !== false,
       paymentClosedMessage: data.paymentClosedMessage ?? '',
+      tableBooking: {
+        enabled: data.tableBooking?.enabled !== false,
+        perDay: data.tableBooking?.perDay ?? DEFAULT_TABLE_BOOKING.perDay,
+        holdMinutes: data.tableBooking?.holdMinutes ?? DEFAULT_TABLE_BOOKING.holdMinutes,
+        seatsPerTable: data.tableBooking?.seatsPerTable ?? DEFAULT_TABLE_BOOKING.seatsPerTable,
+        maintenance: data.tableBooking?.maintenance !== false,
+      },
     };
   } catch {
-    return { paymentEnabled: true, paymentClosedMessage: '' };
+    return { paymentEnabled: true, paymentClosedMessage: '', tableBooking: DEFAULT_TABLE_BOOKING };
   }
 }
 

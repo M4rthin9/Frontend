@@ -26,6 +26,7 @@
 
   onMount(() => {
     ui.initDarkMode();
+    void ui.loadPublicSettings();
   });
 
   $effect(() => {
@@ -80,8 +81,8 @@
   <ChatWidget />
   <Toast />
 
-  {#if router.route === 'table-booking'}
-    <Modal open title={t('tblComingSoonTitle')}>
+  {#if router.route === 'table-booking' && ui.publicSettings.tableBooking.maintenance}
+    <Modal open dismissable={false} title={t('tblComingSoonTitle')}>
       <div class="text-center">
         <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-3xl">
           🚧

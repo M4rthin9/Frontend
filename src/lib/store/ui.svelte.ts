@@ -1,4 +1,5 @@
 import { safeGetItem, safeSetItem } from '../utils/storage';
+import { getPublicSettings, type PublicSettings } from '../api/endpoints';
 
 export interface Toast {
   id: number;
@@ -6,15 +7,36 @@ export interface Toast {
   type: 'success' | 'error' | 'warning' | 'info';
 }
 
+const EMPTY_SETTINGS: PublicSettings = {
+  paymentEnabled: true,
+  paymentClosedMessage: '',
+  tableBooking: {
+    enabled: true,
+    perDay: 10,
+    holdMinutes: 60,
+    seatsPerTable: 5,
+    maintenance: true,
+  },
+};
+
 class UIStore {
   darkMode = $state(false);
   toasts = $state<Toast[]>([]);
+  publicSettings = $state<PublicSettings>(EMPTY_SETTINGS);
   private toastSeq = 0;
 
   initDarkMode(): void {
     const saved = safeGetItem(window.localStorage, 'ccc_dark_mode');
     this.darkMode = saved === '1';
     this.applyDarkClass();
+  }
+
+  async loadPublicSettings(): Promise<void> {
+    try {
+      this.publicSettings = await getPublicSettings();
+    } catch {
+      this.publicSettings = EMPTY_SETTINGS;
+    }
   }
 
   toggleDarkMode(): void {
