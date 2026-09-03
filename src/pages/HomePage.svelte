@@ -111,7 +111,7 @@
 
     <!-- primary CTAs -->
     <div
-      class="mt-9 grid items-stretch gap-3.5 sm:grid-cols-2 sm:gap-4 lg:-mx-16 lg:w-[calc(100%+8rem)] xl:-mx-24 xl:w-[calc(100%+12rem)]"
+      class="mt-9 grid items-stretch gap-3.5 sm:grid-cols-3 sm:gap-4 lg:-mx-16 lg:w-[calc(100%+8rem)] xl:-mx-24 xl:w-[calc(100%+12rem)]"
     >
       <button
         type="button"
@@ -125,6 +125,23 @@
           <span class="min-w-0 flex-1">
             <span class="block text-[15px] font-bold leading-tight lg:text-base">{@html t('btnBook')}</span>
             <small class="mt-0.5 block text-xs font-medium text-white/80">{@html t('btnBookSub')}</small>
+          </span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="hidden h-5 w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 xl:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </button>
+
+      <button
+        type="button"
+        class="group relative overflow-hidden rounded-2xl bg-emerald-600 h-full px-4 py-5 lg:px-5 text-left text-white shadow-md transition-colors duration-200 hover:bg-emerald-700"
+        onclick={() => navigate('table-booking')}
+      >
+        <div class="relative z-10 flex h-full items-center gap-3 lg:gap-3.5">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18M5 10V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3M7 10v9m10-9v9"/></svg>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-[15px] font-bold leading-tight lg:text-base">{@html t('btnTableBook')}</span>
+            <small class="mt-0.5 block text-xs font-medium text-white/80">{@html t('btnTableBookSub')}</small>
           </span>
           <svg xmlns="http://www.w3.org/2000/svg" class="hidden h-5 w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 xl:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
@@ -261,6 +278,13 @@
           onclick={() => navigate('booking')}
         >
           {t('ctaJoin')}
+        </button>
+        <button
+          type="button"
+          class="rounded-xl bg-emerald-600 px-7 py-3 text-sm font-bold text-white shadow-md transition-colors duration-200 hover:bg-emerald-700"
+          onclick={() => navigate('table-booking')}
+        >
+          {t('ctaJoinTable')}
         </button>
         <button
           type="button"

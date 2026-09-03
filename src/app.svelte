@@ -1,13 +1,14 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
-  import { router } from './lib/router.svelte';
+  import { router, navigate } from './lib/router.svelte';
   import { i18n, t } from './lib/i18n/i18n.svelte';
   import { ui } from './lib/store/ui.svelte';
   import DevBanner from './components/layout/DevBanner.svelte';
   import LangSwitcher from './components/layout/LangSwitcher.svelte';
   import Footer from './components/layout/Footer.svelte';
   import Toast from './components/ui/Toast.svelte';
+  import Modal from './components/ui/Modal.svelte';
   import ChatWidget from './components/chat/ChatWidget.svelte';
   import HomePage from './pages/HomePage.svelte';
   import BookingPage from './pages/BookingPage.svelte';
@@ -78,4 +79,22 @@
   <Footer />
   <ChatWidget />
   <Toast />
+
+  {#if router.route === 'table-booking'}
+    <Modal open title={t('tblComingSoonTitle')}>
+      <div class="text-center">
+        <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-3xl">
+          🚧
+        </div>
+        <p class="text-sm leading-relaxed text-text-secondary">{@html t('tblComingSoonText')}</p>
+        <button
+          type="button"
+          class="mt-6 w-full rounded-xl bg-red-700 px-6 py-3 text-sm font-bold text-white shadow-md transition-colors duration-200 hover:bg-red-800"
+          onclick={() => navigate('home')}
+        >
+          {t('tblComingSoonOk')}
+        </button>
+      </div>
+    </Modal>
+  {/if}
 </div>
