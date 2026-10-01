@@ -1,6 +1,13 @@
 <script lang="ts">
   import { t } from '../lib/i18n/i18n.svelte';
   import { navigate } from '../lib/router.svelte';
+  import { ui } from '../lib/store/ui.svelte';
+  import PromoPopup from '../components/promo/PromoPopup.svelte';
+  import PromoCarousel from '../components/promo/PromoCarousel.svelte';
+
+  const promo = $derived(ui.publicSettings.promo);
+  const bookingWindow = $derived(ui.publicSettings.bookingWindow);
+  const hasNews = $derived(promo.notice.enabled || promo.ads.length > 0 || !bookingWindow.open);
 
   const infoCards = $derived([
     {
@@ -183,6 +190,50 @@
     </div>
   </div>
 </section>
+
+<PromoPopup />
+
+<!-- ================= NEWS / NOTICE =================
+     Always on the page, so whatever the popup carries (and the admin notice)
+     is still reachable when the popup is switched off or was dismissed. -->
+{#if hasNews}
+  <section class="app-container pt-12 sm:pt-16">
+    <div class="mx-auto max-w-4xl">
+      <div class="text-center">
+        <h2 class="text-xl font-bold text-text-primary sm:text-2xl" style="font-family: var(--font-display);">{t('newsHeading')}</h2>
+        <div class="mx-auto mt-3 h-1 w-14 rounded-full bg-gradient-to-r from-red-600 to-gold-400"></div>
+      </div>
+
+      <div class="mt-8 flex flex-col gap-4">
+        {#if !bookingWindow.open}
+          <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-900 dark:bg-amber-950/30" role="status">
+            <h3 class="text-sm font-bold text-amber-700 dark:text-amber-300">{t('bookingClosedTitle')}</h3>
+            <p class="mt-1.5 whitespace-pre-line text-sm leading-relaxed text-text-secondary">
+              {bookingWindow.closedMessage || t('bookingClosedText')}
+            </p>
+          </div>
+        {/if}
+
+        {#if promo.notice.enabled && (promo.notice.title || promo.notice.body)}
+          <div class="rounded-2xl border border-border-subtle bg-surface p-5 shadow-sm sm:p-6">
+            {#if promo.notice.title}
+              <h3 class="text-base font-bold text-text-primary">{promo.notice.title}</h3>
+            {/if}
+            {#if promo.notice.body}
+              <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-text-secondary">{promo.notice.body}</p>
+            {/if}
+          </div>
+        {/if}
+
+        {#if promo.ads.length > 0}
+          <div class="rounded-2xl border border-border-subtle bg-surface p-3 shadow-sm sm:p-4">
+            <PromoCarousel ads={promo.ads} />
+          </div>
+        {/if}
+      </div>
+    </div>
+  </section>
+{/if}
 
 <!-- ================= INFO CARDS ================= -->
 <section class="app-container py-12 sm:py-16">

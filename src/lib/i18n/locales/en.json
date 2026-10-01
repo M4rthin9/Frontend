@@ -263,5 +263,14 @@
   "countrySG": "Singapore",
   "countryVN": "Vietnam",
   "countryHK": "Hong Kong",
-  "countryLA": "Laos"
+  "countryLA": "Laos",
+  "promoTitle": "Announcements",
+  "promoLabel": "Promotional image",
+  "promoPrev": "Previous image",
+  "promoNext": "Next image",
+  "promoHideToday": "Don't show again today",
+  "promoClose": "Close",
+  "newsHeading": "News & Announcements",
+  "bookingClosedTitle": "Booking temporarily closed",
+  "bookingClosedText": "Online booking is temporarily closed. Please come back and book again later."
 }

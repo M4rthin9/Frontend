@@ -263,5 +263,14 @@
   "countrySG": "新加坡",
   "countryVN": "越南",
   "countryHK": "香港",
-  "countryLA": "老挝"
+  "countryLA": "老挝",
+  "promoTitle": "公告",
+  "promoLabel": "宣传图片",
+  "promoPrev": "上一张",
+  "promoNext": "下一张",
+  "promoHideToday": "今天不再显示",
+  "promoClose": "关闭",
+  "newsHeading": "新闻与公告",
+  "bookingClosedTitle": "暂停预约",
+  "bookingClosedText": "系统暂时停止接受预约，请稍后再来预约。"
 }

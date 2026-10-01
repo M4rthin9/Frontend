@@ -1,5 +1,10 @@
 import { safeGetItem, safeSetItem } from '../utils/storage';
-import { getPublicSettings, type PublicSettings } from '../api/endpoints';
+import {
+  DEFAULT_BOOKING_WINDOW,
+  EMPTY_PROMO,
+  getPublicSettings,
+  type PublicSettings,
+} from '../api/endpoints';
 
 export interface Toast {
   id: number;
@@ -17,12 +22,16 @@ const EMPTY_SETTINGS: PublicSettings = {
     seatsPerTable: 5,
     maintenance: true,
   },
+  bookingWindow: DEFAULT_BOOKING_WINDOW,
+  promo: EMPTY_PROMO,
 };
 
 class UIStore {
   darkMode = $state(false);
   toasts = $state<Toast[]>([]);
   publicSettings = $state<PublicSettings>(EMPTY_SETTINGS);
+  /** True once the server answered (or failed) — the promo popup waits for it. */
+  publicSettingsLoaded = $state(false);
   private toastSeq = 0;
 
   initDarkMode(): void {
@@ -36,6 +45,8 @@ class UIStore {
       this.publicSettings = await getPublicSettings();
     } catch {
       this.publicSettings = EMPTY_SETTINGS;
+    } finally {
+      this.publicSettingsLoaded = true;
     }
   }
 

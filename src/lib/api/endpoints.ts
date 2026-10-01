@@ -159,11 +159,49 @@ export interface TableBookingPublicConfig {
   maintenance: boolean;
 }
 
+/** Admin open/close switch plus per-date overrides (admin_settings.bookingWindow). */
+export interface BookingWindow {
+  open: boolean;
+  closedMessage: string;
+  /** Date → short reason shown on the calendar. */
+  closedDates: Record<string, string>;
+  /** Dates opened even though the calendar blocks them by default (weekend/holiday). */
+  openDates: string[];
+}
+
+export interface PromoAd {
+  id: string;
+  title: string;
+  link: string;
+  url: string;
+}
+
+export interface Promo {
+  popupEnabled: boolean;
+  ads: PromoAd[];
+  notice: { enabled: boolean; title: string; body: string };
+}
+
 export interface PublicSettings {
   paymentEnabled: boolean;
   paymentClosedMessage: string;
   tableBooking: TableBookingPublicConfig;
+  bookingWindow: BookingWindow;
+  promo: Promo;
 }
+
+export const DEFAULT_BOOKING_WINDOW: BookingWindow = {
+  open: true,
+  closedMessage: '',
+  closedDates: {},
+  openDates: [],
+};
+
+export const EMPTY_PROMO: Promo = {
+  popupEnabled: false,
+  ads: [],
+  notice: { enabled: false, title: '', body: '' },
+};
 
 const DEFAULT_TABLE_BOOKING: TableBookingPublicConfig = {
   enabled: true,
@@ -182,10 +220,20 @@ export async function getPublicSettings(): Promise<PublicSettings> {
       paymentEnabled?: boolean;
       paymentClosedMessage?: string;
       tableBooking?: Partial<TableBookingPublicConfig>;
+      bookingWindow?: Partial<BookingWindow>;
+      promo?: Partial<Promo>;
     }>('/api/public-settings', {});
     if (data.status !== 'ok') {
-      return { paymentEnabled: true, paymentClosedMessage: '', tableBooking: DEFAULT_TABLE_BOOKING };
+      return {
+        paymentEnabled: true,
+        paymentClosedMessage: '',
+        tableBooking: DEFAULT_TABLE_BOOKING,
+        bookingWindow: DEFAULT_BOOKING_WINDOW,
+        promo: EMPTY_PROMO,
+      };
     }
+    const bw = data.bookingWindow;
+    const promo = data.promo;
     return {
       paymentEnabled: data.paymentEnabled !== false,
       paymentClosedMessage: data.paymentClosedMessage ?? '',
@@ -196,9 +244,26 @@ export async function getPublicSettings(): Promise<PublicSettings> {
         seatsPerTable: data.tableBooking?.seatsPerTable ?? DEFAULT_TABLE_BOOKING.seatsPerTable,
         maintenance: data.tableBooking?.maintenance !== false,
       },
+      bookingWindow: {
+        open: bw?.open !== false,
+        closedMessage: bw?.closedMessage ?? '',
+        closedDates: bw?.closedDates ?? {},
+        openDates: bw?.openDates ?? [],
+      },
+      promo: {
+        popupEnabled: promo?.popupEnabled !== false,
+        ads: promo?.ads ?? [],
+        notice: promo?.notice ?? EMPTY_PROMO.notice,
+      },
     };
   } catch {
-    return { paymentEnabled: true, paymentClosedMessage: '', tableBooking: DEFAULT_TABLE_BOOKING };
+    return {
+      paymentEnabled: true,
+      paymentClosedMessage: '',
+      tableBooking: DEFAULT_TABLE_BOOKING,
+      bookingWindow: DEFAULT_BOOKING_WINDOW,
+      promo: EMPTY_PROMO,
+    };
   }
 }
 

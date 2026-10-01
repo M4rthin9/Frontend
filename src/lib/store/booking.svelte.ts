@@ -18,6 +18,7 @@ import { safeGetItem, safeSetItem, safeRemoveItem } from '../utils/storage';
 import { toThaiLong } from '../utils/date';
 import { validateIdFormat, validatePhone } from '../utils/validation';
 import { buildCalendarCells, calendarTitle, QUOTA } from '../utils/calendar';
+import { ui } from './ui.svelte';
 import {
   loadTurnstileScript,
   renderTurnstile as renderTurnstileWidget,
@@ -238,6 +239,7 @@ class BookingStoreImpl {
       this.selectedDate,
       this.bookings,
       this.perDay,
+      ui.publicSettings.bookingWindow,
     );
   }
   get calTitle(): string {
@@ -524,6 +526,12 @@ class BookingStoreImpl {
     // Date selection
     if (!this.selectedDate) {
       this.inlineError = 'กรุณาเลือกวันที่ต้องการร่วมกิจกรรม';
+      this.errors = errs;
+      return false;
+    }
+    // The admin may close the date after it was picked; the server refuses it anyway.
+    if (ui.publicSettings.bookingWindow.closedDates[this.selectedDate] !== undefined) {
+      this.inlineError = 'วันที่เลือกปิดรับจอง กรุณาเลือกวันอื่น';
       this.errors = errs;
       return false;
     }

@@ -263,5 +263,14 @@
   "countrySG": "สิงคโปร์",
   "countryVN": "เวียดนาม",
   "countryHK": "ฮ่องกง",
-  "countryLA": "ลาว"
+  "countryLA": "ลาว",
+  "promoTitle": "ข่าวประชาสัมพันธ์",
+  "promoLabel": "ภาพประชาสัมพันธ์",
+  "promoPrev": "ภาพก่อนหน้า",
+  "promoNext": "ภาพถัดไป",
+  "promoHideToday": "ไม่ต้องแสดงอีกในวันนี้",
+  "promoClose": "ปิด",
+  "newsHeading": "ข่าวสารและประกาศ",
+  "bookingClosedTitle": "ปิดรับจองชั่วคราว",
+  "bookingClosedText": "ขณะนี้ระบบปิดรับจองชั่วคราว กรุณากลับมาจองอีกครั้งภายหลัง"
 }

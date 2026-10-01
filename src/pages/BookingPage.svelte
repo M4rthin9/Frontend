@@ -8,6 +8,7 @@
   } from '../lib/store/booking.svelte';
   import { t, tc } from '../lib/i18n/i18n.svelte';
   import { navigate } from '../lib/router.svelte';
+  import { ui } from '../lib/store/ui.svelte';
   import Stepper from '../components/ui/Stepper.svelte';
   import Input from '../components/ui/Input.svelte';
   import Select from '../components/ui/Select.svelte';
@@ -85,7 +86,23 @@
     <div class="error-text-inline">{store.inlineError}</div>
   {/if}
 
-  {#if store.step === 1}
+  {#if store.step === 1 && !ui.publicSettings.bookingWindow.open}
+    <!-- Admin closed all public booking: no form, just the reason. -->
+    <div class="section text-center" role="status">
+      <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-3xl">⏸️</div>
+      <h2 class="text-lg font-bold text-text-primary">{t('bookingClosedTitle')}</h2>
+      <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-text-secondary">
+        {ui.publicSettings.bookingWindow.closedMessage || t('bookingClosedText')}
+      </p>
+      <button
+        type="button"
+        class="mt-6 rounded-xl bg-red-700 px-6 py-3 text-sm font-bold text-white shadow-md transition-colors duration-200 hover:bg-red-800"
+        onclick={() => navigate('home')}
+      >
+        {t('backHomeShort')}
+      </button>
+    </div>
+  {:else if store.step === 1}
     <!-- ===== STEP 1: FORM ===== -->
     <div class="section">
       <div class="section-title">

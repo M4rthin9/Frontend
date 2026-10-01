@@ -5,7 +5,13 @@ import { toLocalDateStr, addDays } from './date';
  *  from the server (admin_settings.tableBooking.perDay). */
 export const QUOTA = 20;
 
-/** Fixed 2026 holidays & special blocked dates (ported verbatim from booking.js). */
+/**
+ * Fixed public holidays & special blocked dates. 2026 was ported verbatim from
+ * booking.js; 16 Oct and 7 Dec 2026 and all of 2027 follow the official
+ * announcements (Bank of Thailand notice 37/2569 for 2027, Royal Gazette
+ * vol. 143 special part 202 ง). One-off closures belong in the dashboard's
+ * booking-window calendar, not here.
+ */
 export const HOLIDAYS: Record<string, string> = {
   '2026-01-01': 'วันขึ้นปีใหม่',
   '2026-02-13': 'มาฆบูชา',
@@ -22,10 +28,37 @@ export const HOLIDAYS: Record<string, string> = {
   '2026-07-30': 'หยุดชดเชย',
   '2026-08-12': 'วันแม่',
   '2026-10-13': 'วันสวรรคต ร.9',
+  // Cabinet special holiday for Bangkok government offices (IMF–World Bank meetings).
+  '2026-10-16': 'หยุดพิเศษ กทม.',
   '2026-10-23': 'จุฬาลงกรณ์',
   '2026-12-05': 'วันพ่อ',
+  '2026-12-07': 'ชดเชยวันพ่อ',
   '2026-12-10': 'รัฐธรรมนูญ',
   '2026-12-31': 'วันสิ้นปี',
+  // ── 2027 (พ.ศ. 2570) ──
+  '2027-01-01': 'วันขึ้นปีใหม่',
+  '2027-02-21': 'มาฆบูชา',
+  '2027-02-22': 'ชดเชยมาฆบูชา',
+  '2027-04-06': 'จักรี',
+  '2027-04-13': 'สงกรานต์',
+  '2027-04-14': 'สงกรานต์',
+  '2027-04-15': 'สงกรานต์',
+  '2027-05-01': 'แรงงาน',
+  '2027-05-03': 'ชดเชยแรงงาน',
+  '2027-05-04': 'ฉัตรมงคล',
+  '2027-05-20': 'วิสาขบูชา',
+  '2027-06-03': 'วันพระราชินี',
+  '2027-07-18': 'อาสาฬหบูชา',
+  '2027-07-19': 'เข้าพรรษา',
+  '2027-07-28': 'วันเฉลิม ร.10',
+  '2027-08-12': 'วันแม่',
+  '2027-10-13': 'วันสวรรคต ร.9',
+  '2027-10-23': 'จุฬาลงกรณ์',
+  '2027-10-25': 'ชดเชยจุฬาลงกรณ์',
+  '2027-12-05': 'วันพ่อ',
+  '2027-12-06': 'ชดเชยวันพ่อ',
+  '2027-12-10': 'รัฐธรรมนูญ',
+  '2027-12-31': 'วันสิ้นปี',
   '2026-05-25': 'ปิดจอง',
   '2026-06-01': 'หยุดชดเชย',
   '2026-06-29': 'เต็ม',
@@ -54,6 +87,16 @@ export interface CalendarCell {
   blocked: boolean;
 }
 
+/** Admin per-date overrides from the server (admin_settings.bookingWindow). */
+export interface DateOverrides {
+  /** Date → reason; always blocked. */
+  closedDates: Record<string, string>;
+  /** Opened despite being a weekend or holiday. */
+  openDates: string[];
+}
+
+const NO_OVERRIDES: DateOverrides = { closedDates: {}, openDates: [] };
+
 /** Build one month of cells mirroring renderCalendar() in booking.js. */
 export function buildCalendarCells(
   year: number,
@@ -61,6 +104,7 @@ export function buildCalendarCells(
   selectedDate: string | null,
   bookings: Record<string, number>,
   perDay: number = QUOTA,
+  overrides: DateOverrides = NO_OVERRIDES,
 ): CalendarCell[] {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -78,8 +122,13 @@ export function buildCalendarCells(
     const dateStr = toLocalDateStr(new Date(year, month, d));
     const dow = new Date(year, month, d).getDay();
     const isPast = dateStr < todayStr;
-    const isWknd = dow === 0 || dow === 6;
-    const isHol = HOLIDAYS[dateStr];
+    // An admin-opened date drops the weekend/holiday block; an admin-closed one
+    // is treated like a holiday so it shows its reason on the calendar.
+    const forcedOpen = overrides.openDates.includes(dateStr);
+    const closedNote = overrides.closedDates[dateStr];
+    const isWknd = !forcedOpen && (dow === 0 || dow === 6);
+    const isHol =
+      closedNote !== undefined ? closedNote || 'ปิดจอง' : forcedOpen ? undefined : HOLIDAYS[dateStr];
     const used = bookings[dateStr] || 0;
     const isFull = used >= perDay;
     const isNotWithinWindow = dateStr < minAllowedStr || dateStr > maxAllowedStr;

@@ -263,5 +263,14 @@
   "countrySG": "Singapore",
   "countryVN": "Việt Nam",
   "countryHK": "Hồng Kông",
-  "countryLA": "Lào"
+  "countryLA": "Lào",
+  "promoTitle": "Thông báo",
+  "promoLabel": "Hình ảnh quảng bá",
+  "promoPrev": "Ảnh trước",
+  "promoNext": "Ảnh tiếp theo",
+  "promoHideToday": "Không hiển thị lại hôm nay",
+  "promoClose": "Đóng",
+  "newsHeading": "Tin tức & Thông báo",
+  "bookingClosedTitle": "Tạm ngừng nhận đặt chỗ",
+  "bookingClosedText": "Hệ thống tạm ngừng nhận đặt chỗ. Vui lòng quay lại đặt sau."
 }
