@@ -182,13 +182,22 @@ export interface Promo {
   notice: { enabled: boolean; title: string; body: string };
 }
 
+/** Cookie-banner policy version (a change re-asks the visitor) and DPO contact. */
+export interface PdpaPublic {
+  policyVersion: string;
+  contact: string;
+}
+
 export interface PublicSettings {
   paymentEnabled: boolean;
   paymentClosedMessage: string;
   tableBooking: TableBookingPublicConfig;
   bookingWindow: BookingWindow;
   promo: Promo;
+  pdpa: PdpaPublic;
 }
+
+export const DEFAULT_PDPA: PdpaPublic = { policyVersion: '1', contact: '' };
 
 export const DEFAULT_BOOKING_WINDOW: BookingWindow = {
   open: true,
@@ -222,6 +231,7 @@ export async function getPublicSettings(): Promise<PublicSettings> {
       tableBooking?: Partial<TableBookingPublicConfig>;
       bookingWindow?: Partial<BookingWindow>;
       promo?: Partial<Promo>;
+      pdpa?: Partial<PdpaPublic>;
     }>('/api/public-settings', {});
     if (data.status !== 'ok') {
       return {
@@ -230,6 +240,7 @@ export async function getPublicSettings(): Promise<PublicSettings> {
         tableBooking: DEFAULT_TABLE_BOOKING,
         bookingWindow: DEFAULT_BOOKING_WINDOW,
         promo: EMPTY_PROMO,
+        pdpa: DEFAULT_PDPA,
       };
     }
     const bw = data.bookingWindow;
@@ -255,6 +266,10 @@ export async function getPublicSettings(): Promise<PublicSettings> {
         ads: promo?.ads ?? [],
         notice: promo?.notice ?? EMPTY_PROMO.notice,
       },
+      pdpa: {
+        policyVersion: data.pdpa?.policyVersion || DEFAULT_PDPA.policyVersion,
+        contact: data.pdpa?.contact ?? '',
+      },
     };
   } catch {
     return {
@@ -263,8 +278,24 @@ export async function getPublicSettings(): Promise<PublicSettings> {
       tableBooking: DEFAULT_TABLE_BOOKING,
       bookingWindow: DEFAULT_BOOKING_WINDOW,
       promo: EMPTY_PROMO,
+      pdpa: DEFAULT_PDPA,
     };
   }
+}
+
+export interface CookieConsentRecord {
+  consentId: string;
+  policyVersion: string;
+  choice: 'accept_all' | 'reject_all' | 'custom';
+  preferences: boolean;
+  analytics: boolean;
+  lang: string;
+}
+
+/** Log a cookie-banner decision server-side as PDPA consent evidence. */
+export async function recordCookieConsent(record: CookieConsentRecord): Promise<void> {
+  const data = await callAction<{ status: string; message?: string }>('recordCookieConsent', { ...record });
+  assertOk(data);
 }
 
 /** Per-booking PromptPay Bill Payment QR (rendered server-side, Pillar 1).

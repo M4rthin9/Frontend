@@ -1,6 +1,7 @@
 import { safeGetItem, safeSetItem } from '../utils/storage';
 import {
   DEFAULT_BOOKING_WINDOW,
+  DEFAULT_PDPA,
   EMPTY_PROMO,
   getPublicSettings,
   type PublicSettings,
@@ -24,6 +25,7 @@ const EMPTY_SETTINGS: PublicSettings = {
   },
   bookingWindow: DEFAULT_BOOKING_WINDOW,
   promo: EMPTY_PROMO,
+  pdpa: DEFAULT_PDPA,
 };
 
 class UIStore {

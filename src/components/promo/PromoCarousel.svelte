@@ -62,7 +62,7 @@
               src={ad.url}
               alt={ad.title || t('promoLabel')}
               loading={i === 0 ? 'eager' : 'lazy'}
-              class="mx-auto max-h-[65vh] w-full object-contain"
+              class="mx-auto h-auto max-h-[80vh] w-auto max-w-full object-contain"
             />
           </a>
         {:else}
@@ -70,7 +70,7 @@
             src={ad.url}
             alt={ad.title || t('promoLabel')}
             loading={i === 0 ? 'eager' : 'lazy'}
-            class="mx-auto max-h-[65vh] w-full object-contain"
+            class="mx-auto h-auto max-h-[80vh] w-auto max-w-full object-contain"
           />
         {/if}
       </div>

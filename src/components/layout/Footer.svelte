@@ -1,6 +1,7 @@
 <script lang="ts">
   import { t } from '../../lib/i18n/i18n.svelte';
   import { ui } from '../../lib/store/ui.svelte';
+  import { consent } from '../../lib/store/consent.svelte';
   import LangSwitcher from './LangSwitcher.svelte';
   import Sun from '@lucide/svelte/icons/sun';
   import Moon from '@lucide/svelte/icons/moon';
@@ -55,6 +56,11 @@
       <span>© {new Date().getFullYear()}</span>
       <span class="h-1 w-1 rounded-full bg-border-strong"></span>
       <span>กรมราชทัณฑ์</span>
+      <span class="h-1 w-1 rounded-full bg-border-strong"></span>
+      <!-- PDPA: consent must be as easy to change or withdraw as it was to give. -->
+      <button type="button" class="underline-offset-2 hover:text-text-primary hover:underline" onclick={() => consent.openSettings()}>
+        {t('ckSettings')}
+      </button>
     </div>
 
     <div class="mt-4 border-t border-border-subtle pt-4">

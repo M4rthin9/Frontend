@@ -10,6 +10,7 @@
   import Toast from './components/ui/Toast.svelte';
   import Modal from './components/ui/Modal.svelte';
   import ChatWidget from './components/chat/ChatWidget.svelte';
+  import CookieConsent from './components/consent/CookieConsent.svelte';
   import HomePage from './pages/HomePage.svelte';
   import BookingPage from './pages/BookingPage.svelte';
   import { tableBooking } from './lib/store/booking.svelte';
@@ -80,6 +81,7 @@
   <Footer />
   <ChatWidget />
   <Toast />
+  <CookieConsent />
 
   {#if router.route === 'table-booking' && ui.publicSettings.tableBooking.maintenance}
     <Modal open dismissable={false} title={t('tblComingSoonTitle')}>

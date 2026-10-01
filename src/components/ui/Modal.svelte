@@ -7,12 +7,15 @@
     open = $bindable(false),
     title = '',
     dismissable = true,
+    fullWidth = false,
     onClose,
     children,
   }: {
     open?: boolean;
     title?: string;
     dismissable?: boolean;
+    /** Full-bleed panel for image banners that are unreadable at max-w-lg. */
+    fullWidth?: boolean;
     onClose?: () => void;
     children?: Snippet;
   } = $props();
@@ -58,7 +61,7 @@
     <div class="absolute inset-0 bg-slate-950/40 backdrop-blur-sm" transition:fade={{ duration: 200 }}></div>
     <div
       bind:this={panel}
-      class="relative w-full max-w-lg rounded-2xl bg-surface p-6 shadow-2xl border border-border-subtle"
+      class="relative max-h-[calc(100dvh-2rem)] w-full overflow-y-auto {fullWidth ? 'max-w-none' : 'max-w-lg'} rounded-2xl bg-surface p-4 shadow-2xl border border-border-subtle sm:p-6"
       transition:fly={{ y: 16, duration: 250 }}
     >
       {#if title}
