@@ -7,7 +7,7 @@
   import type { PublicReservation } from '../lib/api/types';
   import { pickBooking } from '../lib/utils/status';
   import { escHtml, maskPrisonerName } from '../lib/utils/helpers';
-  import { safeGetItem } from '../lib/utils/storage';
+  import { safeGetItem, safeRemoveItem } from '../lib/utils/storage';
   import StatusResult from '../components/status/StatusResult.svelte';
   import Search from '@lucide/svelte/icons/search';
   import FileText from '@lucide/svelte/icons/file-text';
@@ -49,6 +49,11 @@
     } else if (lastPId) {
       mode = 'prisoner';
       prisonerQuery = lastPId;
+    }
+    // Arriving from the home page's status box: the visitor already searched once.
+    if (lastRef && safeGetItem(sessionStorage, 'statusAutoSearch')) {
+      safeRemoveItem(sessionStorage, 'statusAutoSearch');
+      void doSearch();
     }
   });
 

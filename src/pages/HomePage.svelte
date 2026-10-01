@@ -7,6 +7,7 @@
   import PromoCarousel from '../components/promo/PromoCarousel.svelte';
   import HomeHero from '../components/home/HomeHero.svelte';
   import DateRail from '../components/home/DateRail.svelte';
+  import HomeStatusCheck from '../components/home/HomeStatusCheck.svelte';
   import VisitSteps from '../components/home/VisitSteps.svelte';
   import KitchenGallery from '../components/home/KitchenGallery.svelte';
   import HomeFaq from '../components/home/HomeFaq.svelte';
@@ -75,17 +76,19 @@
               {/if}
             </div>
           {/if}
-          {#if promo.ads.length > 0}
-            <div class="rounded-2xl border border-border-subtle bg-surface p-3 sm:p-4">
-              <PromoCarousel ads={promo.ads} />
-            </div>
-          {/if}
         </div>
       </div>
+      <!-- Full page width: the active card centred, its neighbours peeking in at both edges. -->
+      {#if promo.ads.length > 0}
+        <div class="mt-10 sm:mt-12">
+          <PromoCarousel ads={promo.ads} />
+        </div>
+      {/if}
     </section>
   {/if}
 
   <DateRail />
+  <HomeStatusCheck />
   <VisitSteps />
   <KitchenGallery />
   <HomeFaq />

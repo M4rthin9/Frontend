@@ -6,13 +6,13 @@
   let root: HTMLElement;
   let track: HTMLElement;
 
-  // A tasting menu in course order. Every plate gets the same label schema:
+  // A tasting menu, light to rich. Every plate gets the same label schema:
   // the course, then the dish. Labels describe, they never sell.
   const dishes = $derived([
-    { img: '/menu/prawn-top-800.webp', w: 800, h: 814, course: t('courseStarter'), name: t('dishPrawn') },
-    { img: '/menu/scallop-1000.webp', w: 1000, h: 424, course: t('courseAppetiser'), name: t('dishScallop') },
     { img: '/menu/salad-800.webp', w: 800, h: 414, course: t('courseSalad'), name: t('dishSalad') },
-    { img: '/menu/salmon-top-800.webp', w: 800, h: 891, course: t('courseMain'), name: t('dishSalmon') },
+    { img: '/menu/salmon-top-800.webp', w: 800, h: 891, course: t('coursePlah'), name: t('dishSalmon') },
+    { img: '/menu/scallop-1000.webp', w: 1000, h: 424, course: t('courseCurry'), name: t('dishScallop') },
+    { img: '/menu/prawn-top-800.webp', w: 800, h: 814, course: t('courseMain'), name: t('dishPrawn') },
     { img: '/menu/main-set-800.webp', w: 800, h: 596, course: t('courseSet'), name: t('dishMainSet') },
   ]);
 
