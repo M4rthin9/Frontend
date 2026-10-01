@@ -77,7 +77,7 @@
   <!-- Far plane: one warm lamp over a dark table, film grain, and a vignette that holds the edges. -->
   <div data-scroll="light" class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
     <div data-depth="0.12" class="absolute inset-0">
-      <!-- The institution at dusk, held well back so the copy and the plates stay in front. -->
+      <!-- The institution grounds, graded dark and held well back so the copy and the plates stay in front. -->
       <img
         src="/hero-bg-1920.webp"
         srcset="/hero-bg-1024.webp 1024w, /hero-bg-1920.webp 1920w"
