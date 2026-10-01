@@ -5,6 +5,9 @@ import { toLocalDateStr, addDays } from './date';
  *  from the server (admin_settings.tableBooking.perDay). */
 export const QUOTA = 20;
 
+/** Furthest bookable date, counted in days from today (tomorrow is the first). */
+export const BOOKING_MAX_DAYS_AHEAD = 16;
+
 /**
  * Fixed public holidays & special blocked dates. 2026 was ported verbatim from
  * booking.js; 16 Oct and 7 Dec 2026 and all of 2027 follow the official
@@ -112,7 +115,7 @@ export function buildCalendarCells(
 
   const todayStr = toLocalDateStr(today);
   const minAllowedStr = toLocalDateStr(addDays(today, 1)); // พรุ่งนี้
-  const maxAllowedStr = toLocalDateStr(addDays(today, 16)); // 14 วันล่วงหน้า
+  const maxAllowedStr = toLocalDateStr(addDays(today, BOOKING_MAX_DAYS_AHEAD));
 
   const cells: CalendarCell[] = [];
   for (let i = 0; i < firstDay; i++) {

@@ -16,6 +16,13 @@ export function todayStr(): string {
   return toLocalDateStr(new Date());
 }
 
+const DATE_LOCALE: Record<string, string> = { th: 'th-TH', en: 'en-GB', zh: 'zh-CN', vi: 'vi-VN' };
+
+/** A YYYY-MM-DD date in the visitor's language (Thai gets the Buddhist calendar). */
+export function formatDateIn(dateStr: string, lang: string, opts: Intl.DateTimeFormatOptions): string {
+  return parseLocalDate(dateStr).toLocaleDateString(DATE_LOCALE[lang] ?? 'th-TH', opts);
+}
+
 export function addDays(date: Date, days: number): Date {
   const d = new Date(date);
   d.setDate(d.getDate() + days);

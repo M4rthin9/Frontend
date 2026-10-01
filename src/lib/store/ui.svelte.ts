@@ -2,6 +2,7 @@ import { safeGetItem, safeSetItem } from '../utils/storage';
 import {
   DEFAULT_BOOKING_WINDOW,
   DEFAULT_PDPA,
+  DEFAULT_PUBLIC_BOOKING,
   EMPTY_PROMO,
   getPublicSettings,
   type PublicSettings,
@@ -23,6 +24,7 @@ const EMPTY_SETTINGS: PublicSettings = {
     seatsPerTable: 5,
     maintenance: true,
   },
+  publicBooking: DEFAULT_PUBLIC_BOOKING,
   bookingWindow: DEFAULT_BOOKING_WINDOW,
   promo: EMPTY_PROMO,
   pdpa: DEFAULT_PDPA,

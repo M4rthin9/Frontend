@@ -192,12 +192,16 @@ export interface PublicSettings {
   paymentEnabled: boolean;
   paymentClosedMessage: string;
   tableBooking: TableBookingPublicConfig;
+  /** Daily cap on public prisoner-visit bookings (admin_settings.publicBooking). */
+  publicBooking: { perDay: number };
   bookingWindow: BookingWindow;
   promo: Promo;
   pdpa: PdpaPublic;
 }
 
 export const DEFAULT_PDPA: PdpaPublic = { policyVersion: '1', contact: '' };
+
+export const DEFAULT_PUBLIC_BOOKING = { perDay: 20 };
 
 export const DEFAULT_BOOKING_WINDOW: BookingWindow = {
   open: true,
@@ -229,6 +233,7 @@ export async function getPublicSettings(): Promise<PublicSettings> {
       paymentEnabled?: boolean;
       paymentClosedMessage?: string;
       tableBooking?: Partial<TableBookingPublicConfig>;
+      publicBooking?: { perDay?: number };
       bookingWindow?: Partial<BookingWindow>;
       promo?: Partial<Promo>;
       pdpa?: Partial<PdpaPublic>;
@@ -238,6 +243,7 @@ export async function getPublicSettings(): Promise<PublicSettings> {
         paymentEnabled: true,
         paymentClosedMessage: '',
         tableBooking: DEFAULT_TABLE_BOOKING,
+        publicBooking: DEFAULT_PUBLIC_BOOKING,
         bookingWindow: DEFAULT_BOOKING_WINDOW,
         promo: EMPTY_PROMO,
         pdpa: DEFAULT_PDPA,
@@ -255,6 +261,7 @@ export async function getPublicSettings(): Promise<PublicSettings> {
         seatsPerTable: data.tableBooking?.seatsPerTable ?? DEFAULT_TABLE_BOOKING.seatsPerTable,
         maintenance: data.tableBooking?.maintenance !== false,
       },
+      publicBooking: { perDay: data.publicBooking?.perDay || DEFAULT_PUBLIC_BOOKING.perDay },
       bookingWindow: {
         open: bw?.open !== false,
         closedMessage: bw?.closedMessage ?? '',
@@ -276,6 +283,7 @@ export async function getPublicSettings(): Promise<PublicSettings> {
       paymentEnabled: true,
       paymentClosedMessage: '',
       tableBooking: DEFAULT_TABLE_BOOKING,
+      publicBooking: DEFAULT_PUBLIC_BOOKING,
       bookingWindow: DEFAULT_BOOKING_WINDOW,
       promo: EMPTY_PROMO,
       pdpa: DEFAULT_PDPA,
