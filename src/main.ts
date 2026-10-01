@@ -1,4 +1,5 @@
 import { mount } from 'svelte';
+import '@fontsource-variable/noto-serif-thai';
 import './styles/globals.css';
 import App from './app.svelte';
 import { shouldRegisterServiceWorker } from './lib/env';

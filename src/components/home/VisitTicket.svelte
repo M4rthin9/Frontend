@@ -101,15 +101,21 @@
   }
 </script>
 
-<section bind:this={root} id="home-ticket" class="ticket-stage relative overflow-hidden" aria-labelledby="home-ticket-title">
+<section
+  bind:this={root}
+  id="home-ticket"
+  class="ticket-stage relative overflow-hidden border-t border-border-subtle"
+  aria-labelledby="home-ticket-title"
+>
   <div class="ticket-lamp pointer-events-none absolute inset-0" aria-hidden="true"></div>
 
   <div
     class="relative mx-auto grid w-full max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 sm:py-24 lg:min-h-[100svh] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16 lg:py-14"
   >
     <div>
-      <h2 id="home-ticket-title" class="home-h2 ticket-ink">{t('ticketHeading')}</h2>
-      <p class="ticket-soft mt-4 max-w-md text-base leading-relaxed sm:text-lg">{t('ticketSub')}</p>
+      <p class="home-kicker">{t('ticketKicker')}</p>
+      <h2 id="home-ticket-title" class="home-h2 mt-4">{t('ticketHeading')}</h2>
+      <p class="mt-4 max-w-md text-base leading-relaxed text-text-secondary sm:text-lg">{t('ticketSub')}</p>
       <button type="button" class="ticket-link mt-8" onclick={() => navigate('table-booking')}>{t('ticketTableLink')}</button>
     </div>
 
@@ -126,7 +132,7 @@
               </div>
 
               <p class="paper-soft text-xs font-medium">{t('homeHeroKicker')}</p>
-              <h3 class="paper-ink mt-1 text-2xl font-semibold tracking-tight">{t('ticketTitle')}</h3>
+              <h3 class="paper-ink home-serif mt-1 text-[1.7rem] font-medium tracking-tight">{t('ticketTitle')}</h3>
 
               <div class="dots my-6" aria-hidden="true"></div>
 
@@ -206,7 +212,7 @@
               <!-- Total -->
               <div class="flex items-end justify-between gap-4" aria-live="polite">
                 <p class="paper-ink text-base font-semibold">{t('ticketTotal')}</p>
-                <p class="paper-ink text-4xl font-semibold leading-none tracking-tight tabular-nums">{baht(shownTotal)}</p>
+                <p class="paper-ink home-serif text-[2.4rem] font-medium leading-none tracking-tight tabular-nums">{baht(shownTotal)}</p>
               </div>
               <p class="paper-soft mt-3 text-xs leading-relaxed">{t('homePriceSub')} · {t('ticketNamesNote')}</p>
               <p class="paper-soft mt-2 text-xs leading-relaxed">{t('homeRule1')} · {t('homeRule2')}</p>
@@ -232,33 +238,27 @@
 
 <style>
   .ticket-stage {
-    background: #160909;
-    --paper: #f8f3ec;
-    --paper-ink: #2b1615;
-    --paper-soft: #6b5450;
-  }
-  .ticket-ink {
-    color: #f7ede6;
-  }
-  .ticket-soft {
-    color: #d8c2ba;
+    background: var(--hp-bg-2);
+    --paper: #f7f1e8;
+    --paper-ink: #24140f;
+    --paper-soft: #6a5850;
   }
   .ticket-lamp {
     background:
-      radial-gradient(38% 52% at 72% 50%, rgba(255, 173, 112, 0.18), rgba(255, 173, 112, 0) 70%),
-      radial-gradient(70% 80% at 80% 60%, rgba(169, 41, 40, 0.32), rgba(169, 41, 40, 0) 70%);
+      radial-gradient(36% 50% at 72% 50%, rgba(255, 196, 140, 0.16), rgba(255, 196, 140, 0) 70%),
+      radial-gradient(70% 80% at 80% 60%, rgba(120, 38, 30, 0.3), rgba(120, 38, 30, 0) 70%);
   }
   .ticket-link {
-    color: #f7ede6;
+    color: var(--hp-ink);
     text-decoration: underline;
-    text-decoration-color: rgba(247, 237, 230, 0.35);
+    text-decoration-color: rgba(214, 179, 124, 0.45);
     text-underline-offset: 0.3em;
     min-height: 2.75rem;
     cursor: pointer;
     text-align: left;
   }
   .ticket-link:focus-visible {
-    outline: 2px solid #f2b8a8;
+    outline: 2px solid var(--hp-gold);
     outline-offset: 3px;
   }
 

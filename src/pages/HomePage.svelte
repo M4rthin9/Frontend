@@ -48,18 +48,18 @@
 -->
 <PromoPopup />
 
-<div bind:this={page}>
+<div bind:this={page} class="home-premium">
   <HomeHero />
 
   <!-- Announcements stay reachable on the page when the popup is off or was dismissed. -->
   {#if hasNews}
-    <section class="pt-16 sm:pt-20" aria-labelledby="home-news">
+    <section class="border-t border-border-subtle py-20 sm:py-24" aria-labelledby="home-news">
       <div class="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <h2 id="home-news" class="home-h2">{t('newsHeading')}</h2>
         <div class="mt-8 flex flex-col gap-4">
           {#if !bookingWindow.open}
-            <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-900 dark:bg-amber-950/30" role="status">
-              <h3 class="text-sm font-bold text-amber-800 dark:text-amber-300">{t('bookingClosedTitle')}</h3>
+            <div class="rounded-2xl border border-[rgba(227,154,90,0.4)] bg-[rgba(227,154,90,0.08)] p-5" role="status">
+              <h3 class="text-sm font-semibold text-[#f0ae76]">{t('bookingClosedTitle')}</h3>
               <p class="mt-1.5 whitespace-pre-line text-sm leading-relaxed text-text-secondary">
                 {bookingWindow.closedMessage || t('bookingClosedText')}
               </p>

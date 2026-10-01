@@ -100,7 +100,7 @@
 
 @theme {
   --font-sans: 'Kanit', 'Sarabun', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: 'Noto Serif Thai', 'Sarabun', Georgia, serif;
+  --font-display: 'Noto Serif Thai Variable', 'Noto Serif Thai', Georgia, serif;
   --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
 
   /* === Red (primary) — #A92928 === */
@@ -2769,14 +2769,66 @@
   background: var(--bg-subtle);
 }
 
-/* === Home page: shared heading and text-link styles (sections live in src/components/home) === */
+/* === Home page (sections live in src/components/home) ===
+   One continuous lamp-lit stage. The wrapper redefines the app's colour tokens,
+   so every token-based utility inside renders on the dark stage in both themes. */
 @layer components {
+  .home-premium {
+    --hp-bg: #0d0908;
+    --hp-bg-2: #131010;
+    --hp-surface: #1a1514;
+    --hp-line: rgba(232, 214, 190, 0.12);
+    --hp-line-strong: rgba(232, 214, 190, 0.26);
+    --hp-ink: #f4ece2;
+    --hp-ink-soft: #c9bcad;
+    --hp-ink-mute: #a39484;
+    --hp-gold: #d6b37c;
+    --hp-gold-deep: #b48a4f;
+    --hp-crimson: #a92928;
+    --surface: var(--hp-surface);
+    --app-bg: var(--hp-bg);
+    --app-bg-subtle: var(--hp-bg-2);
+    --app-bg-muted: #241d1b;
+    --app-border-subtle: var(--hp-line);
+    --app-border-strong: var(--hp-line-strong);
+    --app-text: var(--hp-ink);
+    --app-text-secondary: var(--hp-ink-soft);
+    --app-text-tertiary: var(--hp-ink-mute);
+    color-scheme: dark;
+    background: var(--hp-bg);
+    color: var(--hp-ink);
+  }
+  .home-premium ::selection {
+    background: rgba(214, 179, 124, 0.35);
+    color: #fff;
+  }
+  /* A small champagne rule before a kicker line. */
+  .home-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--hp-gold);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+  .home-kicker::before {
+    content: '';
+    width: 2.25rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.7;
+  }
+  .home-serif {
+    font-family: var(--font-display);
+  }
   .home-h2 {
-    color: var(--color-text-primary);
-    font-size: clamp(1.75rem, 1.15rem + 2vw, 2.75rem);
-    font-weight: 600;
-    line-height: 1.16;
-    letter-spacing: -0.012em;
+    color: var(--app-text);
+    font-family: var(--font-display);
+    font-size: clamp(1.85rem, 1.2rem + 2.1vw, 3rem);
+    font-weight: 500;
+    line-height: 1.22;
+    letter-spacing: -0.01em;
     text-wrap: balance;
   }
   .home-textlink {
@@ -2784,16 +2836,13 @@
     align-items: center;
     gap: 0.35rem;
     min-height: 2.75rem;
-    color: var(--color-red-700);
-    font-weight: 600;
+    color: var(--hp-gold, var(--color-red-700));
+    font-weight: 500;
     text-decoration: underline;
-    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
-    text-underline-offset: 0.3em;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    text-underline-offset: 0.35em;
     cursor: pointer;
     transition: text-decoration-color 160ms cubic-bezier(0.23, 1, 0.32, 1);
-  }
-  .dark .home-textlink {
-    color: var(--color-red-300);
   }
   .home-textlink:focus-visible {
     outline: 2px solid currentColor;

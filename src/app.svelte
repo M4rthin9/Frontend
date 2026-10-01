@@ -78,7 +78,10 @@
     {/key}
   </main>
 
-  <Footer />
+  <!-- On the home page the footer continues the dark stage instead of ending on a white strip. -->
+  <div class={router.route === 'home' ? 'home-premium' : ''}>
+    <Footer />
+  </div>
   <ChatWidget />
   <Toast />
   <CookieConsent />

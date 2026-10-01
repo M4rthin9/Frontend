@@ -29,7 +29,7 @@
   });
 </script>
 
-<section class="bg-background-subtle py-16 sm:py-24" aria-labelledby="home-steps">
+<section class="border-t border-border-subtle py-20 sm:py-28" aria-labelledby="home-steps">
   <div class="mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
     <div class="lg:sticky lg:top-24 lg:self-start">
       <h2 id="home-steps" class="home-h2">{t('homeStepsHeading')}</h2>
@@ -38,7 +38,7 @@
 
     <ol bind:this={list} class="relative">
       <span class="absolute bottom-6 left-[1.15rem] top-6 w-px bg-border-strong" aria-hidden="true"></span>
-      <span data-line class="absolute bottom-6 left-[1.1rem] top-6 w-[3px] origin-top rounded-full bg-red-700 dark:bg-red-400" aria-hidden="true"></span>
+      <span data-line class="steps-line absolute bottom-6 left-[1.1rem] top-6 w-[2px] origin-top rounded-full" aria-hidden="true"></span>
 
       {#each steps as step, i (i)}
         <li data-station class="station is-reached relative pb-12 pl-16 last:pb-0">
@@ -48,7 +48,7 @@
           >
             {i + 1}
           </span>
-          <h3 class="pt-1.5 text-lg font-semibold leading-snug text-text-primary">{step.title}</h3>
+          <h3 class="home-serif pt-1 text-xl font-medium leading-snug text-text-primary">{step.title}</h3>
           <p class="mt-2 max-w-[46ch] text-base leading-relaxed text-text-secondary">{step.desc}</p>
         </li>
       {/each}
@@ -58,9 +58,9 @@
 
 <style>
   .station-dot {
-    background: var(--color-surface);
-    border-color: var(--color-border-strong);
-    color: var(--color-text-tertiary);
+    background: var(--surface);
+    border-color: var(--app-border-strong);
+    color: var(--app-text-tertiary);
     transition:
       background-color 240ms cubic-bezier(0.23, 1, 0.32, 1),
       border-color 240ms cubic-bezier(0.23, 1, 0.32, 1),
@@ -68,10 +68,13 @@
       transform 240ms cubic-bezier(0.23, 1, 0.32, 1);
   }
   .station.is-reached .station-dot {
-    background: #a92928;
-    border-color: #a92928;
-    color: #fff;
+    background: var(--hp-gold);
+    border-color: var(--hp-gold);
+    color: #1a1209;
     transform: scale(1.06);
+  }
+  .steps-line {
+    background: linear-gradient(180deg, var(--hp-gold), var(--hp-gold-deep));
   }
   .station h3,
   .station p {

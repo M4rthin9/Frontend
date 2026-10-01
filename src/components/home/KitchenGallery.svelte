@@ -6,15 +6,14 @@
   let root: HTMLElement;
   let track: HTMLElement;
 
-  // Every object gets the same label schema: the dish name, then a plain line
-  // in the visitor's language. Labels describe, they never sell.
+  // A tasting menu in course order. Every plate gets the same label schema:
+  // the course, then the dish. Labels describe, they never sell.
   const dishes = $derived([
-    { img: '/menu/bento-760.webp', w: 760, h: 581, name: t('dishBento'), note: t('dishBentoNote') },
-    { img: '/menu/ebi-560.webp', w: 560, h: 495, name: t('dishEbi'), note: t('dishEbiNote') },
-    { img: '/menu/kani-mat-760.webp', w: 760, h: 467, name: t('dishKani'), note: t('dishKaniNote') },
-    { img: '/menu/tamago-mat-760.webp', w: 760, h: 506, name: t('dishTamago'), note: t('dishTamagoNote') },
-    { img: '/menu/tobiko-mat-760.webp', w: 760, h: 507, name: t('dishTobiko'), note: t('dishTobikoNote') },
-    { img: '/menu/roll-mat-640.webp', w: 640, h: 352, name: t('dishRoll'), note: t('dishRollNote') },
+    { img: '/menu/prawn-top-800.webp', w: 800, h: 814, course: t('courseStarter'), name: t('dishPrawn') },
+    { img: '/menu/scallop-1000.webp', w: 1000, h: 424, course: t('courseAppetiser'), name: t('dishScallop') },
+    { img: '/menu/salad-800.webp', w: 800, h: 414, course: t('courseSalad'), name: t('dishSalad') },
+    { img: '/menu/salmon-top-800.webp', w: 800, h: 891, course: t('courseMain'), name: t('dishSalmon') },
+    { img: '/menu/main-set-800.webp', w: 800, h: 596, course: t('courseSet'), name: t('dishMainSet') },
   ]);
 
   onMount(() => {
@@ -56,12 +55,13 @@
 
 <section
   bind:this={root}
-  class="kitchen relative overflow-hidden lg:flex lg:min-h-[100svh] lg:flex-col lg:justify-center"
+  class="kitchen relative overflow-hidden border-t border-border-subtle lg:flex lg:min-h-[100svh] lg:flex-col lg:justify-center"
   aria-labelledby="home-kitchen"
 >
   <div class="mx-auto w-full max-w-6xl px-4 pt-16 sm:px-6 sm:pt-24 lg:pt-20">
-    <h2 id="home-kitchen" class="home-h2 kitchen-ink">{t('homeKitchenHeading')}</h2>
-    <p class="kitchen-soft mt-3 max-w-xl text-base leading-relaxed">{t('homeKitchenSub')}</p>
+    <p class="home-kicker">{t('homeKitchenKicker')}</p>
+    <h2 id="home-kitchen" class="home-h2 mt-4">{t('homeKitchenHeading')}</h2>
+    <p class="mt-3 max-w-xl text-base leading-relaxed text-text-secondary">{t('homeKitchenSub')}</p>
   </div>
 
   <ul
@@ -71,7 +71,7 @@
     {#each dishes as dish (dish.img)}
       <li data-dish class="w-[78vw] shrink-0 snap-center sm:w-[22rem] lg:w-[24rem]">
         <figure>
-          <div class="plate relative flex aspect-[4/3] items-center justify-center rounded-[1.75rem] p-6">
+          <div class="plate relative flex aspect-[4/3] items-center justify-center rounded-[1.75rem] p-7">
             <img
               src={dish.img}
               width={dish.w}
@@ -79,12 +79,12 @@
               alt={dish.name}
               loading="lazy"
               decoding="async"
-              class="relative h-auto max-h-full w-auto max-w-full drop-shadow-[0_24px_30px_rgba(0,0,0,0.5)]"
+              class="dish-img relative h-auto max-h-full w-auto max-w-full"
             />
           </div>
-          <figcaption class="mt-5 px-1">
-            <span class="kitchen-ink block text-lg font-semibold leading-snug">{dish.name}</span>
-            <span class="kitchen-soft mt-1 block text-sm">{dish.note}</span>
+          <figcaption class="mt-6 px-1">
+            <span class="course block text-xs font-medium tracking-[0.08em]">{dish.course}</span>
+            <span class="home-serif mt-2 block text-xl font-medium leading-snug text-text-primary">{dish.name}</span>
           </figcaption>
         </figure>
       </li>
@@ -94,13 +94,10 @@
 
 <style>
   .kitchen {
-    background: #1b0c0c;
+    background: var(--hp-bg-2);
   }
-  .kitchen-ink {
-    color: #f7ede6;
-  }
-  .kitchen-soft {
-    color: #cdb4ab;
+  .course {
+    color: var(--hp-gold);
   }
   .kitchen-track {
     scrollbar-width: none;
@@ -111,10 +108,20 @@
   /* Each dish sits on its own lit patch of table, so the row reads as a counter. */
   .plate {
     background:
-      radial-gradient(60% 55% at 50% 60%, rgba(255, 173, 112, 0.16), rgba(255, 173, 112, 0) 70%),
-      linear-gradient(180deg, #2a1313, #221010);
+      radial-gradient(58% 55% at 50% 58%, rgba(255, 196, 140, 0.14), rgba(255, 196, 140, 0) 72%),
+      linear-gradient(180deg, #1d1716, #161211);
+    border: 1px solid var(--hp-line);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.06) inset,
-      0 30px 50px -30px rgba(0, 0, 0, 0.8);
+      0 1px 0 rgba(255, 236, 214, 0.05) inset,
+      0 34px 56px -34px rgba(0, 0, 0, 0.9);
+  }
+  .dish-img {
+    filter: drop-shadow(0 -1px 0 rgba(255, 228, 196, 0.2)) drop-shadow(0 22px 28px rgba(0, 0, 0, 0.6));
+    transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    li:hover .dish-img {
+      transform: scale(1.04) rotate(-1deg);
+    }
   }
 </style>

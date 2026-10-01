@@ -40,7 +40,12 @@
 </script>
 
 {#if bookingOpen && visitPlan.countsState !== 'error'}
-  <section bind:this={root} id="home-dates" class="scroll-mt-6 py-16 sm:py-24" aria-labelledby="home-dates-title">
+  <section
+    bind:this={root}
+    id="home-dates"
+    class="scroll-mt-6 border-t border-border-subtle bg-background-subtle py-20 sm:py-28"
+    aria-labelledby="home-dates-title"
+  >
     <div class="mx-auto w-full max-w-6xl px-4 sm:px-6">
       <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div class="max-w-xl">
@@ -75,7 +80,7 @@
             <button
               type="button"
               class="stub group relative flex h-full w-full cursor-pointer flex-col rounded-2xl border bg-surface px-4 pb-4 pt-4 text-left {picked
-                ? 'is-picked border-red-700 dark:border-red-400'
+                ? 'is-picked'
                 : 'border-border-subtle'}"
               aria-pressed={picked}
               aria-label="{formatDateIn(day.date, i18n.lang, { weekday: 'long', day: 'numeric', month: 'long' })} · {tc('homeNextLeft', { n: day.left })}"
@@ -84,7 +89,7 @@
               <span class="text-xs font-medium uppercase tracking-wide text-text-tertiary">
                 {formatDateIn(day.date, i18n.lang, { weekday: 'short' })}
               </span>
-              <span class="mt-1 text-4xl font-semibold leading-none tracking-tight text-text-primary tabular-nums">
+              <span class="home-serif mt-2 text-[2.6rem] font-medium leading-none tracking-tight text-text-primary tabular-nums">
                 {formatDateIn(day.date, 'en', { day: 'numeric' })}
               </span>
               <span class="mt-1 text-sm text-text-secondary">{formatDateIn(day.date, i18n.lang, { month: 'short' })}</span>
@@ -95,17 +100,17 @@
               <span class="relative h-1.5 w-full overflow-hidden rounded-full bg-background-muted" aria-hidden="true">
                 <span
                   data-meter
-                  class="absolute inset-y-0 left-0 origin-left rounded-full {low ? 'bg-amber-500' : 'bg-emerald-500'}"
+                  class="meter absolute inset-y-0 left-0 origin-left rounded-full {low ? 'is-low' : ''}"
                   style="width: {Math.max(4, Math.round((day.left / perDay) * 100))}%"
                 ></span>
               </span>
-              <span class="mt-2 text-xs font-semibold {low ? 'text-amber-700 dark:text-amber-300' : 'text-emerald-700 dark:text-emerald-300'}">
+              <span class="seats mt-2 text-xs font-medium {low ? 'is-low' : ''}">
                 {tc('homeNextLeft', { n: day.left })}
               </span>
 
               {#if picked}
                 <span
-                  class="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-red-700 text-white dark:bg-red-500"
+                  class="check absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full"
                   in:scale={{ start: 0.6, duration: 260 }}
                   aria-hidden="true"
                 >
@@ -142,7 +147,7 @@
     display: none;
   }
   .stub {
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+    box-shadow: 0 1px 0 rgba(255, 236, 214, 0.06) inset;
     transition:
       transform 160ms cubic-bezier(0.23, 1, 0.32, 1),
       border-color 160ms cubic-bezier(0.23, 1, 0.32, 1),
@@ -151,23 +156,43 @@
   @media (hover: hover) and (pointer: fine) {
     .stub:hover {
       transform: translateY(-3px);
-      box-shadow: 0 14px 28px -18px rgba(74, 15, 15, 0.45);
+      border-color: rgba(214, 179, 124, 0.45);
+      box-shadow: 0 18px 32px -20px rgba(0, 0, 0, 0.8);
     }
   }
   .stub:active {
     transform: scale(0.97);
   }
   .stub:focus-visible {
-    outline: 2px solid #a92928;
+    outline: 2px solid var(--hp-gold);
     outline-offset: 3px;
   }
   .stub.is-picked {
-    box-shadow: 0 14px 30px -18px rgba(169, 41, 40, 0.6);
+    border-color: var(--hp-gold);
+    box-shadow:
+      0 0 0 1px var(--hp-gold),
+      0 18px 34px -20px rgba(214, 179, 124, 0.45);
+  }
+  .meter {
+    background: linear-gradient(90deg, var(--hp-gold-deep), var(--hp-gold));
+  }
+  .meter.is-low {
+    background: linear-gradient(90deg, #b8642f, #e39a5a);
+  }
+  .seats {
+    color: var(--hp-gold);
+  }
+  .seats.is-low {
+    color: #f0ae76;
+  }
+  .check {
+    background: var(--hp-gold);
+    color: #1a1209;
   }
   .stub-perf {
     display: block;
     height: 1px;
-    background-image: linear-gradient(90deg, var(--color-border-strong) 50%, transparent 50%);
+    background-image: linear-gradient(90deg, var(--app-border-strong) 50%, transparent 50%);
     background-size: 7px 1px;
   }
 </style>

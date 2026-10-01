@@ -23,14 +23,14 @@
 </script>
 
 <!-- Deliberately quiet: the last calm before the ticket. Nothing moves until the visitor opens a question. -->
-<section class="py-16 sm:py-24" aria-labelledby="home-faq">
+<section class="border-t border-border-subtle py-20 sm:py-28" aria-labelledby="home-faq">
   <div class="mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
     <div class="lg:sticky lg:top-24 lg:self-start">
       <h2 id="home-faq" class="home-h2">{t('homeFaqHeading')}</h2>
 
       <div class="mt-8 border-t border-border-subtle pt-6">
         <p class="flex items-center gap-2 text-base font-semibold text-text-primary">
-          <MessageCircle class="h-5 w-5 text-red-700 dark:text-red-400" aria-hidden="true" />
+          <MessageCircle class="h-5 w-5 text-[var(--hp-gold)]" aria-hidden="true" />
           {t('homeHelpHeading')}
         </p>
         <p class="mt-2 max-w-sm text-sm leading-relaxed text-text-secondary">{t('homeHelpText')}</p>
@@ -65,16 +65,13 @@
 
 <style>
   .faq summary:focus-visible {
-    outline: 2px solid #a92928;
+    outline: 2px solid var(--hp-gold);
     outline-offset: 2px;
     border-radius: 6px;
   }
   @media (hover: hover) and (pointer: fine) {
     .faq summary:hover {
-      color: #a92928;
-    }
-    :global(.dark) .faq summary:hover {
-      color: #f49e9e;
+      color: var(--hp-gold);
     }
   }
   /* The answer eases in when its question opens: opacity and a short travel, no height animation. */

@@ -23,8 +23,17 @@
         margin: 0;
         background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
       }
+      html.home-pre,
+      html.home-pre body {
+        background: #0d0908;
+      }
     </style>
     <script>
+      // The home page is a dark stage: paint it dark from the first frame so it never flashes white.
+      (function () {
+        var h = location.hash;
+        if (!h || h === '#' || h === '#/' || h === '#/home') document.documentElement.classList.add('home-pre');
+      })();
       // Pre-paint theme: default to light; only apply dark when explicitly chosen.
       (function () {
         try {
