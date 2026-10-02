@@ -6,6 +6,8 @@
   import Sun from '@lucide/svelte/icons/sun';
   import Moon from '@lucide/svelte/icons/moon';
   import ExternalLink from '@lucide/svelte/icons/external-link';
+
+  let { themeToggle = true }: { themeToggle?: boolean } = $props();
 </script>
 
 <footer class="border-t border-border-subtle bg-surface">
@@ -28,7 +30,7 @@
       href="https://main.correct.go.th"
       target="_blank"
       rel="noopener"
-      class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-red-700 transition-colors hover:text-red-800"
+      class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--footer-link,var(--color-red-700))] transition-colors hover:opacity-80"
     >
       main.correct.go.th
       <ExternalLink class="h-3.5 w-3.5" />
@@ -36,6 +38,7 @@
 
     <div class="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
       <LangSwitcher />
+      {#if themeToggle}
       <button
         type="button"
         class="inline-flex items-center gap-2 rounded-full border border-border-strong px-3 py-1.5 text-xs font-semibold text-text-tertiary transition-all duration-200 hover:bg-background-subtle hover:text-text-primary"
@@ -50,6 +53,7 @@
           {t('themeDark')}
         {/if}
       </button>
+      {/if}
     </div>
 
     <div class="mt-6 flex items-center justify-center gap-6 text-xs text-text-tertiary">

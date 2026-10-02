@@ -9,6 +9,7 @@
   import { normalizeStatus, pickBooking, statusPillLabel } from '../../lib/utils/status';
   import { formatDateIn } from '../../lib/utils/date';
   import { safeSetItem } from '../../lib/utils/storage';
+  import Headline from './Headline.svelte';
 
   // One field for both lookups: a booking reference starts with VIS- or TBL-,
   // anything else is taken as a prisoner ID. Same API and the same booking
@@ -72,16 +73,17 @@
   }
 </script>
 
-<section class="border-t border-border-subtle py-20 sm:py-24" aria-labelledby="home-status">
+<section id="home-status" data-chapter="ctChStatus" class="bg-background-subtle py-20 sm:py-24" aria-labelledby="home-status-title">
   <div class="mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
     <div>
-      <h2 id="home-status" class="home-h2">{t('statusH1')}</h2>
-      <p class="mt-3 max-w-md text-base leading-relaxed text-text-secondary">{t('homeStatusSub')}</p>
+      <p class="ct-label">{t('ctChStatus')}</p>
+      <Headline id="home-status-title" text={t('ctStatusTitle')} class="ct-h2 mt-4" />
+      <p class="mt-3 max-w-md text-base font-light leading-relaxed text-text-secondary">{t('homeStatusSub')}</p>
     </div>
 
-    <div>
+    <div class="lg:pt-10">
       <form class="search flex items-center gap-2 rounded-full p-1.5 pl-5" onsubmit={search} role="search">
-        <Search class="h-5 w-5 shrink-0 text-[var(--hp-gold)]" aria-hidden="true" />
+        <Search class="h-5 w-5 shrink-0 text-text-tertiary" aria-hidden="true" />
         <label for="home-status-query" class="sr-only">{t('statusP')}</label>
         <input
           id="home-status-query"
@@ -92,7 +94,7 @@
           autocapitalize="characters"
           spellcheck="false"
         />
-        <button type="submit" class="search-btn shrink-0" disabled={!query.trim() || phase === 'loading'}>
+        <button type="submit" class="ct-btn ct-btn-ink shrink-0 px-5" disabled={!query.trim() || phase === 'loading'}>
           {phase === 'loading' ? t('searching') : t('checkStatus')}
         </button>
       </form>
@@ -100,10 +102,10 @@
       <div class="mt-5 min-h-[1rem]" aria-live="polite">
         {#if phase === 'found' && result}
           {#key result.ref}
-            <article class="result rounded-2xl p-5 sm:p-6" in:fly={{ y: 12, duration: 280 }}>
+            <article class="result p-5 sm:p-6" in:fly={{ y: 12, duration: 280 }}>
               <div class="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p class="text-xs font-medium tracking-[0.08em] text-text-tertiary">{t('refLabel')}</p>
+                  <p class="text-xs font-medium tracking-[0.06em] text-text-tertiary">{t('refLabel')}</p>
                   <p class="mt-1 font-mono text-lg font-semibold tracking-wide text-text-primary">{result.ref}</p>
                 </div>
                 <span class="pill {tone(result.status)} inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium">
@@ -123,7 +125,7 @@
                   </div>
                 {/if}
               </dl>
-              <button type="button" class="home-textlink mt-4" onclick={openDetails}>
+              <button type="button" class="ct-link mt-4" onclick={openDetails}>
                 {t('homeStatusOpen')}
                 <ArrowRight class="h-4 w-4" aria-hidden="true" />
               </button>
@@ -132,7 +134,7 @@
         {:else if phase === 'notfound'}
           <p class="text-sm text-text-secondary" in:fly={{ y: 8, duration: 220 }}>{tc('homeStatusNotFound', { query: searched })}</p>
         {:else if phase === 'error'}
-          <p class="text-sm text-[#f0ae76]" in:fly={{ y: 8, duration: 220 }}>{t('errorServer')}</p>
+          <p class="text-sm text-[#a12d2d]" in:fly={{ y: 8, duration: 220 }}>{t('errorServer')}</p>
         {/if}
       </div>
     </div>
@@ -143,46 +145,21 @@
   .search {
     background: var(--surface);
     border: 1px solid var(--app-border-strong);
-    transition: border-color 160ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition:
+      border-color 160ms var(--ct-ease),
+      box-shadow 160ms var(--ct-ease);
   }
   .search:focus-within {
-    border-color: var(--hp-gold);
-    box-shadow: 0 0 0 3px rgba(214, 179, 124, 0.18);
+    border-color: var(--ct-ink);
+    box-shadow: 0 0 0 3px rgba(245, 130, 31, 0.28);
   }
-  .search-btn {
-    min-height: 2.75rem;
-    padding: 0 1.25rem;
-    border-radius: 999px;
-    background: var(--hp-crimson);
-    color: #fff;
-    font-weight: 500;
-    cursor: pointer;
-    transition:
-      background-color 160ms cubic-bezier(0.23, 1, 0.32, 1),
-      transform 120ms cubic-bezier(0.23, 1, 0.32, 1);
-  }
-  .search-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .search-btn:not(:disabled):hover {
-      background: #bf3330;
-    }
-  }
-  .search-btn:not(:disabled):active {
-    transform: scale(0.97);
-  }
-  .search-btn:focus-visible {
-    outline: 2px solid var(--hp-gold);
-    outline-offset: 3px;
-  }
-
   .result {
     background: var(--surface);
     border: 1px solid var(--app-border-subtle);
-    box-shadow: 0 24px 48px -30px rgba(0, 0, 0, 0.85);
+    border-radius: 6px;
+    box-shadow: 0 24px 40px -30px rgba(35, 31, 32, 0.5);
   }
+  /* Status colours on paper, each at least 4.5:1 on its tint. */
   .pill {
     border: 1px solid currentColor;
   }
@@ -190,15 +167,19 @@
     background: currentColor;
   }
   .pill.is-wait {
-    color: #f0c27b;
+    color: #8a5a00;
+    background: #fff6e2;
   }
   .pill.is-pay {
-    color: var(--hp-gold);
+    color: var(--ct-orange-ink);
+    background: #fff1e5;
   }
   .pill.is-done {
-    color: #7fd1a3;
+    color: #1f6b45;
+    background: #e9f6ef;
   }
   .pill.is-stop {
-    color: #f19a8e;
+    color: #a12d2d;
+    background: #fcecec;
   }
 </style>

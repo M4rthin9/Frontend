@@ -78,9 +78,10 @@
     {/key}
   </main>
 
-  <!-- On the home page the footer continues the dark stage instead of ending on a white strip. -->
-  <div class={router.route === 'home' ? 'home-premium' : ''}>
-    <Footer />
+  <!-- On the home page the footer is the back of the book: the end page's black continues into it.
+       The book keeps its own colours there, so the light/dark switch is left to the other pages. -->
+  <div class={router.route === 'home' ? 'home-book ct-black [--surface:var(--ct-black)] [--footer-link:var(--ct-orange)]' : ''}>
+    <Footer themeToggle={router.route !== 'home'} />
   </div>
   <ChatWidget />
   <Toast />

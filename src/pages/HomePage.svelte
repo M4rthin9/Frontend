@@ -5,36 +5,40 @@
   import { ui } from '../lib/store/ui.svelte';
   import PromoPopup from '../components/promo/PromoPopup.svelte';
   import PromoCarousel from '../components/promo/PromoCarousel.svelte';
-  import HomeHero from '../components/home/HomeHero.svelte';
+  import Headline from '../components/home/Headline.svelte';
+  import CoverSpread from '../components/home/CoverSpread.svelte';
   import DateRail from '../components/home/DateRail.svelte';
   import HomeStatusCheck from '../components/home/HomeStatusCheck.svelte';
+  import ChefTable from '../components/home/ChefTable.svelte';
+  import CraftChapter from '../components/home/CraftChapter.svelte';
   import VisitSteps from '../components/home/VisitSteps.svelte';
-  import KitchenGallery from '../components/home/KitchenGallery.svelte';
   import HomeFaq from '../components/home/HomeFaq.svelte';
-  import VisitTicket from '../components/home/VisitTicket.svelte';
+  import SetTable from '../components/home/SetTable.svelte';
+  import EndPage from '../components/home/EndPage.svelte';
+  import FolioBar from '../components/home/FolioBar.svelte';
 
   const promo = $derived(ui.publicSettings.promo);
   const bookingWindow = $derived(ui.publicSettings.bookingWindow);
   const hasNews = $derived(promo.notice.enabled || promo.ads.length > 0 || !bookingWindow.open);
+  const hasNotice = $derived(promo.notice.enabled && !!(promo.notice.title || promo.notice.body));
 
-  // Pinned sections remember where they start. Anything that changes the page's
-  // height above them (news arriving, the date rail filling, a picked-date hint)
-  // would leave them pinning at stale positions, so re-measure on every real
-  // height change. The comparison against the post-refresh height stops the
-  // pin spacers' own resizing from looping.
-  let page: HTMLElement;
+  // Scroll-linked sections remember where they start. Anything that changes the
+  // page's height above them (news arriving, the date rail filling) would leave
+  // them measuring stale positions, so re-measure on every real height change.
+  // The comparison against the post-refresh height stops a refresh from looping.
+  let page = $state<HTMLElement>();
   onMount(() => {
     let measured = 0;
     let timer = 0;
     const ro = new ResizeObserver(() => {
       clearTimeout(timer);
       timer = window.setTimeout(() => {
-        if (Math.abs(page.offsetHeight - measured) < 2) return;
+        if (!page || Math.abs(page.offsetHeight - measured) < 2) return;
         ScrollTrigger.refresh();
         measured = page.offsetHeight;
       }, 120);
     });
-    ro.observe(page);
+    if (page) ro.observe(page);
     return () => {
       ro.disconnect();
       clearTimeout(timer);
@@ -43,40 +47,47 @@
 </script>
 
 <!--
-  The home page plans a visit (see scrollcraft/builds/ccc-visit/BRIEF.md):
-  the table, the free dates, the five stations, the kitchen, the questions,
-  and finally the ticket the visitor tears off to book.
+  The home page is the printed book "Chef Table ในเรือนจำ" made usable
+  (see scrollcraft/builds/ccc-chef-table/BRIEF.md). Chapters are the page's
+  direct children with data-chapter; the folio bar numbers and names them.
 -->
 <PromoPopup />
 
-<div bind:this={page} class="home-premium">
-  <HomeHero />
+<div bind:this={page} class="home-book">
+  <CoverSpread />
 
   <!-- Announcements stay reachable on the page when the popup is off or was dismissed. -->
   {#if hasNews}
-    <section class="border-t border-border-subtle py-20 sm:py-24" aria-labelledby="home-news">
+    <section data-chapter="ctChNews" class="py-20 sm:py-24" aria-labelledby="home-news">
       <div class="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        <h2 id="home-news" class="home-h2">{t('newsHeading')}</h2>
-        <div class="mt-8 flex flex-col gap-4">
-          {#if !bookingWindow.open}
-            <div class="rounded-2xl border border-[rgba(227,154,90,0.4)] bg-[rgba(227,154,90,0.08)] p-5" role="status">
-              <h3 class="text-sm font-semibold text-[#f0ae76]">{t('bookingClosedTitle')}</h3>
-              <p class="mt-1.5 whitespace-pre-line text-sm leading-relaxed text-text-secondary">
-                {bookingWindow.closedMessage || t('bookingClosedText')}
-              </p>
-            </div>
-          {/if}
-          {#if promo.notice.enabled && (promo.notice.title || promo.notice.body)}
-            <div class="rounded-2xl border border-border-subtle bg-surface p-5 sm:p-6">
-              {#if promo.notice.title}
-                <h3 class="text-base font-bold text-text-primary">{promo.notice.title}</h3>
-              {/if}
-              {#if promo.notice.body}
-                <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-text-secondary">{promo.notice.body}</p>
-              {/if}
-            </div>
-          {/if}
-        </div>
+        <p class="ct-label">{t('ctChNews')}</p>
+        <Headline id="home-news" text={t('ctNewsTitle')} class="ct-h2 mt-4" />
+        {#if !bookingWindow.open || hasNotice}
+          <!-- The book's black text panel. -->
+          <div class="ct-black mt-10 grid gap-8 p-6 sm:p-10 lg:grid-cols-2">
+            {#if !bookingWindow.open}
+              <div role="status">
+                <h3 class="flex items-center gap-2 text-base font-medium text-[var(--ct-orange)]">
+                  <span class="h-2 w-2 rounded-full bg-[var(--ct-orange)]" aria-hidden="true"></span>
+                  {t('bookingClosedTitle')}
+                </h3>
+                <p class="mt-2 whitespace-pre-line text-sm font-light leading-relaxed text-text-secondary sm:text-base">
+                  {bookingWindow.closedMessage || t('bookingClosedText')}
+                </p>
+              </div>
+            {/if}
+            {#if hasNotice}
+              <div>
+                {#if promo.notice.title}
+                  <h3 class="text-lg font-medium text-white">{promo.notice.title}</h3>
+                {/if}
+                {#if promo.notice.body}
+                  <p class="mt-2 whitespace-pre-line text-sm font-light leading-relaxed text-text-secondary sm:text-base">{promo.notice.body}</p>
+                {/if}
+              </div>
+            {/if}
+          </div>
+        {/if}
       </div>
       <!-- Full page width: the active card centred, its neighbours peeking in at both edges. -->
       {#if promo.ads.length > 0}
@@ -89,8 +100,13 @@
 
   <DateRail />
   <HomeStatusCheck />
+  <ChefTable />
+  <CraftChapter />
   <VisitSteps />
-  <KitchenGallery />
   <HomeFaq />
-  <VisitTicket />
+  <SetTable />
+  <EndPage />
+
+  <!-- Inside the book so it inherits the book's colours; it carries no data-chapter. -->
+  <FolioBar root={page} />
 </div>

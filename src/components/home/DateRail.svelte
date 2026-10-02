@@ -10,6 +10,7 @@
   import { visitPlan } from '../../lib/store/visitPlan.svelte';
   import { formatDateIn } from '../../lib/utils/date';
   import { EASE_OUT, MQ, gsap } from '../../lib/motion';
+  import Headline from './Headline.svelte';
 
   // Bound inside an {#if}, so it must be reactive for the effect below to see it.
   let root = $state<HTMLElement | null>(null);
@@ -20,22 +21,22 @@
 
   onMount(() => visitPlan.loadCounts());
 
-  // Stubs arrive once there is something to show; meters fill from empty to
-  // the live seat count, which is the only number in this section.
+  // Cards arrive once there is something to show; meters fill from empty to the
+  // live seat count, which is the only number in this section.
   $effect(() => {
     if (!root || visitPlan.countsState !== 'ready' || days.length === 0) return;
     const mm = gsap.matchMedia(root);
     mm.add(MQ.motion, () => {
       const trigger = { trigger: root, start: 'top 78%', once: true };
-      gsap.from('[data-day]', { opacity: 0, y: 30, duration: 1, ease: EASE_OUT, stagger: 0.055, scrollTrigger: trigger });
+      gsap.from('[data-day]', { opacity: 0, y: 28, duration: 1, ease: EASE_OUT, stagger: 0.055, scrollTrigger: trigger });
       gsap.from('[data-meter]', { scaleX: 0, duration: 1.3, ease: EASE_OUT, stagger: 0.055, delay: 0.15, scrollTrigger: trigger });
     });
     return () => mm.revert();
   });
 
-  function toTicket(): void {
+  function toTable(): void {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    document.getElementById('home-ticket')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    document.getElementById('home-table')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   }
 </script>
 
@@ -43,16 +44,18 @@
   <section
     bind:this={root}
     id="home-dates"
-    class="scroll-mt-6 border-t border-border-subtle bg-background-subtle py-20 sm:py-28"
+    data-chapter="ctChDates"
+    class="scroll-mt-6 py-20 sm:py-28"
     aria-labelledby="home-dates-title"
   >
     <div class="mx-auto w-full max-w-6xl px-4 sm:px-6">
       <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div class="max-w-xl">
-          <h2 id="home-dates-title" class="home-h2">{t('homeNextHeading')}</h2>
-          <p class="mt-3 text-base leading-relaxed text-text-secondary">{t('homeNextSub')}</p>
+          <p class="ct-label">{t('ctChDates')}</p>
+          <Headline id="home-dates-title" text={t('ctDatesTitle')} class="ct-h2 mt-4" />
+          <p class="mt-3 text-base font-light leading-relaxed text-text-secondary">{t('ctDatesSub')}</p>
         </div>
-        <button type="button" class="home-textlink" onclick={() => navigate('booking')}>
+        <button type="button" class="ct-link" onclick={() => navigate('booking')}>
           {t('homeNextAll')}
           <ArrowRight class="h-4 w-4" aria-hidden="true" />
         </button>
@@ -61,15 +64,15 @@
 
     <!-- A lateral rail: options read sideways. It scrolls natively on every screen. -->
     <ul
-      class="rail mt-10 grid snap-x snap-mandatory auto-cols-[8.75rem] grid-flow-col gap-3 overflow-x-auto px-4 pb-4 sm:auto-cols-[9.5rem] sm:px-6 lg:mx-auto lg:max-w-6xl lg:auto-cols-fr lg:overflow-visible"
+      class="rail mt-10 grid snap-x snap-mandatory auto-cols-[8.5rem] grid-flow-col gap-3 overflow-x-auto px-4 pb-4 sm:auto-cols-[9.5rem] sm:px-6 lg:mx-auto lg:max-w-6xl lg:auto-cols-fr lg:overflow-visible"
       aria-busy={visitPlan.countsState === 'loading'}
     >
       {#if visitPlan.countsState !== 'ready'}
         {#each [0, 1, 2, 3, 4, 5, 6, 7] as i (i)}
-          <li class="h-44 snap-start rounded-2xl bg-background-subtle motion-safe:animate-pulse" aria-hidden="true"></li>
+          <li class="h-48 snap-start rounded-md bg-background-subtle motion-safe:animate-pulse" aria-hidden="true"></li>
         {/each}
       {:else if days.length === 0}
-        <li class="col-span-full rounded-2xl border border-border-subtle bg-surface p-6 text-sm text-text-secondary">
+        <li class="col-span-full rounded-md border border-border-subtle bg-surface p-6 text-sm text-text-secondary">
           {t('homeNextNone')}
         </li>
       {:else}
@@ -79,32 +82,31 @@
           <li data-day class="snap-start">
             <button
               type="button"
-              class="stub group relative flex h-full w-full cursor-pointer flex-col rounded-2xl border bg-surface px-4 pb-4 pt-4 text-left {picked
-                ? 'is-picked'
-                : 'border-border-subtle'}"
+              class="card group relative flex h-full w-full cursor-pointer flex-col rounded-md px-4 pb-4 pt-4 text-left"
+              class:is-picked={picked}
               aria-pressed={picked}
               aria-label="{formatDateIn(day.date, i18n.lang, { weekday: 'long', day: 'numeric', month: 'long' })} · {tc('homeNextLeft', { n: day.left })}"
               onclick={() => visitPlan.toggleDate(day.date)}
             >
-              <span class="text-xs font-medium uppercase tracking-wide text-text-tertiary">
+              <span class="card-soft text-xs font-medium tracking-wide">
                 {formatDateIn(day.date, i18n.lang, { weekday: 'short' })}
               </span>
-              <span class="home-serif mt-2 text-[2.6rem] font-medium leading-none tracking-tight text-text-primary tabular-nums">
+              <span class="day mt-2 font-book text-[2.9rem] font-bold leading-none tabular-nums">
                 {formatDateIn(day.date, 'en', { day: 'numeric' })}
               </span>
-              <span class="mt-1 text-sm text-text-secondary">{formatDateIn(day.date, i18n.lang, { month: 'short' })}</span>
+              <span class="card-soft mt-1 text-sm">{formatDateIn(day.date, i18n.lang, { month: 'short' })}</span>
 
-              <!-- Perforation between the date and the seats, as on a paper stub. -->
-              <span class="stub-perf my-4" aria-hidden="true"></span>
+              <span class="rule my-4" aria-hidden="true"></span>
 
-              <span class="relative h-1.5 w-full overflow-hidden rounded-full bg-background-muted" aria-hidden="true">
+              <span class="track relative h-1 w-full overflow-hidden rounded-full" aria-hidden="true">
                 <span
                   data-meter
-                  class="meter absolute inset-y-0 left-0 origin-left rounded-full {low ? 'is-low' : ''}"
+                  class="meter absolute inset-y-0 left-0 origin-left rounded-full"
+                  class:is-low={low}
                   style="width: {Math.max(4, Math.round((day.left / perDay) * 100))}%"
                 ></span>
               </span>
-              <span class="seats mt-2 text-xs font-medium {low ? 'is-low' : ''}">
+              <span class="seats mt-2 text-xs font-medium" class:is-low={low}>
                 {tc('homeNextLeft', { n: day.left })}
               </span>
 
@@ -129,8 +131,8 @@
           <span>
             {tc('homeDatesPicked', { date: formatDateIn(visitPlan.date, i18n.lang, { weekday: 'long', day: 'numeric', month: 'long' }) })}
           </span>
-          <button type="button" class="home-textlink" onclick={toTicket}>
-            {t('homeDatesToTicket')}
+          <button type="button" class="ct-link" onclick={toTable}>
+            {t('ctDatesToTable')}
             <ArrowDown class="h-4 w-4" aria-hidden="true" />
           </button>
         </p>
@@ -146,53 +148,87 @@
   .rail::-webkit-scrollbar {
     display: none;
   }
-  .stub {
-    box-shadow: 0 1px 0 rgba(255, 236, 214, 0.06) inset;
+  /* A printed card on the table; picked, it turns into one of the book's black pages. */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--app-border-subtle);
+    color: var(--app-text);
     transition:
-      transform 160ms cubic-bezier(0.23, 1, 0.32, 1),
-      border-color 160ms cubic-bezier(0.23, 1, 0.32, 1),
-      box-shadow 160ms cubic-bezier(0.23, 1, 0.32, 1);
+      transform 160ms var(--ct-ease),
+      background-color 220ms var(--ct-ease),
+      border-color 220ms var(--ct-ease),
+      box-shadow 220ms var(--ct-ease),
+      color 220ms var(--ct-ease);
+  }
+  .card-soft {
+    color: var(--app-text-tertiary);
+    transition: color 220ms var(--ct-ease);
   }
   @media (hover: hover) and (pointer: fine) {
-    .stub:hover {
+    .card:hover {
       transform: translateY(-3px);
-      border-color: rgba(214, 179, 124, 0.45);
-      box-shadow: 0 18px 32px -20px rgba(0, 0, 0, 0.8);
+      border-color: var(--app-border-strong);
+      box-shadow: 0 18px 30px -22px rgba(35, 31, 32, 0.55);
     }
   }
-  .stub:active {
+  .card:active {
     transform: scale(0.97);
   }
-  .stub:focus-visible {
-    outline: 2px solid var(--hp-gold);
+  .card:focus-visible {
+    outline: 2px solid var(--ct-orange);
     outline-offset: 3px;
   }
-  .stub.is-picked {
-    border-color: var(--hp-gold);
-    box-shadow:
-      0 0 0 1px var(--hp-gold),
-      0 18px 34px -20px rgba(214, 179, 124, 0.45);
-  }
-  .meter {
-    background: linear-gradient(90deg, var(--hp-gold-deep), var(--hp-gold));
-  }
-  .meter.is-low {
-    background: linear-gradient(90deg, #b8642f, #e39a5a);
-  }
-  .seats {
-    color: var(--hp-gold);
-  }
-  .seats.is-low {
-    color: #f0ae76;
-  }
-  .check {
-    background: var(--hp-gold);
-    color: #1a1209;
-  }
-  .stub-perf {
+  .rule {
     display: block;
     height: 1px;
-    background-image: linear-gradient(90deg, var(--app-border-strong) 50%, transparent 50%);
-    background-size: 7px 1px;
+    background: var(--app-border-subtle);
+  }
+  .track {
+    background: var(--app-bg-muted);
+  }
+  .meter {
+    background: var(--ct-ink);
+  }
+  .meter.is-low {
+    background: var(--ct-orange);
+  }
+  .seats {
+    color: var(--app-text-secondary);
+  }
+  .seats.is-low {
+    color: var(--ct-orange-ink);
+  }
+
+  .card.is-picked {
+    background: var(--ct-black);
+    border-color: var(--ct-black);
+    color: #fff;
+    box-shadow: 0 20px 34px -20px rgba(35, 31, 32, 0.7);
+  }
+  .card.is-picked .day {
+    color: var(--ct-orange);
+  }
+  .card.is-picked .card-soft,
+  .card.is-picked .seats {
+    color: rgba(255, 255, 255, 0.72);
+  }
+  .card.is-picked .seats.is-low {
+    color: var(--ct-orange);
+  }
+  .card.is-picked .rule {
+    background: rgba(255, 255, 255, 0.16);
+  }
+  .card.is-picked .track {
+    background: rgba(255, 255, 255, 0.16);
+  }
+  .card.is-picked .meter {
+    background: #fff;
+  }
+  .card.is-picked .meter.is-low {
+    background: var(--ct-orange);
+  }
+  .check {
+    background: var(--ct-orange);
+    color: var(--ct-ink);
   }
 </style>

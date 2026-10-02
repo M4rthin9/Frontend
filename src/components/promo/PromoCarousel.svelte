@@ -227,8 +227,8 @@
   .card {
     aspect-ratio: 16 / 9;
     border-radius: 1.25rem;
-    background: #120d0c;
-    border: 1px solid rgba(214, 179, 124, 0.18);
+    background: #1a1718;
+    border: 1px solid var(--app-border-subtle);
     box-shadow: 0 30px 60px -32px rgba(0, 0, 0, 0.85);
     /* Driven by --d from the scroll position: no transition, it follows the finger. */
     transform: scale(calc(1 - var(--d, 0) * 0.12));
@@ -244,7 +244,7 @@
     filter: blur(28px) brightness(0.55) saturate(1.2);
   }
   .card:focus-visible {
-    outline: 2px solid var(--hp-gold, #a92928);
+    outline: 2px solid var(--ct-orange, #a92928);
     outline-offset: 4px;
   }
   .card:not(.is-active) {
@@ -266,9 +266,9 @@
     align-items: center;
     justify-content: center;
     border-radius: 999px;
-    border: 1px solid rgba(214, 179, 124, 0.4);
-    background: rgba(13, 9, 8, 0.6);
-    color: #f4ece2;
+    border: 1px solid var(--app-border-strong);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    color: var(--app-text);
     backdrop-filter: blur(8px);
     cursor: pointer;
     transition:
@@ -284,7 +284,7 @@
   }
   @media (hover: hover) and (pointer: fine) {
     .nav:hover {
-      background: rgba(13, 9, 8, 0.85);
+      background: var(--surface);
     }
   }
   .nav:active {
@@ -292,7 +292,7 @@
   }
   .nav:focus-visible,
   .dot:focus-visible {
-    outline: 2px solid var(--hp-gold, #a92928);
+    outline: 2px solid var(--ct-orange, #a92928);
     outline-offset: 3px;
   }
 
@@ -306,6 +306,6 @@
   }
   .dot.is-active {
     width: 1.5rem;
-    background: var(--hp-gold, #a92928);
+    background: var(--ct-orange, #a92928);
   }
 </style>

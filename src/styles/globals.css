@@ -92,6 +92,19 @@
     U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+/* Tinos Bold: a metric clone of Times New Roman Bold (Apache 2.0), for the
+   Chef Table masthead and numerals. Latin only; Thai falls through to Kanit. */
+@font-face {
+  font-family: 'Tinos';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/tinos-700-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* ============================================================
    GLOBALS.CSS — Design System
    Official palette — Crimson + Muted Gold + Ink (Phase 1)
@@ -102,6 +115,7 @@
   --font-sans: 'Kanit', 'Sarabun', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display: 'Noto Serif Thai Variable', 'Noto Serif Thai', Georgia, serif;
   --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+  --font-book: 'Tinos', 'Times New Roman', Times, 'Kanit', serif;
 
   /* === Red (primary) — #A92928 === */
   --color-red-50: #fef2f2;
@@ -2769,89 +2783,161 @@
   background: var(--bg-subtle);
 }
 
-/* === Home page (sections live in src/components/home) ===
-   One continuous lamp-lit stage. The wrapper redefines the app's colour tokens,
-   so every token-based utility inside renders on the dark stage in both themes. */
+/* === Home page: the "Chef Table" book (sections live in src/components/home) ===
+   Daylight, linen, matte black plates and one orange, after the printed book
+   "Chef Table ในเรือนจำ". The wrapper redefines the app's colour tokens, so every
+   token-based utility inside reads as paper in both themes; .ct-black turns a
+   block into one of the book's black pages. */
 @layer components {
-  .home-premium {
-    --hp-bg: #0d0908;
-    --hp-bg-2: #131010;
-    --hp-surface: #1a1514;
-    --hp-line: rgba(232, 214, 190, 0.12);
-    --hp-line-strong: rgba(232, 214, 190, 0.26);
-    --hp-ink: #f4ece2;
-    --hp-ink-soft: #c9bcad;
-    --hp-ink-mute: #a39484;
-    --hp-gold: #d6b37c;
-    --hp-gold-deep: #b48a4f;
-    --hp-crimson: #a92928;
-    --surface: var(--hp-surface);
-    --app-bg: var(--hp-bg);
-    --app-bg-subtle: var(--hp-bg-2);
-    --app-bg-muted: #241d1b;
-    --app-border-subtle: var(--hp-line);
-    --app-border-strong: var(--hp-line-strong);
-    --app-text: var(--hp-ink);
-    --app-text-secondary: var(--hp-ink-soft);
-    --app-text-tertiary: var(--hp-ink-mute);
-    color-scheme: dark;
-    background: var(--hp-bg);
-    color: var(--hp-ink);
+  .home-book {
+    --ct-paper: #fafaf8;
+    --ct-linen: #eef0ef;
+    --ct-ink: #231f20;
+    --ct-ink-2: #4b4647;
+    --ct-ink-3: #6b6566;
+    --ct-black: #231f20;
+    --ct-orange: #f5821f;
+    /* The cover orange is 2.6:1 on paper; orange text on paper or linen uses this (5:1+). */
+    --ct-orange-ink: #a24b08;
+    --ct-ease: cubic-bezier(0.23, 1, 0.32, 1);
+    --surface: #ffffff;
+    --app-bg: var(--ct-paper);
+    --app-bg-subtle: var(--ct-linen);
+    --app-bg-muted: #e2e5e4;
+    --app-border-subtle: rgba(35, 31, 32, 0.12);
+    --app-border-strong: rgba(35, 31, 32, 0.26);
+    --app-text: var(--ct-ink);
+    --app-text-secondary: var(--ct-ink-2);
+    --app-text-tertiary: var(--ct-ink-3);
+    color-scheme: light;
+    background: var(--ct-paper);
+    color: var(--ct-ink);
   }
-  .home-premium ::selection {
-    background: rgba(214, 179, 124, 0.35);
+  .ct-black {
+    --surface: #2d2829;
+    --app-bg: var(--ct-black);
+    --app-bg-subtle: #2d2829;
+    --app-bg-muted: #3b3536;
+    --app-border-subtle: rgba(255, 255, 255, 0.13);
+    --app-border-strong: rgba(255, 255, 255, 0.28);
+    --app-text: #ffffff;
+    --app-text-secondary: rgba(255, 255, 255, 0.76);
+    --app-text-tertiary: rgba(255, 255, 255, 0.62);
+    color-scheme: dark;
+    background: var(--ct-black);
     color: #fff;
   }
-  /* A small champagne rule before a kicker line. */
-  .home-kicker {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    color: var(--hp-gold);
-    font-size: 0.8125rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
+  .home-book ::selection {
+    background: rgba(245, 130, 31, 0.32);
+    color: inherit;
   }
-  .home-kicker::before {
-    content: '';
-    width: 2.25rem;
-    height: 1px;
-    background: currentColor;
-    opacity: 0.7;
+
+  /* Times Bold caps, as on the cover. */
+  .ct-masthead {
+    font-family: var(--font-book);
+    font-weight: 700;
+    line-height: 0.92;
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
   }
-  .home-serif {
-    font-family: var(--font-display);
-  }
-  .home-h2 {
+  /* Thai headlines: a light lead-in and a medium keyword (see Headline.svelte). */
+  .ct-h2 {
     color: var(--app-text);
-    font-family: var(--font-display);
-    font-size: clamp(1.85rem, 1.2rem + 2.1vw, 3rem);
-    font-weight: 500;
-    line-height: 1.22;
-    letter-spacing: -0.01em;
+    font-size: clamp(1.9rem, 1.15rem + 2.5vw, 3.15rem);
+    font-weight: 300;
+    line-height: 1.2;
+    letter-spacing: -0.012em;
     text-wrap: balance;
   }
-  .home-textlink {
+  /* A chapter label: a short orange rule, then small text. */
+  .ct-label {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.7rem;
+    color: var(--app-text-secondary);
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+  }
+  .ct-label::before {
+    content: '';
+    width: 1.75rem;
+    height: 2px;
+    background: var(--ct-orange);
+  }
+
+  .ct-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3rem;
+    padding: 0 1.5rem;
+    border-radius: 999px;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+      transform 140ms var(--ct-ease),
+      background-color 180ms var(--ct-ease),
+      border-color 180ms var(--ct-ease),
+      color 180ms var(--ct-ease);
+  }
+  .ct-btn:not(:disabled):active {
+    transform: scale(0.97);
+  }
+  .ct-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .ct-btn:focus-visible,
+  .ct-link:focus-visible {
+    outline: 2px solid var(--ct-orange);
+    outline-offset: 3px;
+  }
+  /* Orange carries ink, not white: 6.2:1. */
+  .ct-btn-orange {
+    background: var(--ct-orange);
+    color: var(--ct-ink);
+  }
+  .ct-btn-ink {
+    background: var(--ct-ink);
+    color: #fff;
+  }
+  .ct-btn-line {
+    border: 1px solid var(--app-border-strong);
+    color: var(--app-text);
+  }
+  .ct-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     min-height: 2.75rem;
-    color: var(--hp-gold, var(--color-red-700));
+    color: var(--app-text);
     font-weight: 500;
     text-decoration: underline;
-    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
-    text-underline-offset: 0.35em;
+    text-decoration-color: var(--ct-orange);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.4em;
     cursor: pointer;
-    transition: text-decoration-color 160ms cubic-bezier(0.23, 1, 0.32, 1);
-  }
-  .home-textlink:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 3px;
-    border-radius: 4px;
+    transition: text-underline-offset 180ms var(--ct-ease);
   }
   @media (hover: hover) and (pointer: fine) {
-    .home-textlink:hover {
-      text-decoration-color: currentColor;
+    .ct-btn-orange:not(:disabled):hover {
+      background: #ff9a45;
     }
+    .ct-btn-ink:not(:disabled):hover {
+      background: #3d3637;
+    }
+    .ct-btn-line:not(:disabled):hover {
+      border-color: var(--app-text);
+    }
+    .ct-btn:not(:disabled):hover .ct-nudge {
+      transform: translateX(3px);
+    }
+    .ct-link:hover {
+      text-underline-offset: 0.25em;
+    }
+  }
+  .ct-nudge {
+    transition: transform 180ms var(--ct-ease);
   }
 }

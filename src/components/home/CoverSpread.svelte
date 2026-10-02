@@ -1,0 +1,224 @@
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import ArrowRight from '@lucide/svelte/icons/arrow-right';
+  import ArrowDown from '@lucide/svelte/icons/arrow-down';
+  import Search from '@lucide/svelte/icons/search';
+  import UtensilsCrossed from '@lucide/svelte/icons/utensils-crossed';
+  import { t } from '../../lib/i18n/i18n.svelte';
+  import { navigate } from '../../lib/router.svelte';
+  import { ui } from '../../lib/store/ui.svelte';
+  import { EASE_OUT, MQ, gsap } from '../../lib/motion';
+  import Headline from './Headline.svelte';
+
+  let root: HTMLElement;
+
+  const settings = $derived(ui.publicSettings);
+  const bookingOpen = $derived(settings.bookingWindow.open);
+  const tagline = $derived([1, 2, 3].map((n) => t(`ctTag${n}`).split('|')));
+
+  function toDates(): void {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.getElementById('home-dates')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  onMount(() => {
+    const mm = gsap.matchMedia(root);
+
+    // Desktop: the book opens. The photo page swings down flat from the spine
+    // while the cover type settles; the masthead closes up from wide tracking.
+    mm.add(MQ.desktop, () => {
+      gsap
+        .timeline({ defaults: { ease: EASE_OUT } })
+        .from('[data-unfold]', { rotateY: 62, transformPerspective: 2200, duration: 1.6 }, 0)
+        .from('[data-unfold-shade]', { opacity: 1, duration: 1.4 }, 0)
+        .from('[data-mast]', { opacity: 0, letterSpacing: '0.32em', duration: 1.5 }, 0.1)
+        .from('[data-line]', { opacity: 0, y: 18, duration: 1.1, stagger: 0.07 }, 0.3)
+        .from('[data-tag]', { opacity: 0, y: 12, duration: 1, stagger: 0.12 }, 0.7);
+    });
+
+    mm.add('(max-width: 1023px) and (prefers-reduced-motion: no-preference)', () => {
+      gsap
+        .timeline({ defaults: { ease: EASE_OUT } })
+        .from('[data-mast]', { opacity: 0, letterSpacing: '0.24em', duration: 1.3 }, 0)
+        .from('[data-line]', { opacity: 0, y: 14, duration: 1, stagger: 0.06 }, 0.15)
+        .from('[data-zoom]', { scale: 1.08, duration: 1.8 }, 0);
+    });
+
+    // As the cover leaves, the reader leans over the table.
+    mm.add(MQ.motion, () => {
+      gsap.to('[data-zoom]', {
+        scale: 1.07,
+        ease: 'none',
+        scrollTrigger: { trigger: root, start: 'top top', end: 'bottom top', scrub: 0.5 },
+      });
+    });
+
+    return () => mm.revert();
+  });
+</script>
+
+<section
+  bind:this={root}
+  id="home-cover"
+  data-chapter="ctChCover"
+  class="relative isolate grid overflow-x-clip lg:min-h-[min(100svh,980px)] lg:grid-cols-2"
+  aria-labelledby="home-title"
+>
+  <!-- The right-hand page of the book, first in reading order: the black cover. -->
+  <div class="ct-black cover relative z-10 flex flex-col justify-between gap-12 px-6 pb-12 pt-20 sm:px-10 lg:order-2 lg:px-14 lg:pb-14 lg:pt-24 xl:px-20">
+    <div>
+      <div data-line class="flex items-center gap-3">
+        <img src="/cida-logo-128.webp" width="40" height="40" alt="กรมราชทัณฑ์" class="h-10 w-10 rounded-full object-cover" />
+        <img src="/logo-white-128.webp" width="40" height="40" alt="CC Cafe" class="h-10 w-10 rounded-full object-cover ring-1 ring-white/25" />
+        <p class="min-w-0 text-xs leading-snug text-text-secondary sm:text-sm">{t('homeAgency')}</p>
+      </div>
+
+      <p data-mast class="ct-masthead masthead mt-12 text-[var(--ct-orange)] lg:mt-16">Chef Table</p>
+      <p data-line class="mt-3 text-lg font-light text-white/90 sm:text-xl">{t('ctMastSub')}</p>
+    </div>
+
+    <div>
+      <div data-line>
+        <Headline id="home-title" level={1} keep text={t('homeHeroTitle')} class="cover-title" />
+      </div>
+      <p data-line class="mt-5 max-w-[32rem] text-base font-light leading-relaxed text-text-secondary [text-wrap:pretty] sm:text-lg">
+        {t('heroSub')}
+      </p>
+
+      <div data-line class="mt-8 flex flex-wrap gap-3">
+        <button type="button" class="ct-btn ct-btn-orange" onclick={() => navigate('booking')}>
+          {t('homeCtaBook')}
+          <ArrowRight class="ct-nudge h-4 w-4" aria-hidden="true" />
+        </button>
+        {#if bookingOpen}
+          <button type="button" class="ct-btn ct-btn-line" onclick={toDates}>
+            {t('homeCtaDates')}
+            <ArrowDown class="h-4 w-4" aria-hidden="true" />
+          </button>
+        {/if}
+      </div>
+
+      <div data-line class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm">
+        <span class="inline-flex items-center gap-2" role="status">
+          <span class="relative flex h-2 w-2" aria-hidden="true">
+            {#if bookingOpen}
+              <span class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 motion-safe:animate-ping"></span>
+            {/if}
+            <span class="relative inline-flex h-2 w-2 rounded-full {bookingOpen ? 'bg-emerald-400' : 'bg-amber-400'}"></span>
+          </span>
+          <span class="text-text-secondary">{bookingOpen ? t('homeStatusBookingOpen') : t('homeStatusBookingClosed')}</span>
+        </span>
+        <button type="button" class="ct-link" onclick={() => navigate('status')}>
+          <Search class="h-4 w-4" aria-hidden="true" />{t('btnStatus')}
+        </button>
+        <button type="button" class="ct-link" onclick={() => navigate('table-booking')}>
+          <UtensilsCrossed class="h-4 w-4" aria-hidden="true" />{t('btnTableBook')}
+          {#if settings.tableBooking.maintenance}
+            <span class="rounded-full border border-white/30 px-2 py-0.5 text-[11px] font-medium text-white/80">{t('tblComingSoonTitle')}</span>
+          {/if}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- The left-hand page: the book's opening photograph, the tagline set on its linen. -->
+  <div class="photo-page relative overflow-hidden lg:order-1">
+    <div data-unfold class="absolute inset-0 origin-right">
+      <div data-zoom class="absolute inset-0">
+        <img
+          src="/chef/cover-1400.webp"
+          srcset="/chef/cover-800.webp 800w, /chef/cover-1400.webp 1400w"
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          width="1400"
+          height="1876"
+          alt={t('ctCoverAlt')}
+          fetchpriority="high"
+          class="absolute inset-0 h-full w-full object-cover object-[50%_18%]"
+        />
+      </div>
+      <div data-unfold-shade class="unfold-shade pointer-events-none absolute inset-0 opacity-0" aria-hidden="true"></div>
+      <div class="spine pointer-events-none absolute inset-y-0 right-0 hidden w-[10%] lg:block" aria-hidden="true"></div>
+
+      <p class="tagline absolute inset-x-0 top-0 px-6 pt-[9%] text-center">
+        {#each tagline as [lead, key], i (i)}
+          <span data-tag class="block"><span class="font-light">{lead}</span><span class="font-medium">{key}</span></span>
+        {/each}
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cover {
+    /* A faint highlight where the black page rises from the spine. */
+    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 3%);
+  }
+  /* "CHEF TABLE" in Tinos Bold caps is about 6.8em wide: size it to fill the
+     page's text column exactly (column width minus its padding, over 6.9). */
+  .masthead {
+    font-size: min(calc((100vw - 3rem) / 6.9), 6rem);
+    white-space: nowrap;
+  }
+  @media (min-width: 640px) {
+    .masthead {
+      font-size: min(calc((100vw - 5rem) / 6.9), 6.5rem);
+    }
+  }
+  @media (min-width: 1024px) {
+    .masthead {
+      font-size: min(calc((50vw - 7rem) / 6.9), 8rem);
+    }
+  }
+  @media (min-width: 1280px) {
+    .masthead {
+      font-size: min(calc((50vw - 10rem) / 6.9), 8rem);
+    }
+  }
+  .cover :global(.cover-title) {
+    color: #fff;
+    font-size: clamp(2rem, 1.2rem + 3.2vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.18;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+  :global(html[lang='en']) .cover :global(.cover-title),
+  :global(html[lang='vi']) .cover :global(.cover-title) {
+    font-size: clamp(1.9rem, 1.1rem + 2.6vw, 3rem);
+    line-height: 1.12;
+  }
+
+  .photo-page {
+    min-height: 122vw;
+    background: #c9cfd2;
+  }
+  @media (min-width: 640px) {
+    .photo-page {
+      min-height: 96vw;
+    }
+  }
+  @media (min-width: 1024px) {
+    .photo-page {
+      min-height: 0;
+    }
+  }
+  /* The gutter: the page curves down into the binding. */
+  .spine {
+    background: linear-gradient(270deg, rgba(20, 16, 17, 0.42), rgba(20, 16, 17, 0.12) 35%, rgba(20, 16, 17, 0));
+  }
+  /* While the page is still lifting it catches less light. */
+  .unfold-shade {
+    background: linear-gradient(270deg, rgba(20, 16, 17, 0.55), rgba(20, 16, 17, 0.15));
+  }
+
+  .tagline {
+    color: var(--ct-ink);
+    font-size: clamp(1.6rem, 6.4vw, 2.4rem);
+    line-height: 1.22;
+  }
+  @media (min-width: 1024px) {
+    .tagline {
+      font-size: min(2.8vw, 2.7rem);
+    }
+  }
+</style>
