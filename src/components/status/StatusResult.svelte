@@ -10,6 +10,7 @@
     statusPillClass,
     statusCardClass,
     parseExtraVisitorNames,
+    parseExtraPrisoners,
     approvalState,
     approvalLabel,
   } from '../../lib/utils/status';
@@ -70,7 +71,9 @@
     String(booking.bookingType || '').trim().toLowerCase() === 'table' ||
       String(booking.ref || '').toUpperCase().startsWith('TBL-'),
   );
-  const totalPersons = $derived(isTable ? visitorCount : visitorCount + 1);
+  const coPrisoners = $derived(isTable ? [] : parseExtraPrisoners(booking.extraPrisoners));
+  const prisonerCount = $derived(isTable ? 0 : 1 + coPrisoners.length);
+  const totalPersons = $derived(visitorCount + prisonerCount);
   const total = $derived(parseInt(String(booking.total)) || totalPersons * 1000);
 
   const visitors = $derived.by(() => {
@@ -168,6 +171,12 @@
           <span class="lbl">{t('lblWing')}</span>
           <span class="val">{booking.wing || '—'}</span>
         </div>
+        {#each coPrisoners as p (p.id)}
+          <div class="info-row">
+            <span class="lbl">{t('lblCoPrisoner')}</span>
+            <span class="val">{maskPrisonerName(p.name) || '—'} (#{p.id}) · {t('lblWing')} {p.wing || '—'}</span>
+          </div>
+        {/each}
       {/if}
       <div class="info-row">
         <span class="lbl">{t('lblVisitDate')}</span>
@@ -175,7 +184,7 @@
       </div>
       <div class="info-row">
         <span class="lbl">{t('lblCount')}</span>
-        <span class="val">{isTable ? tc('countFormatTable', { n: visitorCount }) : tc('countFormat', { n: visitorCount, total: totalPersons })}</span>
+        <span class="val">{isTable ? tc('countFormatTable', { n: visitorCount }) : tc('countFormat', { n: visitorCount, p: prisonerCount, total: totalPersons })}</span>
       </div>
       <div class="info-row">
         <span class="lbl">{t('lblCost')}</span>

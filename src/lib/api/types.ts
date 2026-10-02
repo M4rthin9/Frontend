@@ -61,6 +61,8 @@ export interface PublicReservation {
   prisonerName?: string;
   prisonerId?: string;
   wing?: string;
+  /** Other prisoners at the same table (e.g. father and son): `name|id|wing` rows joined by `;;`. */
+  extraPrisoners?: string;
   visitorName?: string;
   visitorApproved?: string;
   extraVisitorNames?: string;

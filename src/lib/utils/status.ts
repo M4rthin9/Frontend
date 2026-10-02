@@ -141,6 +141,17 @@ export function pickBooking(
 }
 
 /** Parse the reference's extraVisitorNames payload into plain names. */
+/** Prisoners seated at the booking's table besides the main one (`name|id|wing` rows joined by `;;`). */
+export function parseExtraPrisoners(raw: string | null | undefined): { name: string; id: string; wing: string }[] {
+  return String(raw ?? '')
+    .split(';;')
+    .map((e) => {
+      const p = e.split('|');
+      return { name: (p[0] ?? '').trim(), id: (p[1] ?? '').trim(), wing: (p[2] ?? '').trim() };
+    })
+    .filter((p) => p.id);
+}
+
 export function parseExtraVisitorNames(raw: string | null | undefined): string[] {
   if (!raw || !String(raw).trim()) return [];
   const s = String(raw);

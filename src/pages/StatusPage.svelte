@@ -5,7 +5,7 @@
   import { ui } from '../lib/store/ui.svelte';
   import { lookupByRef } from '../lib/api/endpoints';
   import type { PublicReservation } from '../lib/api/types';
-  import { pickBooking } from '../lib/utils/status';
+  import { parseExtraPrisoners, pickBooking } from '../lib/utils/status';
   import { escHtml, maskPrisonerName } from '../lib/utils/helpers';
   import { safeGetItem, safeRemoveItem } from '../lib/utils/storage';
   import StatusResult from '../components/status/StatusResult.svelte';
@@ -36,8 +36,10 @@
     String(found?.bookingType || '').trim().toLowerCase() === 'table' ||
       String(found?.ref || '').toUpperCase().startsWith('TBL-'),
   );
+  const thankYouCoPrisoners = $derived(thankYouIsTable ? [] : parseExtraPrisoners(found?.extraPrisoners));
+  const thankYouPrisoners = $derived(thankYouIsTable ? 0 : 1 + thankYouCoPrisoners.length);
   const thankYouTotal = $derived(
-    parseInt(String(found?.total)) || (thankYouIsTable ? thankYouCount : thankYouCount + 1) * 1000,
+    parseInt(String(found?.total)) || (thankYouCount + thankYouPrisoners) * 1000,
   );
 
   onMount(() => {
@@ -243,6 +245,12 @@
             <span class="detail-label">{t('lblWing')}</span>
             <span class="detail-value">{found.wing || '—'}</span>
           </div>
+          {#each thankYouCoPrisoners as p (p.id)}
+            <div class="detail-row">
+              <span class="detail-label">{t('lblCoPrisoner')}</span>
+              <span class="detail-value">{maskPrisonerName(p.name) || '—'} (#{p.id}) · {t('lblWing')} {p.wing || '—'}</span>
+            </div>
+          {/each}
         {/if}
         <div class="detail-row">
           <span class="detail-label">{t('lblVisitDate')}</span>
@@ -250,7 +258,7 @@
         </div>
         <div class="detail-row">
           <span class="detail-label">{t('lblCount')}</span>
-          <span class="detail-value">{thankYouIsTable ? tc('countFormatTable', { n: thankYouCount }) : tc('countFormat', { n: thankYouCount, total: thankYouCount + 1 })}</span>
+          <span class="detail-value">{thankYouIsTable ? tc('countFormatTable', { n: thankYouCount }) : tc('countFormat', { n: thankYouCount, p: thankYouPrisoners, total: thankYouCount + thankYouPrisoners })}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">{t('lblCost')}</span>
