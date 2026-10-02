@@ -58,6 +58,27 @@ export function statusPillLabel(status: string | null | undefined): string {
   }
 }
 
+/** Dictionary labels open with an emoji; the Chef Table pages use colour and icons instead. */
+export function cleanLabel(label: string): string {
+  return label.replace(/^[^\p{L}\p{N}]+/u, '').replace(/\s+—\s+/g, ' · ');
+}
+
+/** Colour family for a status on the Chef Table pages (`.ct-pill.is-*`). */
+export function statusTone(status: string | null | undefined): 'is-wait' | 'is-pay' | 'is-done' | 'is-stop' {
+  switch (normalizeStatus(status)) {
+    case 'ชำระแล้ว':
+    case 'เสร็จสิ้น':
+      return 'is-done';
+    case 'รอชำระเงิน':
+      return 'is-pay';
+    case 'ยกเลิก':
+    case 'ไม่อนุมัติ':
+      return 'is-stop';
+    default:
+      return 'is-wait';
+  }
+}
+
 /** CSS modifier for the status pill (pending/approved/rejected/paid/cancelled). */
 export function statusPillClass(status: string | null | undefined): string {
   const s = normalizeStatus(status);
@@ -118,7 +139,12 @@ export function pickBooking(
     );
   }
 
-  const matches = rows.filter((r) => String(r.prisonerId ?? '').trim() === query);
+  // A prisoner seated at another booking's table (extraPrisoners) finds that booking too.
+  const matches = rows.filter(
+    (r) =>
+      String(r.prisonerId ?? '').trim() === query ||
+      parseExtraPrisoners(r.extraPrisoners).some((p) => p.id === query),
+  );
   if (matches.length === 0) return null;
 
   const valid = matches

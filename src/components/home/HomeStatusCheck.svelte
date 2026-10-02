@@ -6,7 +6,7 @@
   import { navigate } from '../../lib/router.svelte';
   import { lookupByRef } from '../../lib/api/endpoints';
   import type { PublicReservation } from '../../lib/api/types';
-  import { normalizeStatus, pickBooking, statusPillLabel } from '../../lib/utils/status';
+  import { cleanLabel, pickBooking, statusPillLabel, statusTone } from '../../lib/utils/status';
   import { formatDateIn } from '../../lib/utils/date';
   import { safeSetItem } from '../../lib/utils/storage';
   import Headline from './Headline.svelte';
@@ -38,24 +38,6 @@
     }
   }
 
-  /** Status labels in the dictionaries open with an emoji; the page uses a coloured dot instead. */
-  const cleanLabel = (s: string | undefined) =>
-    statusPillLabel(s).replace(/^[^\p{L}\p{N}]+/u, '').replace(/\s+—\s+/g, ' · ');
-
-  function tone(s: string | undefined): string {
-    switch (normalizeStatus(s)) {
-      case 'ชำระแล้ว':
-      case 'เสร็จสิ้น':
-        return 'is-done';
-      case 'รอชำระเงิน':
-        return 'is-pay';
-      case 'ยกเลิก':
-      case 'ไม่อนุมัติ':
-        return 'is-stop';
-      default:
-        return 'is-wait';
-    }
-  }
 
   function visitDate(r: PublicReservation): string {
     const iso = String(r.visitDateISO ?? '').trim();
@@ -108,9 +90,9 @@
                   <p class="text-xs font-medium tracking-[0.06em] text-text-tertiary">{t('refLabel')}</p>
                   <p class="mt-1 font-mono text-lg font-semibold tracking-wide text-text-primary">{result.ref}</p>
                 </div>
-                <span class="pill {tone(result.status)} inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium">
-                  <span class="dot h-2 w-2 rounded-full" aria-hidden="true"></span>
-                  {cleanLabel(result.status)}
+                <span class="ct-pill {statusTone(result.status)}">
+                  <span class="dot" aria-hidden="true"></span>
+                  {cleanLabel(statusPillLabel(result.status))}
                 </span>
               </div>
               <dl class="mt-5 grid gap-4 border-t border-border-subtle pt-5 sm:grid-cols-2">
@@ -158,28 +140,5 @@
     border: 1px solid var(--app-border-subtle);
     border-radius: 6px;
     box-shadow: 0 24px 40px -30px rgba(35, 31, 32, 0.5);
-  }
-  /* Status colours on paper, each at least 4.5:1 on its tint. */
-  .pill {
-    border: 1px solid currentColor;
-  }
-  .pill .dot {
-    background: currentColor;
-  }
-  .pill.is-wait {
-    color: #8a5a00;
-    background: #fff6e2;
-  }
-  .pill.is-pay {
-    color: var(--ct-orange-ink);
-    background: #fff1e5;
-  }
-  .pill.is-done {
-    color: #1f6b45;
-    background: #e9f6ef;
-  }
-  .pill.is-stop {
-    color: #a12d2d;
-    background: #fcecec;
   }
 </style>
