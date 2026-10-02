@@ -1732,154 +1732,6 @@
    STATUS PAGE — Check Booking Status
    ============================================================ */
 
-/* === Hero Header === */
-.booking-app.status-app .status-hero {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  padding: 2.5rem 1.5rem;
-  background: linear-gradient(
-    160deg,
-    var(--indigo-950) 0%,
-    var(--indigo-800) 60%,
-    var(--indigo-900) 100%
-  );
-  border-radius: var(--radius-xl);
-  color: #fff;
-  position: relative;
-  overflow: hidden;
-}
-
-.booking-app.status-app .status-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 50% 60% at 85% 15%, rgba(255, 255, 255, 0.04) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
-  pointer-events: none;
-}
-
-.booking-app.status-app .status-back {
-  position: absolute;
-  top: 1.25rem;
-  left: 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.875rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: color var(--duration-fast) var(--ease-default);
-  z-index: 1;
-}
-
-.booking-app.status-app .status-back:hover {
-  color: #fff;
-}
-
-.booking-app.status-app .status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.75rem;
-  padding: 0.25rem 0.875rem;
-  border-radius: var(--radius-full);
-  margin-bottom: 0.75rem;
-  letter-spacing: 0.03em;
-  position: relative;
-  font-weight: 500;
-}
-
-.booking-app.status-app .status-h1 {
-  font-size: 1.375rem;
-  font-weight: 700;
-  margin-bottom: 0.375rem;
-  position: relative;
-  color: #fff;
-  letter-spacing: 0.01em;
-}
-
-.booking-app.status-app .status-sub {
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.68);
-  position: relative;
-}
-
-/* === Search Tabs === */
-.booking-app.status-app .status-tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  margin-bottom: 1rem;
-  background: var(--app-bg-subtle);
-  border-radius: var(--radius-md);
-  padding: 3px;
-  border: 1px solid var(--app-border-subtle);
-}
-
-.booking-app.status-app .status-tab {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.625rem 0.875rem;
-  border: none;
-  border-radius: var(--radius-sm);
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--app-text-secondary);
-  background: transparent;
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-default);
-}
-
-.booking-app.status-app .status-tab.active {
-  background: var(--surface);
-  color: var(--primary);
-  box-shadow: var(--shadow-sm);
-  font-weight: 600;
-}
-
-.booking-app.status-app .status-tab:hover:not(.active) {
-  color: var(--app-text);
-  background: rgba(0, 0, 0, 0.02);
-}
-
-.booking-app.status-app .status-label {
-  font-size: 0.875rem;
-  color: var(--app-text-secondary);
-  font-weight: 500;
-  margin-bottom: 0.375rem;
-  display: block;
-}
-
-.booking-app.status-app .status-tab-panel input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1.5px solid var(--app-border-strong);
-  border-radius: var(--radius-md);
-  font-size: 0.9375rem;
-  background: var(--surface);
-  color: var(--app-text);
-  transition: all var(--duration-fast) var(--ease-default);
-}
-
-.booking-app.status-app .status-tab-panel input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(169, 41, 40, 0.08);
-  background: var(--surface);
-}
-
-.booking-app.status-app .status-tab-panel input::placeholder {
-  color: var(--app-text-tertiary);
-  opacity: 0.6;
-}
-
 /* === Buttons (shared) === */
 .booking-app .btn-primary {
   width: 100%;
@@ -2602,21 +2454,9 @@
 
 /* === Status Responsive === */
 @media (max-width: 480px) {
-  .booking-app.status-app .status-tabs {
-    grid-template-columns: 1fr;
-  }
-
-  .booking-app.status-app .status-tab {
-    padding: 0.75rem;
-  }
-
   .booking-app .qr-frame {
     width: 160px;
     height: 160px;
-  }
-
-  .booking-app.status-app .status-hero {
-    padding: 2rem 1.25rem;
   }
 }
 
@@ -2984,9 +2824,11 @@
     background: var(--tint);
   }
 
-  /* The status page sits on the same paper; the payment form inside it still
-     reads the older booking tokens, so they are pointed at the book here. */
-  .status-book {
+  /* The booking and status pages sit on the same paper. Their forms still read
+     the older booking tokens (maroon --primary, red --indigo-*, gold --amber-* /
+     --accent-*), so inside the book those are pointed at ink and orange. Error
+     reds (rose) are left alone. */
+  .book-paper {
     --bg-subtle: var(--app-bg-subtle);
     --border: var(--app-border-strong);
     --text: var(--app-text);
@@ -2995,5 +2837,35 @@
     --primary-light: #f3eee9;
     --shadow-primary: none;
     --shadow-primary-lg: none;
+    --indigo-50: #f3eee9;
+    --indigo-100: #e8e2dc;
+    --indigo-200: #d6cec7;
+    --indigo-500: var(--ct-ink-3);
+    --indigo-600: var(--ct-ink-2);
+    --indigo-700: var(--ct-ink);
+    --indigo-800: #1a1617;
+    --indigo-900: #120f10;
+    --indigo-950: #0b0909;
+    --amber-50: #fff6ec;
+    --amber-100: #ffe9d2;
+    --amber-200: #fdd3aa;
+    --amber-300: #fbb877;
+    --amber-400: #f89a45;
+    --amber-700: var(--ct-orange-ink);
+    --accent: var(--ct-orange);
+    --accent-light: #fff1e5;
+    --accent-dark: var(--ct-orange-ink);
+    --accent-500: var(--ct-orange);
+    --accent-600: #e06f0c;
+    --accent-700: var(--ct-orange-ink);
+    --accent-800: #7d3a06;
+    /* The rules note and other navy tints read as warm paper. */
+    --color-navy-50: #f3eee9;
+    /* Calendar legend dots: open days in ink, full days in the status red. */
+    --blue: var(--ct-ink);
+    --red: #a12d2d;
+    /* Tailwind's focus utilities on the form fields (focus:border-indigo-500, ring-indigo-100). */
+    --color-indigo-500: var(--ct-ink);
+    --color-indigo-100: rgba(245, 130, 31, 0.28);
   }
 }

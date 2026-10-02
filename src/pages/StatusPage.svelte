@@ -111,7 +111,7 @@
   }
 </script>
 
-<div class="home-book status-book">
+<div class="home-book book-paper">
   <header class="ct-black">
     <div class="mx-auto w-full max-w-3xl px-4 pb-20 pt-5 sm:px-6 sm:pb-24">
       <button type="button" class="ct-link text-sm" onclick={() => navigate('home')}>

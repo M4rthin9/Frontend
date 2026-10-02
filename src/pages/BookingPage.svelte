@@ -1,5 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import ArrowLeft from '@lucide/svelte/icons/arrow-left';
+  import CirclePause from '@lucide/svelte/icons/circle-pause';
   import {
     booking as defaultBooking,
     CHILD_RELATIONS,
@@ -57,28 +59,27 @@
   const totalCost = $derived(store.cost.total);
 </script>
 
-<div class="booking-app">
-  <div class="booking-head">
-    <button type="button" class="booking-back" onclick={() => navigate('home')}>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"><path d="M19 12H5" /><path d="M12 19l-7-7 7-7" /></svg
-      >
-      {t('backHomeShort')}
-    </button>
-
-    <div class="booking-head-title">
-      <span class="booking-badge">{isTable ? t('tableBookingBadge') : t('bookingBadge')}</span>
-      <h1 class="booking-h1">{isTable ? t('tableBookingTitle') : t('bookingTitle')}</h1>
-      <p class="booking-p">{isTable ? t('tableBookingP') : t('bookingP')}</p>
+<!-- Printed on the Chef Table paper, like the home and status pages. -->
+<div class="home-book book-paper">
+  <header class="ct-black">
+    <div class="mx-auto w-full max-w-3xl px-4 pb-24 pt-5 sm:px-6 sm:pb-28">
+      <button type="button" class="ct-link text-sm" onclick={() => navigate('home')}>
+        <ArrowLeft class="h-4 w-4" aria-hidden="true" />
+        {t('backHomeShort')}
+      </button>
+      <p class="ct-label mt-10 flex sm:mt-14">{isTable ? t('tableBookingBadge') : t('bookingBadge')}</p>
+      <h1 class="mt-4 text-balance text-[clamp(2.1rem,1.5rem+2.6vw,3.25rem)] font-medium leading-[1.15] tracking-[-0.01em]">
+        {isTable ? t('tableBookingTitle') : t('bookingTitle')}
+      </h1>
+      <p class="mt-3 max-w-xl text-base font-light leading-relaxed text-text-secondary">
+        {isTable ? t('tableBookingP') : t('bookingP')}
+      </p>
     </div>
-  </div>
-  <div class="mb-6">
+  </header>
+
+  <div class="mx-auto -mt-14 w-full max-w-3xl px-4 sm:px-6">
+<div class="booking-app">
+  <div class="stepper-card mb-6">
     <Stepper {steps} current={store.step} />
   </div>
 
@@ -89,16 +90,14 @@
   {#if store.step === 1 && !ui.publicSettings.bookingWindow.open}
     <!-- Admin closed all public booking: no form, just the reason. -->
     <div class="section text-center" role="status">
-      <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-3xl">⏸️</div>
+      <div class="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full bg-[#fff1e5] text-[var(--ct-orange-ink)]">
+        <CirclePause class="h-7 w-7" aria-hidden="true" />
+      </div>
       <h2 class="text-lg font-bold text-text-primary">{t('bookingClosedTitle')}</h2>
       <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-text-secondary">
         {ui.publicSettings.bookingWindow.closedMessage || t('bookingClosedText')}
       </p>
-      <button
-        type="button"
-        class="mt-6 rounded-xl bg-red-700 px-6 py-3 text-sm font-bold text-white shadow-md transition-colors duration-200 hover:bg-red-800"
-        onclick={() => navigate('home')}
-      >
+      <button type="button" class="ct-btn ct-btn-ink mt-6" onclick={() => navigate('home')}>
         {t('backHomeShort')}
       </button>
     </div>
@@ -209,7 +208,7 @@
         <div class="extra-visitors-wrap">
           <div class="extra-visitors-title">
             <span
-              class="flex h-6 w-6 items-center justify-center rounded-md bg-red-50 text-xs font-bold text-red-700"
+              class="flex h-6 w-6 items-center justify-center rounded-full bg-[#f3eee9] text-xs font-bold text-text-primary"
               >+</span
             >
             {t('extraVisitorTitle')}
@@ -222,7 +221,7 @@
             <div class="extra-visitor-block">
               <div class="extra-visitor-num">
                 <span
-                  class="flex h-6 w-6 items-center justify-center rounded-full bg-red-700 text-xs font-bold text-white"
+                  class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--ct-ink)] text-xs font-bold text-white"
                   >{num}</span
                 >
                 ผู้เข้าร่วมกิจกรรม {num}
@@ -407,3 +406,21 @@
     </div>
   {/if}
 </div>
+  </div>
+</div>
+
+<style>
+  .stepper-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--app-border-subtle);
+    border-radius: 8px;
+    box-shadow: 0 24px 40px -30px rgba(35, 31, 32, 0.6);
+    padding: 1.25rem 1.25rem 0.75rem;
+  }
+  @media (min-width: 640px) {
+    .stepper-card {
+      padding: 1.5rem 2rem 1rem;
+    }
+  }
+</style>

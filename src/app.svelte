@@ -25,8 +25,8 @@
   };
 
   let previousRoute = $state(router.route);
-  // Pages printed on the Chef Table paper: always light, with the book's black footer.
-  const bookPage = $derived(router.route === 'home' || router.route === 'status');
+  // Every page is printed on the Chef Table paper: always light, with the book's black footer.
+  const bookPage = $derived(['home', 'status', 'booking', 'table-booking'].includes(router.route));
 
   onMount(() => {
     ui.initDarkMode();
