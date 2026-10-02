@@ -34,7 +34,9 @@
   let verifyResult = $state<SlipVerifyResult | null>(null);
 
   const visitorCount = $derived(parseInt(String(booking.visitorCount)) || 1);
-  const totalPersons = $derived(visitorCount + 1);
+  // Server-computed head count: relatives + every prisoner at the table
+  // (a Superadmin can seat a second one, e.g. father and son).
+  const totalPersons = $derived(parseInt(String(booking.totalPersons)) || visitorCount + 1);
   const total = $derived(parseInt(String(booking.total)) || totalPersons * 1000);
 
   // What a visitor may pick. Phone cameras routinely produce 8-15MB files, and
