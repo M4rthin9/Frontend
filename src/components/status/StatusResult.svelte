@@ -174,7 +174,7 @@
         {#each coPrisoners as p (p.id)}
           <div class="info-row">
             <span class="lbl">{t('lblCoPrisoner')}</span>
-            <span class="val">{maskPrisonerName(p.name) || '—'} (#{p.id}) · {t('lblWing')} {p.wing || '—'}</span>
+            <span class="val">{maskPrisonerName(p.name) || '—'} (#{p.id}) · {p.wing || '—'}</span>
           </div>
         {/each}
       {/if}

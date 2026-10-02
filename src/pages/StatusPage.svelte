@@ -248,7 +248,7 @@
           {#each thankYouCoPrisoners as p (p.id)}
             <div class="detail-row">
               <span class="detail-label">{t('lblCoPrisoner')}</span>
-              <span class="detail-value">{maskPrisonerName(p.name) || '—'} (#{p.id}) · {t('lblWing')} {p.wing || '—'}</span>
+              <span class="detail-value">{maskPrisonerName(p.name) || '—'} (#{p.id}) · {p.wing || '—'}</span>
             </div>
           {/each}
         {/if}
