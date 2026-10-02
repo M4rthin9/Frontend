@@ -57,7 +57,6 @@
       <p class="quote mt-6 font-light leading-snug lg:mt-8">
         {#each quote as line, i (i)}<span data-quote class="block">{line}</span>{/each}
       </p>
-      <p class="mt-8 text-sm text-text-tertiary">{t('ctWallCredit')}</p>
     </div>
   </div>
 </section>

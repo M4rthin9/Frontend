@@ -395,7 +395,6 @@
   "dishCheesecake": "Bánh phô mai New York kèm kem và trái cây tươi",
   "ctWallQuote": "Không gian sau bức tường cao|có thể bị giới hạn,|nhưng không thể ngăn cản|những ý tưởng và vẻ đẹp|quý giá",
   "ctWallAlt": "Nguyên liệu tươi nhiều màu trong khay inox, nhìn từ trên xuống",
-  "ctWallCredit": "Bày trí bởi nhà tạo mẫu món ăn Sutthiphong Suriya (Khab)",
   "ctSkillsLabel": "Chương trình đào tạo nghề",
   "ctSkillsWords": "Nghề|Kinh doanh|Ẩm thực",
   "ctSkillsIntro": "Cục Cải huấn nâng cao chất lượng cuộc sống của phạm nhân qua đào tạo nghề miễn phí, từ dinh dưỡng cơ bản, chọn nguyên liệu đến nấu ăn và làm bánh chuyên nghiệp với giảng viên bên ngoài.",
@@ -421,6 +420,12 @@
   "ctEndTitle": "Lời cảm ơn",
   "ctEndText": "Xin cảm ơn tất cả những người đã giúp Chef Table ra đời trong trại giam, lần đầu tiên tại Thái Lan: ban lãnh đạo Cục Cải huấn và Bộ Tư pháp, cán bộ và phạm nhân, cùng các doanh nghiệp, cửa hàng và cơ quan nhà nước lẫn tư nhân đã góp phần trả người tốt về với xã hội bằng việc tạo việc làm và nghề nghiệp. Và xin gửi lời cảm ơn sâu sắc nhất đến mọi vị khách quý.",
   "ctEndSource": "Trích từ sách Chef Table ในเรือนจำ",
-  "ctCreditStylist": "Sutthiphong Suriya (Khab)",
-  "ctCreditPhotos": "Ảnh từ sách Chef Table ในเรือนจำ"
+  "ctMastTitle": "Đào tạo nghề|Ẩm thực và Phục vụ",
+  "lineAsk": "Hỏi chúng tôi qua LINE",
+  "lineAdd": "Kết bạn qua LINE",
+  "lineCopy": "Sao chép ID",
+  "lineCopied": "Đã sao chép",
+  "lineScan": "Mã QR để kết bạn qua LINE",
+  "lineHint": "Chạm để kết bạn, hoặc tìm ID này trong ứng dụng LINE",
+  "lineFabLabel": "Kết bạn qua LINE, ID {id}"
 }

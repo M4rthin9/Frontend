@@ -395,7 +395,6 @@
   "dishCheesecake": "New York cheesecake with ice cream and fresh fruit",
   "ctWallQuote": "Space behind high walls|may be limited,|but it cannot shut out|ideas and beauty|of real worth",
   "ctWallAlt": "Fresh, colourful ingredients laid out in steel trays, seen from above",
-  "ctWallCredit": "Styled by food stylist Sutthiphong Suriya (Khab)",
   "ctSkillsLabel": "Vocational training programme",
   "ctSkillsWords": "Career|Business|Food",
   "ctSkillsIntro": "The Department of Corrections improves prisoners' lives through vocational training at no cost to them, from the basics of nutrition and choosing ingredients to professional cooking and baking taught by guest experts.",
@@ -421,6 +420,12 @@
   "ctEndTitle": "Thank you",
   "ctEndText": "To everyone who made Chef Table in prison possible, the first in Thailand: the leadership of the Department of Corrections and the Ministry of Justice, the officers and the prisoners, and the businesses and the public and private organisations who help return good people to society by creating work and careers. And our deepest thanks to every honoured guest.",
   "ctEndSource": "From the book Chef Table ในเรือนจำ",
-  "ctCreditStylist": "Sutthiphong Suriya (Khab)",
-  "ctCreditPhotos": "Photographs from the book Chef Table ในเรือนจำ"
+  "ctMastTitle": "Vocational Training|in Food and Service",
+  "lineAsk": "Ask us on LINE",
+  "lineAdd": "Add us on LINE",
+  "lineCopy": "Copy ID",
+  "lineCopied": "Copied",
+  "lineScan": "QR code to add us on LINE",
+  "lineHint": "Tap to add us, or search this ID in the LINE app",
+  "lineFabLabel": "Add us on LINE, ID {id}"
 }

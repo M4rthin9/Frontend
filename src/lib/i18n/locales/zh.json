@@ -395,7 +395,6 @@
   "dishCheesecake": "纽约芝士蛋糕，配冰淇淋和新鲜水果",
   "ctWallQuote": "高墙之后的空间|也许有限，|却无法阻挡|珍贵的创意|与美",
   "ctWallAlt": "从上方俯拍的不锈钢托盘里五颜六色的新鲜食材",
-  "ctWallCredit": "由食物造型师 Sutthiphong Suriya (Khab) 摆放",
   "ctSkillsLabel": "职业技能培训项目",
   "ctSkillsWords": "职业|商业|美食",
   "ctSkillsIntro": "惩教厅致力于通过免费的职业培训提升囚犯的生活质量，从营养基础、食材挑选，到由外部讲师教授的专业烹饪和烘焙。",
@@ -421,6 +420,12 @@
   "ctEndTitle": "致谢",
   "ctEndText": "感谢所有让 Chef Table 走进监狱的人，这在泰国尚属首次：惩教厅和司法部的领导团队、工作人员和囚犯，以及通过创造工作和职业、帮助好人重返社会的企业、商店和公私机构。同时向每一位尊贵的来宾致以最深的谢意。",
   "ctEndSource": "摘自《Chef Table ในเรือนจำ》一书",
-  "ctCreditStylist": "Sutthiphong Suriya (Khab)",
-  "ctCreditPhotos": "照片摘自《Chef Table ในเรือนจำ》一书"
+  "ctMastTitle": "餐饮与服务|职业培训项目",
+  "lineAsk": "通过 LINE 咨询",
+  "lineAdd": "在 LINE 上加我们为好友",
+  "lineCopy": "复制 ID",
+  "lineCopied": "已复制",
+  "lineScan": "添加 LINE 好友的二维码",
+  "lineHint": "点击按钮添加，或在 LINE 应用中搜索此 ID",
+  "lineFabLabel": "在 LINE 上添加我们，ID {id}"
 }

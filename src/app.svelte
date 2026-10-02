@@ -10,6 +10,7 @@
   import Toast from './components/ui/Toast.svelte';
   import Modal from './components/ui/Modal.svelte';
   import ChatWidget from './components/chat/ChatWidget.svelte';
+  import LineFab from './components/layout/LineFab.svelte';
   import CookieConsent from './components/consent/CookieConsent.svelte';
   import HomePage from './pages/HomePage.svelte';
   import BookingPage from './pages/BookingPage.svelte';
@@ -83,6 +84,7 @@
   <div class={router.route === 'home' ? 'home-book ct-black [--surface:var(--ct-black)] [--footer-link:var(--ct-orange)]' : ''}>
     <Footer themeToggle={router.route !== 'home'} />
   </div>
+  <LineFab />
   <ChatWidget />
   <Toast />
   <CookieConsent />

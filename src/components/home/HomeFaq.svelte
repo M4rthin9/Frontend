@@ -6,7 +6,20 @@
   import { chat } from '../../lib/store/chat.svelte';
   import { ui } from '../../lib/store/ui.svelte';
   import { BOOKING_MAX_DAYS_AHEAD } from '../../lib/utils/calendar';
+  import { LINE_ADD_URL, LINE_ID } from '../../lib/line';
+  import LineIcon from '../ui/LineIcon.svelte';
   import Headline from './Headline.svelte';
+
+  let copied = $state(false);
+  async function copyId(): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(LINE_ID);
+      copied = true;
+      setTimeout(() => (copied = false), 2000);
+    } catch {
+      // Clipboard refused (permissions, old browser): the ID is on screen to type.
+    }
+  }
 
   const perDay = $derived(ui.publicSettings.publicBooking.perDay);
   const holdMinutes = $derived(ui.publicSettings.tableBooking.holdMinutes);
@@ -43,6 +56,26 @@
             <ExternalLink class="h-4 w-4" aria-hidden="true" />
           </a>
         </div>
+
+        <!-- LINE: scan on a computer, tap on a phone, or copy the ID. -->
+        <div class="line-card mt-8 flex items-center gap-5 p-5">
+          <img src="/chef/line-qr.svg" width="112" height="112" alt={t('lineScan')} class="hidden h-28 w-28 shrink-0 rounded bg-white p-1.5 sm:block" />
+          <div class="min-w-0">
+            <p class="flex items-center gap-2 text-sm font-medium">
+              <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[#06c755] text-white"><LineIcon class="h-5 w-5" /></span>
+              {t('lineAdd')}
+            </p>
+            <p class="mt-2 text-xs text-text-tertiary">LINE ID</p>
+            <p class="font-book text-[1.7rem] font-bold leading-none tabular-nums">{LINE_ID}</p>
+            <p class="mt-2 text-xs font-light text-text-secondary">{t('lineHint')}</p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <a href={LINE_ADD_URL} target="_blank" rel="noopener noreferrer" class="ct-btn line-btn min-h-10 px-4 text-sm">{t('lineAdd')}</a>
+              <button type="button" class="ct-btn ct-btn-line min-h-10 px-4 text-sm" onclick={copyId} aria-live="polite">
+                {copied ? t('lineCopied') : t('lineCopy')}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -67,6 +100,24 @@
 </section>
 
 <style>
+  .line-card {
+    border-radius: 6px;
+    background: var(--surface);
+    border: 1px solid rgba(6, 199, 85, 0.45);
+    box-shadow:
+      inset 4px 0 0 #06c755,
+      0 18px 34px -26px rgba(6, 120, 60, 0.5);
+  }
+  /* LINE green carries dark text: 7:1. */
+  .line-btn {
+    background: #06c755;
+    color: #0b2416;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .line-btn:hover {
+      background: #2bd370;
+    }
+  }
   .faq summary:focus-visible {
     outline: 2px solid var(--ct-orange);
     outline-offset: 2px;

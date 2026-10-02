@@ -5,6 +5,8 @@
   import Search from '@lucide/svelte/icons/search';
   import UtensilsCrossed from '@lucide/svelte/icons/utensils-crossed';
   import { t } from '../../lib/i18n/i18n.svelte';
+  import { LINE_ADD_URL, LINE_ID } from '../../lib/line';
+  import LineIcon from '../ui/LineIcon.svelte';
   import { navigate } from '../../lib/router.svelte';
   import { ui } from '../../lib/store/ui.svelte';
   import { EASE_OUT, MQ, gsap } from '../../lib/motion';
@@ -15,6 +17,10 @@
   const settings = $derived(ui.publicSettings);
   const bookingOpen = $derived(settings.bookingWindow.open);
   const tagline = $derived([1, 2, 3].map((n) => t(`ctTag${n}`).split('|')));
+  const mastLines = $derived(t('ctMastTitle').split('|'));
+  // The steps line breaks only between its phrases, never inside one
+  // ("ชำระเงินหลังได้รับการอนุมัติ" stays whole).
+  const subPhrases = $derived(t('heroSub').split(' · '));
 
   function toDates(): void {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -25,13 +31,13 @@
     const mm = gsap.matchMedia(root);
 
     // Desktop: the book opens. The photo page swings down flat from the spine
-    // while the cover type settles; the masthead closes up from wide tracking.
+    // while the cover type settles line by line.
     mm.add(MQ.desktop, () => {
       gsap
         .timeline({ defaults: { ease: EASE_OUT } })
         .from('[data-unfold]', { rotateY: 62, transformPerspective: 2200, duration: 1.6 }, 0)
         .from('[data-unfold-shade]', { opacity: 1, duration: 1.4 }, 0)
-        .from('[data-mast]', { opacity: 0, letterSpacing: '0.32em', duration: 1.5 }, 0.1)
+        .from('[data-mast] > span', { opacity: 0, y: 26, duration: 1.3, stagger: 0.1 }, 0.1)
         .from('[data-line]', { opacity: 0, y: 18, duration: 1.1, stagger: 0.07 }, 0.3)
         .from('[data-tag]', { opacity: 0, y: 12, duration: 1, stagger: 0.12 }, 0.7);
     });
@@ -39,7 +45,7 @@
     mm.add('(max-width: 1023px) and (prefers-reduced-motion: no-preference)', () => {
       gsap
         .timeline({ defaults: { ease: EASE_OUT } })
-        .from('[data-mast]', { opacity: 0, letterSpacing: '0.24em', duration: 1.3 }, 0)
+        .from('[data-mast] > span', { opacity: 0, y: 20, duration: 1.1, stagger: 0.08 }, 0)
         .from('[data-line]', { opacity: 0, y: 14, duration: 1, stagger: 0.06 }, 0.15)
         .from('[data-zoom]', { scale: 1.08, duration: 1.8 }, 0);
     });
@@ -73,7 +79,9 @@
         <p class="min-w-0 text-xs leading-snug text-text-secondary sm:text-sm">{t('homeAgency')}</p>
       </div>
 
-      <p data-mast class="ct-masthead masthead mt-12 text-[var(--ct-orange)] lg:mt-16">Chef Table</p>
+      <p data-mast class="masthead mt-12 font-bold text-[var(--ct-orange)] lg:mt-16">
+        {#each mastLines as line, i (i)}<span class="block">{line}</span>{/each}
+      </p>
       <p data-line class="mt-3 text-lg font-light text-white/90 sm:text-xl">{t('ctMastSub')}</p>
     </div>
 
@@ -81,8 +89,8 @@
       <div data-line>
         <Headline id="home-title" level={1} keep text={t('homeHeroTitle')} class="cover-title" />
       </div>
-      <p data-line class="mt-5 max-w-[32rem] text-base font-light leading-relaxed text-text-secondary [text-wrap:pretty] sm:text-lg">
-        {t('heroSub')}
+      <p data-line class="mt-5 max-w-[36rem] text-base font-light leading-relaxed text-text-secondary sm:text-lg">
+        {#each subPhrases as phrase, i (i)}<span class="inline-block">{phrase}{i < subPhrases.length - 1 ? ' ·' : ''}</span>{i < subPhrases.length - 1 ? ' ' : ''}{/each}
       </p>
 
       <div data-line class="mt-8 flex flex-wrap gap-3">
@@ -118,6 +126,17 @@
           {/if}
         </button>
       </div>
+
+      <!-- LINE, in its own green, so it is the one thing on the cover that is not book-coloured. -->
+      <a data-line href={LINE_ADD_URL} target="_blank" rel="noopener noreferrer" class="line-chip mt-7 inline-flex items-center gap-3 rounded-full py-1.5 pl-1.5 pr-5">
+        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#06c755]">
+          <LineIcon class="h-7 w-7" />
+        </span>
+        <span class="text-sm font-medium leading-tight">
+          {t('lineAsk')}
+          <span class="block text-base font-semibold tabular-nums tracking-wide">LINE ID: {LINE_ID}</span>
+        </span>
+      </a>
     </div>
   </div>
 
@@ -155,23 +174,45 @@
   }
   /* "CHEF TABLE" in Tinos Bold caps is about 6.8em wide: size it to fill the
      page's text column exactly (column width minus its padding, over 6.9). */
+  /* The programme's name in two lines, sized to the page's text column: its
+     longer line is about 10.5em wide in Kanit Bold. */
   .masthead {
-    font-size: min(calc((100vw - 3rem) / 6.9), 6rem);
-    white-space: nowrap;
+    font-size: min(calc((100vw - 3rem) / 10.8), 3.4rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
   }
   @media (min-width: 640px) {
     .masthead {
-      font-size: min(calc((100vw - 5rem) / 6.9), 6.5rem);
+      font-size: min(calc((100vw - 5rem) / 10.8), 3.6rem);
     }
   }
   @media (min-width: 1024px) {
     .masthead {
-      font-size: min(calc((50vw - 7rem) / 6.9), 8rem);
+      font-size: min(calc((50vw - 7rem) / 10.8), 4rem);
     }
   }
   @media (min-width: 1280px) {
     .masthead {
-      font-size: min(calc((50vw - 10rem) / 6.9), 8rem);
+      font-size: min(calc((50vw - 10rem) / 10.8), 4rem);
+    }
+  }
+  .line-chip {
+    background: #06c755;
+    color: #0b2416;
+    box-shadow: 0 14px 30px -16px rgba(6, 199, 85, 0.75);
+    transition: transform 160ms var(--ct-ease);
+  }
+  .line-chip:active {
+    transform: scale(0.97);
+  }
+  .line-chip:focus-visible {
+    outline: 2px solid #06c755;
+    outline-offset: 4px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .line-chip:hover {
+      transform: translateY(-2px);
     }
   }
   .cover :global(.cover-title) {
