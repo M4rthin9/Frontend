@@ -40,7 +40,14 @@ export function swStamp(): Plugin {
         const template = readFileSync(templatePath, 'utf8');
         const output = template
           .replaceAll('__CACHE__', JSON.stringify(`ccc-shell-${version}`))
-          .replaceAll('__PRECACHE__', JSON.stringify(precache));
+          .replaceAll('__PRECACHE__', JSON.stringify(precache))
+          // Same fallback as src/lib/api/client.ts; Pages sets VITE_API_BASE per environment.
+          .replaceAll(
+            '__API_BASE__',
+            JSON.stringify(
+              process.env.VITE_API_BASE || 'https://ccc-backend.pongsinbas.workers.dev',
+            ),
+          );
         writeFileSync(swPath, output, 'utf8');
         this.info(`[sw-stamp] wrote ${swPath} with ${precache.length} precached URLs`);
       } catch (err) {

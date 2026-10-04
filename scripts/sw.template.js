@@ -3,6 +3,7 @@
  * vite-plugin-sw-stamp so every deploy installs a fresh cache. */
 const CACHE = __CACHE__;
 const PRECACHE = __PRECACHE__;
+const API_BASE = __API_BASE__;
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -24,30 +25,36 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Web Push from the backend: { title, body, data: { ref?, url?, type } }.
-self.addEventListener('push', (event) => {
-  let msg;
+// Web Push from the backend carries no payload (no encryption keeps it inside the
+// Workers Free plan's CPU budget): ask the API what to show for this browser.
+async function showPush() {
+  let msg = { title: 'CC Cafe', body: 'มีการแจ้งเตือนใหม่ แตะเพื่อดูรายละเอียด', url: '/' };
   try {
-    msg = event.data ? event.data.json() : {};
+    const sub = await self.registration.pushManager.getSubscription();
+    if (sub) {
+      const res = await fetch(
+        API_BASE + '/api/notify/message?endpoint=' + encodeURIComponent(sub.endpoint),
+      );
+      const data = await res.json();
+      if (data && data.status === 'ok' && data.title) msg = data;
+    }
   } catch {
-    msg = { body: event.data ? event.data.text() : '' };
+    // Offline or API down: the generic text still tells them to look.
   }
-  const data = msg.data || {};
-  const ref = data.ref || '';
-  // Booking events open that booking's status; "booking opens" alerts send their own url.
-  const url = data.url || (ref ? '/#/status?ref=' + encodeURIComponent(ref) : '/#/status');
-  event.waitUntil(
-    self.registration.showNotification(msg.title || 'CC Cafe', {
-      body: msg.body || '',
-      icon: '/cida-logo-192.webp',
-      badge: '/cida-logo-64.webp',
-      tag: ref || data.type || undefined,
-      data: { url },
-    }),
-  );
+  return self.registration.showNotification(msg.title, {
+    body: msg.body || '',
+    icon: '/cida-logo-192.webp',
+    badge: '/cida-logo-64.webp',
+    tag: msg.tag || undefined,
+    data: { url: msg.url || '/' },
+  });
+}
+
+self.addEventListener('push', (event) => {
+  event.waitUntil(showPush());
 });
 
-// Tapping a notification opens that booking's status page.
+// Tapping a notification opens the booking's status page, or booking for alerts.
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   const url = (event.notification.data && event.notification.data.url) || '/';
