@@ -24,7 +24,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Web Push from the backend: { title, body, data: { ref, type } }.
+// Web Push from the backend: { title, body, data: { ref?, url?, type } }.
 self.addEventListener('push', (event) => {
   let msg;
   try {
@@ -32,14 +32,17 @@ self.addEventListener('push', (event) => {
   } catch {
     msg = { body: event.data ? event.data.text() : '' };
   }
-  const ref = (msg.data && msg.data.ref) || '';
+  const data = msg.data || {};
+  const ref = data.ref || '';
+  // Booking events open that booking's status; "booking opens" alerts send their own url.
+  const url = data.url || (ref ? '/#/status?ref=' + encodeURIComponent(ref) : '/#/status');
   event.waitUntil(
     self.registration.showNotification(msg.title || 'CC Cafe', {
       body: msg.body || '',
       icon: '/cida-logo-192.webp',
       badge: '/cida-logo-64.webp',
-      tag: ref || undefined,
-      data: { url: ref ? '/#/status?ref=' + encodeURIComponent(ref) : '/#/status' },
+      tag: ref || data.type || undefined,
+      data: { url },
     }),
   );
 });

@@ -213,7 +213,8 @@
           {Math.min(currentStep, steps.length - 1) + 1}/{steps.length} ·
           <span class="font-semibold text-text-primary">{t(STEP_LABEL[steps[Math.max(0, currentStep)]])}</span>
         </p>
-        {#if normalized !== 'เสร็จสิ้น'}
+        <!-- Booking notices end at "paid", so there is nothing left to follow after it. -->
+        {#if normalized !== 'ชำระแล้ว' && normalized !== 'เสร็จสิ้น'}
           <PushOptIn ref={booking.ref} />
         {/if}
       </section>

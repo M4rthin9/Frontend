@@ -152,9 +152,11 @@ export async function getPushPublicKey(): Promise<{ publicKey: string; pushEnabl
   return { publicKey: data.publicKey ?? '', pushEnabled: !!data.pushEnabled };
 }
 
-/** Link this browser's push subscription to a booking so status changes reach it. */
+/** Link this browser's push subscription to a booking (status changes reach it)
+ *  and/or opt it in to the "booking opens" alerts. */
 export async function subscribePush(input: {
-  ref: string;
+  ref?: string;
+  openingAlerts?: boolean;
   endpoint: string;
   p256dh: string;
   auth: string;

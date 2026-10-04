@@ -13,6 +13,7 @@
   import { nextOpening } from '../../lib/utils/calendar';
   import { EASE_OUT, MQ, gsap } from '../../lib/motion';
   import Headline from './Headline.svelte';
+  import PushOptIn from '../ui/PushOptIn.svelte';
 
   // Bound inside an {#if}, so it must be reactive for the effect below to see it.
   let root = $state<HTMLElement | null>(null);
@@ -92,6 +93,7 @@
                 {left}
               </time>
             </p>
+            <PushOptIn kind="opening" align="start" />
           {/if}
         </div>
         <button type="button" class="ct-link" onclick={() => navigate('booking')}>
