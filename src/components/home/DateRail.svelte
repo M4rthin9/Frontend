@@ -4,11 +4,13 @@
   import ArrowDown from '@lucide/svelte/icons/arrow-down';
   import ArrowRight from '@lucide/svelte/icons/arrow-right';
   import Check from '@lucide/svelte/icons/check';
+  import Clock from '@lucide/svelte/icons/clock';
   import { i18n, t, tc } from '../../lib/i18n/i18n.svelte';
   import { navigate } from '../../lib/router.svelte';
   import { ui } from '../../lib/store/ui.svelte';
   import { visitPlan } from '../../lib/store/visitPlan.svelte';
   import { formatDateIn } from '../../lib/utils/date';
+  import { nextOpening } from '../../lib/utils/calendar';
   import { EASE_OUT, MQ, gsap } from '../../lib/motion';
   import Headline from './Headline.svelte';
 
@@ -20,6 +22,26 @@
   const perDay = $derived(visitPlan.perDay);
 
   onMount(() => visitPlan.loadCounts());
+
+  // Countdown to the next date opening (07:00 Bangkok). At zero the counts are
+  // refetched, which also rebuilds the rail with the newly opened date.
+  let now = $state(Date.now());
+  const opening = $derived(nextOpening(new Date(now), ui.publicSettings.bookingWindow));
+  $effect(() => {
+    const id = setInterval(() => {
+      const t = Date.now();
+      if (opening && t >= opening.at.getTime()) visitPlan.loadCounts(true);
+      now = t;
+    }, 1000);
+    return () => clearInterval(id);
+  });
+  const left = $derived.by(() => {
+    const s = opening ? Math.max(0, Math.floor((opening.at.getTime() - now) / 1000)) : 0;
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const d = Math.floor(s / 86400);
+    const hms = `${pad(Math.floor((s % 86400) / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
+    return d > 0 ? `${tc('homeNextOpenDays', { n: d })} ${hms}` : hms;
+  });
 
   // Cards arrive once there is something to show; meters fill from empty to the
   // live seat count, which is the only number in this section.
@@ -54,6 +76,23 @@
           <p class="ct-label">{t('ctChDates')}</p>
           <Headline id="home-dates-title" text={t('ctDatesTitle')} class="ct-h2 mt-4" />
           <p class="mt-3 text-base font-light leading-relaxed text-text-secondary">{t('ctDatesSub')}</p>
+          {#if opening}
+            <p class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-text-secondary">
+              <Clock class="h-4 w-4 text-[var(--ct-orange-ink)]" aria-hidden="true" />
+              <span>
+                {tc('homeNextOpen', {
+                  date: formatDateIn(opening.date, i18n.lang, { weekday: 'short', day: 'numeric', month: 'short' }),
+                })}
+              </span>
+              <time
+                role="timer"
+                datetime={opening.at.toISOString()}
+                class="countdown rounded-sm px-2 py-0.5 font-semibold tabular-nums"
+              >
+                {left}
+              </time>
+            </p>
+          {/if}
         </div>
         <button type="button" class="ct-link" onclick={() => navigate('booking')}>
           {t('homeNextAll')}
@@ -230,5 +269,9 @@
   .check {
     background: var(--ct-orange);
     color: var(--ct-ink);
+  }
+  .countdown {
+    background: var(--ct-black);
+    color: #fff;
   }
 </style>

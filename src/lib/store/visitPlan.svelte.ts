@@ -69,15 +69,18 @@ class VisitPlan {
     return days;
   }
 
-  loadCounts(): void {
-    if (this.countsState === 'loading' || this.countsState === 'ready') return;
-    this.countsState = 'loading';
+  /** `refresh` refetches in place (no skeleton, keeps old counts on failure), e.g. when a new date opens. */
+  loadCounts(refresh = false): void {
+    if (this.countsState === 'loading' || (this.countsState === 'ready' && !refresh)) return;
+    if (!refresh) this.countsState = 'loading';
     getCountsByDate()
       .then((c) => {
         this.counts = c;
         this.countsState = 'ready';
       })
-      .catch(() => (this.countsState = 'error'));
+      .catch(() => {
+        if (!refresh) this.countsState = 'error';
+      });
   }
 
   toggleDate(date: string): void {

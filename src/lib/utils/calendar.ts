@@ -1,13 +1,14 @@
-import { toLocalDateStr, addDays } from './date';
+import { toLocalDateStr, addDays, parseLocalDate } from './date';
 
 /** Default maximum number of bookings (tables) per day for the prisoner-visit
  *  flow. The parallel no-prisoner table flow supplies its own, smaller quota
  *  from the server (admin_settings.tableBooking.perDay). */
 export const QUOTA = 20;
 
-/** Furthest bookable date, counted in days from today (tomorrow is the first).
- *  The next date opens at 07:00 Bangkok; the backend enforces the same rule. */
-export const BOOKING_MAX_DAYS_AHEAD = 16;
+/** Furthest bookable date, counted in weekdays from today (tomorrow is the first;
+ *  Saturday and Sunday don't count). The next date opens at 07:00 Bangkok; the
+ *  backend enforces the same rule (lastOpenDateISO). */
+export const BOOKING_MAX_DAYS_AHEAD = 14;
 
 /**
  * Fixed public holidays & special blocked dates. 2026 was ported verbatim from
@@ -101,6 +102,52 @@ export interface DateOverrides {
 
 const NO_OVERRIDES: DateOverrides = { closedDates: {}, openDates: [] };
 
+/** The booking day, which rolls at 07:00 Bangkok = UTC midnight, whatever the device zone. */
+function bookingDay(now: Date, plusDays = 0): Date {
+  return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + plusDays);
+}
+
+/** Last bookable date: BOOKING_MAX_DAYS_AHEAD weekdays after `day`, weekends not counted. */
+function lastOpenDate(day: Date): string {
+  const d = new Date(day);
+  for (let n = 0; n < BOOKING_MAX_DAYS_AHEAD; ) {
+    d.setDate(d.getDate() + 1);
+    if (d.getDay() !== 0 && d.getDay() !== 6) n++;
+  }
+  return toLocalDateStr(d);
+}
+
+/** Weekend, holiday or admin-closed, unless an admin opened it. */
+function isShut(date: string, overrides: DateOverrides): boolean {
+  if (date in overrides.closedDates) return true;
+  if (overrides.openDates.includes(date)) return false;
+  const dow = parseLocalDate(date).getDay();
+  return dow === 0 || dow === 6 || !!HOLIDAYS[date];
+}
+
+/**
+ * The next bookable date to open and when (a 07:00 Bangkok roll). Mornings that
+ * only open a holiday or closed date are skipped; null if nothing opens in a month.
+ */
+export function nextOpening(
+  now: Date,
+  overrides: DateOverrides = NO_OVERRIDES,
+): { date: string; at: Date } | null {
+  let prev = lastOpenDate(bookingDay(now));
+  for (let k = 1; k <= 31; k++) {
+    const day = bookingDay(now, k);
+    const last = lastOpenDate(day);
+    for (let d = addDays(parseLocalDate(prev), 1); toLocalDateStr(d) <= last; d = addDays(d, 1)) {
+      const date = toLocalDateStr(d);
+      if (!isShut(date, overrides)) {
+        return { date, at: new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate())) };
+      }
+    }
+    if (last > prev) prev = last;
+  }
+  return null;
+}
+
 /** Build one month of cells mirroring renderCalendar() in booking.js. */
 export function buildCalendarCells(
   year: number,
@@ -116,10 +163,7 @@ export function buildCalendarCells(
 
   const todayStr = toLocalDateStr(today);
   const minAllowedStr = toLocalDateStr(addDays(today, 1)); // พรุ่งนี้
-  // The next date opens at 07:00 Bangkok = UTC midnight, so count from the UTC
-  // date (same rule as the backend's lastOpenDateISO), whatever the device zone.
-  const openDay = new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
-  const maxAllowedStr = toLocalDateStr(addDays(openDay, BOOKING_MAX_DAYS_AHEAD));
+  const maxAllowedStr = lastOpenDate(bookingDay(today));
 
   const cells: CalendarCell[] = [];
   for (let i = 0; i < firstDay; i++) {
