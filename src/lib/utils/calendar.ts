@@ -5,7 +5,8 @@ import { toLocalDateStr, addDays } from './date';
  *  from the server (admin_settings.tableBooking.perDay). */
 export const QUOTA = 20;
 
-/** Furthest bookable date, counted in days from today (tomorrow is the first). */
+/** Furthest bookable date, counted in days from today (tomorrow is the first).
+ *  The next date opens at 07:00 Bangkok; the backend enforces the same rule. */
 export const BOOKING_MAX_DAYS_AHEAD = 16;
 
 /**
@@ -115,7 +116,10 @@ export function buildCalendarCells(
 
   const todayStr = toLocalDateStr(today);
   const minAllowedStr = toLocalDateStr(addDays(today, 1)); // พรุ่งนี้
-  const maxAllowedStr = toLocalDateStr(addDays(today, BOOKING_MAX_DAYS_AHEAD));
+  // The next date opens at 07:00 Bangkok = UTC midnight, so count from the UTC
+  // date (same rule as the backend's lastOpenDateISO), whatever the device zone.
+  const openDay = new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+  const maxAllowedStr = toLocalDateStr(addDays(openDay, BOOKING_MAX_DAYS_AHEAD));
 
   const cells: CalendarCell[] = [];
   for (let i = 0; i < firstDay; i++) {
@@ -131,7 +135,11 @@ export function buildCalendarCells(
     const closedNote = overrides.closedDates[dateStr];
     const isWknd = !forcedOpen && (dow === 0 || dow === 6);
     const isHol =
-      closedNote !== undefined ? closedNote || 'ปิดจอง' : forcedOpen ? undefined : HOLIDAYS[dateStr];
+      closedNote !== undefined
+        ? closedNote || 'ปิดจอง'
+        : forcedOpen
+          ? undefined
+          : HOLIDAYS[dateStr];
     const used = bookings[dateStr] || 0;
     const isFull = used >= perDay;
     const isNotWithinWindow = dateStr < minAllowedStr || dateStr > maxAllowedStr;
