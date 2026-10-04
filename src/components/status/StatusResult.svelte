@@ -19,6 +19,7 @@
   import { maskPrisonerName } from '../../lib/utils/helpers';
   import { formatDateIn } from '../../lib/utils/date';
   import PaymentForm from './PaymentForm.svelte';
+  import PushOptIn from '../ui/PushOptIn.svelte';
 
   let {
     booking,
@@ -212,6 +213,9 @@
           {Math.min(currentStep, steps.length - 1) + 1}/{steps.length} ·
           <span class="font-semibold text-text-primary">{t(STEP_LABEL[steps[Math.max(0, currentStep)]])}</span>
         </p>
+        {#if normalized !== 'เสร็จสิ้น'}
+          <PushOptIn ref={booking.ref} />
+        {/if}
       </section>
     {/if}
 

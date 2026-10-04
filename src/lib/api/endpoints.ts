@@ -143,6 +143,26 @@ export async function publicCancelBooking(ref: string): Promise<void> {
   assertOk(data);
 }
 
+/** VAPID public key for pushManager.subscribe; pushEnabled is false while push is off. */
+export async function getPushPublicKey(): Promise<{ publicKey: string; pushEnabled: boolean }> {
+  const data = await callAction<{ status: string; publicKey?: string; pushEnabled?: boolean }>(
+    'getPushPublicKey',
+  );
+  assertOk(data);
+  return { publicKey: data.publicKey ?? '', pushEnabled: !!data.pushEnabled };
+}
+
+/** Link this browser's push subscription to a booking so status changes reach it. */
+export async function subscribePush(input: {
+  ref: string;
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+}): Promise<void> {
+  const data = await callAction<{ status: string; message?: string }>('subscribe', input);
+  assertOk(data);
+}
+
 /** Cancellation notes for a ref (shown on cancelled bookings). */
 export async function getNotes(ref: string): Promise<Note[]> {
   const data = await callAction<{ status: string; notes?: Note[] }>('getNotes', { ref });
@@ -302,7 +322,9 @@ export interface CookieConsentRecord {
 
 /** Log a cookie-banner decision server-side as PDPA consent evidence. */
 export async function recordCookieConsent(record: CookieConsentRecord): Promise<void> {
-  const data = await callAction<{ status: string; message?: string }>('recordCookieConsent', { ...record });
+  const data = await callAction<{ status: string; message?: string }>('recordCookieConsent', {
+    ...record,
+  });
   assertOk(data);
 }
 

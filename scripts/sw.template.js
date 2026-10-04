@@ -24,6 +24,33 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// Web Push from the backend: { title, body, data: { ref, type } }.
+self.addEventListener('push', (event) => {
+  let msg;
+  try {
+    msg = event.data ? event.data.json() : {};
+  } catch {
+    msg = { body: event.data ? event.data.text() : '' };
+  }
+  const ref = (msg.data && msg.data.ref) || '';
+  event.waitUntil(
+    self.registration.showNotification(msg.title || 'CC Cafe', {
+      body: msg.body || '',
+      icon: '/cida-logo-192.webp',
+      badge: '/cida-logo-64.webp',
+      tag: ref || undefined,
+      data: { url: ref ? '/#/status?ref=' + encodeURIComponent(ref) : '/#/status' },
+    }),
+  );
+});
+
+// Tapping a notification opens that booking's status page.
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = (event.notification.data && event.notification.data.url) || '/';
+  event.waitUntil(self.clients.openWindow(url));
+});
+
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   if (request.method !== 'GET') return;

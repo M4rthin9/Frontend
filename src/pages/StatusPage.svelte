@@ -44,6 +44,13 @@
   );
 
   onMount(() => {
+    // A push notification opens #/status?ref=… in a fresh tab, with no session.
+    const linkRef = new URLSearchParams(window.location.hash.split('?')[1] || '').get('ref');
+    if (linkRef) {
+      query = linkRef;
+      void doSearch();
+      return;
+    }
     const lastRef = safeGetItem(sessionStorage, 'lastRef');
     query = lastRef || safeGetItem(sessionStorage, 'lastPrisonerId') || '';
     // Arriving from the home page's status box: the visitor already searched once.

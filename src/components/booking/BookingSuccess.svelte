@@ -3,6 +3,7 @@
   import { navigate } from '../../lib/router.svelte';
   import { t } from '../../lib/i18n/i18n.svelte';
   import Button from '../ui/Button.svelte';
+  import PushOptIn from '../ui/PushOptIn.svelte';
 
   // The page decides which flow this belongs to; defaults to the prisoner-visit
   // store so existing usages keep working unchanged.
@@ -37,6 +38,7 @@
         <span>{success.ref}</span>
       </div>
       <p style="font-size:12px;color:var(--text-secondary);margin-bottom:1.5rem">{t('saveRef')}</p>
+      <div style="margin:-0.75rem 0 1.5rem"><PushOptIn ref={success.ref} /></div>
 
       <div class="booking-details">
         <div style="text-align:center;margin-bottom:8px">
