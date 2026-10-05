@@ -7,6 +7,7 @@
   import QrCode from '@lucide/svelte/icons/qr-code';
   import Upload from '@lucide/svelte/icons/upload';
   import Globe from '@lucide/svelte/icons/globe';
+  import ChevronDown from '@lucide/svelte/icons/chevron-down';
   import { CROSS_BORDER_GROUPS } from '../../lib/utils/crossBorderBanks';
 
   let {
@@ -312,12 +313,14 @@
 
     <div class="pay-ref-note">{@html tc('refOnTransfer', { ref: booking.ref })}</div>
 
-    <!-- Cross-border: foreign bank apps can scan the same QR -->
-    <div class="cross-border">
-      <div class="cross-border-head">
+    <!-- Cross-border: foreign bank apps can scan the same QR. Collapsed by default
+         so the slip upload stays right under the QR for most payers. -->
+    <details class="cross-border">
+      <summary class="cross-border-head">
         <Globe class="h-4 w-4 text-gold-600" />
         <span class="cross-border-title">{t('crossBorderTitle')}</span>
-      </div>
+        <ChevronDown class="cross-border-chevron h-4 w-4" aria-hidden="true" />
+      </summary>
       <p class="cross-border-hint">{t('crossBorderHint')}</p>
       <div class="cross-border-flags" aria-hidden="true">
         {#each CROSS_BORDER_GROUPS as g (g.code)}
@@ -358,7 +361,7 @@
         {/each}
       </div>
       <p class="cross-border-footnote">{t('crossBorderFootnote')}</p>
-    </div>
+    </details>
   </div>
 
   <div class="upload-card">
@@ -532,10 +535,40 @@
     font-weight: 700;
     font-size: 0.875rem;
     color: var(--app-text);
+    cursor: pointer;
+    list-style: none;
+    /* Comfortable tap target on phones. */
+    min-height: 1.75rem;
+  }
+
+  .cross-border-head::-webkit-details-marker {
+    display: none;
+  }
+
+  .cross-border-head:focus-visible {
+    outline: 2px solid var(--ct-orange);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  :global(.cross-border-chevron) {
+    margin-left: auto;
+    color: var(--app-text-tertiary);
+    transition: transform 200ms ease;
+  }
+
+  .cross-border[open] :global(.cross-border-chevron) {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.cross-border-chevron) {
+      transition: none;
+    }
   }
 
   .cross-border-hint {
-    margin: 0.375rem 0 0.75rem;
+    margin: 0.75rem 0 0.75rem;
     font-size: 0.8125rem;
     line-height: 1.6;
     color: var(--app-text-secondary);
