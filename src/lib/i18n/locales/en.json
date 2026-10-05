@@ -347,6 +347,8 @@
   "pushAlertOn": "Notifications are on. We will tell you 10 minutes before booking opens (6:50 a.m.) and when it opens (7:00 a.m., Thailand time).",
   "pushDenied": "Notifications are blocked. You can allow them in your browser site settings.",
   "pushError": "Could not turn on notifications. Please try again.",
+  "pushIosTitle": "iPhone users can get notifications:",
+  "pushIosSteps": "in Safari tap Share ⬆ → \"Add to Home Screen\", then open the site from the CC Cafe icon. The notification button appears here (iOS 16.4 or later).",
   "homeHeroTitle": "Share a table with|someone you miss",
   "homeCtaBook": "Book a visit",
   "homeCtaDates": "See free dates",

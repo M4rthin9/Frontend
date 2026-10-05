@@ -347,6 +347,8 @@
   "pushAlertOn": "已开启通知，我们会在开放预约前 10 分钟（早上 6:50）及开放时（早上 7:00，泰国时间）通知您。",
   "pushDenied": "通知已被浏览器阻止，可在浏览器的网站设置中允许。",
   "pushError": "无法开启通知，请重试。",
+  "pushIosTitle": "iPhone 用户也能收到通知：",
+  "pushIosSteps": "在 Safari 中点分享 ⬆ →「添加到主屏幕」，然后从 CC Cafe 图标打开网站，通知按钮就会出现在这里（iOS 16.4 及以上）。",
   "homeHeroTitle": "与思念的人|同桌用餐",
   "homeCtaBook": "预约探视",
   "homeCtaDates": "查看空位日期",

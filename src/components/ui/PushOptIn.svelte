@@ -25,6 +25,16 @@
     'PushManager' in window &&
     'Notification' in window;
 
+  // iPhone/iPad Safari only gets PushManager once the site runs from the Home
+  // Screen, so there we explain how to install it instead of hiding the option.
+  const iosNeedsInstall =
+    !supported &&
+    shouldRegisterServiceWorker &&
+    typeof window !== 'undefined' &&
+    (/iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) &&
+    !window.matchMedia('(display-mode: standalone)').matches;
+
   let state = $state<'idle' | 'busy' | 'on' | 'denied' | 'error'>(
     supported && Notification.permission === 'denied' ? 'denied' : 'idle',
   );
@@ -83,4 +93,24 @@
       {/if}
     {/if}
   </div>
+{:else if iosNeedsInstall && (ref || opening)}
+  <div
+    class="ios-hint mt-3 flex items-start gap-2 rounded-md px-3 py-2.5 text-sm leading-relaxed {align === 'start'
+      ? 'text-left'
+      : 'mx-auto max-w-md text-left'}"
+  >
+    <Bell class="mt-0.5 h-4 w-4 shrink-0 text-[var(--ct-orange-ink)]" aria-hidden="true" />
+    <span>
+      <strong class="font-semibold">{t('pushIosTitle')}</strong>
+      {t('pushIosSteps')}
+    </span>
+  </div>
 {/if}
+
+<style>
+  .ios-hint {
+    background: var(--app-bg-subtle);
+    border: 1px solid var(--app-border-subtle);
+    color: var(--app-text-secondary);
+  }
+</style>

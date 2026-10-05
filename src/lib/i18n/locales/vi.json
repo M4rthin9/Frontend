@@ -347,6 +347,8 @@
   "pushAlertOn": "Đã bật thông báo. Chúng tôi sẽ báo 10 phút trước khi mở đặt chỗ (6:50 sáng) và khi mở (7:00 sáng, giờ Thái Lan).",
   "pushDenied": "Thông báo đang bị chặn. Bạn có thể cho phép trong cài đặt trang web của trình duyệt.",
   "pushError": "Không bật được thông báo. Vui lòng thử lại.",
+  "pushIosTitle": "Người dùng iPhone có thể nhận thông báo:",
+  "pushIosSteps": "trong Safari chạm Chia sẻ ⬆ → \"Thêm vào MH chính\", rồi mở trang từ biểu tượng CC Cafe. Nút nhận thông báo sẽ hiện ở đây (iOS 16.4 trở lên).",
   "homeHeroTitle": "Ngồi chung bàn|với người thân yêu",
   "homeCtaBook": "Đặt lịch thăm",
   "homeCtaDates": "Xem ngày trống",
