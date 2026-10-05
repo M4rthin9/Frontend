@@ -98,6 +98,8 @@ export interface DateOverrides {
   closedDates: Record<string, string>;
   /** Opened despite being a weekend or holiday. */
   openDates: string[];
+  /** Dates that open only from a set instant (ISO, UTC) — admin_settings.scheduledOpenings. */
+  openAt?: Record<string, string>;
 }
 
 const NO_OVERRIDES: DateOverrides = { closedDates: {}, openDates: [] };
@@ -125,27 +127,53 @@ function isShut(date: string, overrides: DateOverrides): boolean {
   return dow === 0 || dow === 6 || !!HOLIDAYS[date];
 }
 
-/**
- * The next bookable date to open and when (a 07:00 Bangkok roll). Mornings that
- * only open a holiday or closed date are skipped; null if nothing opens in a month.
- */
-export function nextOpening(
-  now: Date,
-  overrides: DateOverrides = NO_OVERRIDES,
-): { date: string; at: Date } | null {
+/** HH:MM in Bangkok time, whatever the device zone. */
+export function bangkokTime(at: Date): string {
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Bangkok',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(at);
+}
+
+/** The next regular 07:00 Bangkok roll that opens a bookable date. */
+function nextRoll(now: Date, overrides: DateOverrides): { dates: string[]; at: Date } | null {
   let prev = lastOpenDate(bookingDay(now));
   for (let k = 1; k <= 31; k++) {
     const day = bookingDay(now, k);
     const last = lastOpenDate(day);
     for (let d = addDays(parseLocalDate(prev), 1); toLocalDateStr(d) <= last; d = addDays(d, 1)) {
       const date = toLocalDateStr(d);
-      if (!isShut(date, overrides)) {
-        return { date, at: new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate())) };
+      // A date with its own opening time opens then, not at the roll.
+      if (!isShut(date, overrides) && !overrides.openAt?.[date]) {
+        return {
+          dates: [date],
+          at: new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate())),
+        };
       }
     }
     if (last > prev) prev = last;
   }
   return null;
+}
+
+/**
+ * The next opening and the dates it opens: the 07:00 roll (mornings that only
+ * open a holiday or closed date are skipped) or a scheduled opening such as a
+ * Sunday at 12:00 — whichever comes first. Null if nothing opens in a month.
+ */
+export function nextOpening(
+  now: Date,
+  overrides: DateOverrides = NO_OVERRIDES,
+): { dates: string[]; at: Date } | null {
+  let best = nextRoll(now, overrides);
+  for (const [date, iso] of Object.entries(overrides.openAt ?? {})) {
+    const at = new Date(iso);
+    if (!(at > now) || isShut(date, overrides)) continue;
+    if (!best || at < best.at) best = { dates: [date], at };
+    else if (at.getTime() === best.at.getTime()) best = { dates: [...best.dates, date].sort(), at };
+  }
+  return best;
 }
 
 /** Build one month of cells mirroring renderCalendar() in booking.js. */
@@ -178,12 +206,20 @@ export function buildCalendarCells(
     const forcedOpen = overrides.openDates.includes(dateStr);
     const closedNote = overrides.closedDates[dateStr];
     const isWknd = !forcedOpen && (dow === 0 || dow === 6);
+    // A scheduled opening (e.g. 12:00) keeps the date shut until then, labelled with the time.
+    const opensAt = overrides.openAt?.[dateStr];
+    const opensLater =
+      opensAt && today < new Date(opensAt)
+        ? `เปิด ${bangkokTime(new Date(opensAt))} น.`
+        : undefined;
     const isHol =
       closedNote !== undefined
         ? closedNote || 'ปิดจอง'
-        : forcedOpen
-          ? undefined
-          : HOLIDAYS[dateStr];
+        : opensLater
+          ? opensLater
+          : forcedOpen
+            ? undefined
+            : HOLIDAYS[dateStr];
     const used = bookings[dateStr] || 0;
     const isFull = used >= perDay;
     const isNotWithinWindow = dateStr < minAllowedStr || dateStr > maxAllowedStr;

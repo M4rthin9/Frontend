@@ -189,6 +189,8 @@ export interface BookingWindow {
   closedDates: Record<string, string>;
   /** Dates opened even though the calendar blocks them by default (weekend/holiday). */
   openDates: string[];
+  /** Dates that open only from a set instant (ISO, UTC), e.g. a Sunday at 12:00 Bangkok. */
+  openAt: Record<string, string>;
 }
 
 export interface PromoAd {
@@ -230,6 +232,7 @@ export const DEFAULT_BOOKING_WINDOW: BookingWindow = {
   closedMessage: '',
   closedDates: {},
   openDates: [],
+  openAt: {},
 };
 
 export const EMPTY_PROMO: Promo = {
@@ -289,6 +292,7 @@ export async function getPublicSettings(): Promise<PublicSettings> {
         closedMessage: bw?.closedMessage ?? '',
         closedDates: bw?.closedDates ?? {},
         openDates: bw?.openDates ?? [],
+        openAt: bw?.openAt ?? {},
       },
       promo: {
         popupEnabled: promo?.popupEnabled !== false,

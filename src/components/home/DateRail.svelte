@@ -10,7 +10,7 @@
   import { ui } from '../../lib/store/ui.svelte';
   import { visitPlan } from '../../lib/store/visitPlan.svelte';
   import { formatDateIn } from '../../lib/utils/date';
-  import { nextOpening } from '../../lib/utils/calendar';
+  import { bangkokTime, nextOpening } from '../../lib/utils/calendar';
   import { EASE_OUT, MQ, gsap } from '../../lib/motion';
   import Headline from './Headline.svelte';
   import PushOptIn from '../ui/PushOptIn.svelte';
@@ -24,8 +24,8 @@
 
   onMount(() => visitPlan.loadCounts());
 
-  // Countdown to the next date opening (07:00 Bangkok). At zero the counts are
-  // refetched, which also rebuilds the rail with the newly opened date.
+  // Countdown to the next opening (the 07:00 Bangkok roll or a scheduled time such
+  // as 12:00). At zero the counts are refetched, which rebuilds the rail.
   let now = $state(Date.now());
   const opening = $derived(nextOpening(new Date(now), ui.publicSettings.bookingWindow));
   $effect(() => {
@@ -36,13 +36,23 @@
     }, 1000);
     return () => clearInterval(id);
   });
-  const left = $derived.by(() => {
+  // Big digits: days (only when a day or more away), hours, minutes, seconds.
+  const segments = $derived.by(() => {
     const s = opening ? Math.max(0, Math.floor((opening.at.getTime() - now) / 1000)) : 0;
     const pad = (n: number) => String(n).padStart(2, '0');
     const d = Math.floor(s / 86400);
-    const hms = `${pad(Math.floor((s % 86400) / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
-    return d > 0 ? `${tc('homeNextOpenDays', { n: d })} ${hms}` : hms;
+    return [
+      ...(d > 0 ? [{ value: String(d), unit: t('homeUnitDays') }] : []),
+      { value: pad(Math.floor((s % 86400) / 3600)), unit: t('homeUnitHours') },
+      { value: pad(Math.floor((s % 3600) / 60)), unit: t('homeUnitMinutes') },
+      { value: pad(s % 60), unit: t('homeUnitSeconds') },
+    ];
   });
+  const openingDates = $derived(
+    opening
+      ? opening.dates.map((d) => formatDateIn(d, i18n.lang, { weekday: 'long', day: 'numeric', month: 'long' })).join(' · ')
+      : ''
+  );
 
   // Cards arrive once there is something to show; meters fill from empty to the
   // live seat count, which is the only number in this section.
@@ -77,24 +87,6 @@
           <p class="ct-label">{t('ctChDates')}</p>
           <Headline id="home-dates-title" text={t('ctDatesTitle')} class="ct-h2 mt-4" />
           <p class="mt-3 text-base font-light leading-relaxed text-text-secondary">{t('ctDatesSub')}</p>
-          {#if opening}
-            <p class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-text-secondary">
-              <Clock class="h-4 w-4 text-[var(--ct-orange-ink)]" aria-hidden="true" />
-              <span>
-                {tc('homeNextOpen', {
-                  date: formatDateIn(opening.date, i18n.lang, { weekday: 'short', day: 'numeric', month: 'short' }),
-                })}
-              </span>
-              <time
-                role="timer"
-                datetime={opening.at.toISOString()}
-                class="countdown rounded-sm px-2 py-0.5 font-semibold tabular-nums"
-              >
-                {left}
-              </time>
-            </p>
-            <PushOptIn kind="opening" align="start" />
-          {/if}
         </div>
         <button type="button" class="ct-link" onclick={() => navigate('booking')}>
           {t('homeNextAll')}
@@ -102,6 +94,32 @@
         </button>
       </div>
     </div>
+
+    {#if opening}
+      <!-- The next opening, big enough to read across the room: dates, time, live digits. -->
+      <div class="mx-auto mt-8 w-full max-w-6xl px-4 sm:px-6">
+        <div class="opening-card flex flex-wrap items-center justify-between gap-x-8 gap-y-5 rounded-md p-5 sm:p-7">
+          <div class="min-w-0">
+            <p class="opening-label flex items-center gap-2 text-xs font-semibold tracking-[0.06em]">
+              <Clock class="h-4 w-4" aria-hidden="true" />
+              {t('homeNextOpenHeading')}
+            </p>
+            <p class="mt-2 text-xl font-bold leading-snug sm:text-2xl">{openingDates}</p>
+            <p class="opening-soft mt-1 text-sm">{tc('homeNextOpenAt', { time: bangkokTime(opening.at) })}</p>
+          </div>
+          <time role="timer" datetime={opening.at.toISOString()} class="flex items-start gap-1.5 tabular-nums sm:gap-2.5">
+            {#each segments as seg, i (seg.unit)}
+              {#if i > 0}<span class="seg-colon font-book text-4xl font-bold leading-none sm:text-5xl" aria-hidden="true">:</span>{/if}
+              <span class="flex min-w-[2.6ch] flex-col items-center">
+                <span class="seg-num font-book text-4xl font-bold leading-none sm:text-5xl">{seg.value}</span>
+                <span class="opening-soft mt-2 text-[11px] font-medium">{seg.unit}</span>
+              </span>
+            {/each}
+          </time>
+        </div>
+        <PushOptIn kind="opening" align="start" />
+      </div>
+    {/if}
 
     <!-- A lateral rail: options read sideways. It scrolls natively on every screen. -->
     <ul
@@ -272,8 +290,22 @@
     background: var(--ct-orange);
     color: var(--ct-ink);
   }
-  .countdown {
+  /* One of the book's black pages: the countdown is the loudest thing in the section. */
+  .opening-card {
     background: var(--ct-black);
     color: #fff;
+    box-shadow: 0 20px 34px -22px rgba(35, 31, 32, 0.7);
+  }
+  .opening-label {
+    color: var(--ct-orange);
+  }
+  .opening-soft {
+    color: rgba(255, 255, 255, 0.72);
+  }
+  .seg-num {
+    color: #fff;
+  }
+  .seg-colon {
+    color: var(--ct-orange);
   }
 </style>
