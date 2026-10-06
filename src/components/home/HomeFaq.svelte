@@ -10,6 +10,7 @@
   import LineIcon from '../ui/LineIcon.svelte';
   import Headline from './Headline.svelte';
 
+  let query = $state('');
   let copied = $state(false);
   async function copyId(): Promise<void> {
     try {
@@ -34,11 +35,21 @@
     { q: t('homeFaq7Q'), a: t('homeFaq7A') },
     { q: t('homeFaq8Q'), a: t('homeFaq8A') },
   ]);
+  const filteredFaqs = $derived(
+    faqs.filter((faq) => `${faq.q} ${faq.a}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()))
+  );
 </script>
 
 <!-- Deliberately quiet: the last calm before the table. Nothing moves until a question is opened. -->
-<section id="home-faq" data-chapter="ctChFaq" class="border-t border-border-subtle py-20 sm:py-28" aria-labelledby="home-faq-title">
-  <div class="mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
+<section
+  id="home-faq"
+  data-chapter="ctChFaq"
+  class="border-t border-border-subtle py-20 sm:py-28"
+  aria-labelledby="home-faq-title"
+>
+  <div
+    class="mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16"
+  >
     <div class="lg:sticky lg:top-16 lg:self-start">
       <p class="ct-label">{t('ctChFaq')}</p>
       <Headline id="home-faq-title" text={t('ctFaqTitle')} class="ct-h2 mt-4" />
@@ -59,18 +70,36 @@
 
         <!-- LINE: scan on a computer, tap on a phone, or copy the ID. -->
         <div class="line-card mt-8 flex items-center gap-5 p-5">
-          <img src="/chef/line-qr.svg" width="112" height="112" alt={t('lineScan')} class="hidden h-28 w-28 shrink-0 rounded bg-white p-1.5 sm:block" />
+          <img
+            src="/chef/line-qr.svg"
+            width="112"
+            height="112"
+            alt={t('lineScan')}
+            class="hidden h-28 w-28 shrink-0 rounded bg-white p-1.5 sm:block"
+          />
           <div class="min-w-0">
             <p class="flex items-center gap-2 text-sm font-medium">
-              <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[#06c755] text-white"><LineIcon class="h-5 w-5" /></span>
+              <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[#06c755] text-white"
+                ><LineIcon class="h-5 w-5" /></span
+              >
               {t('lineAdd')}
             </p>
             <p class="mt-2 text-xs text-text-tertiary">LINE ID</p>
             <p class="font-book text-[1.7rem] font-bold leading-none tabular-nums">{LINE_ID}</p>
             <p class="mt-2 text-xs font-light text-text-secondary">{t('lineHint')}</p>
             <div class="mt-3 flex flex-wrap gap-2">
-              <a href={LINE_ADD_URL} target="_blank" rel="noopener noreferrer" class="ct-btn line-btn min-h-10 px-4 text-sm">{t('lineAdd')}</a>
-              <button type="button" class="ct-btn ct-btn-line min-h-10 px-4 text-sm" onclick={copyId} aria-live="polite">
+              <a
+                href={LINE_ADD_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="ct-btn line-btn min-h-10 px-4 text-sm">{t('lineAdd')}</a
+              >
+              <button
+                type="button"
+                class="ct-btn ct-btn-line min-h-10 px-4 text-sm"
+                onclick={copyId}
+                aria-live="polite"
+              >
                 {copied ? t('lineCopied') : t('lineCopy')}
               </button>
             </div>
@@ -79,22 +108,40 @@
       </div>
     </div>
 
-    <div class="border-t border-border-strong">
-      {#each faqs as faq, i (faq.q)}
-        <details class="faq group border-b border-border-subtle">
-          <summary
-            class="grid min-h-[4rem] cursor-pointer list-none grid-cols-[2.5rem_minmax(0,1fr)_auto] items-center gap-3 py-4 text-left text-base font-medium text-text-primary [&::-webkit-details-marker]:hidden"
-          >
-            <span class="font-book text-sm font-bold tabular-nums text-text-tertiary">{String(i + 1).padStart(2, '0')}</span>
-            {faq.q}
-            <Plus
-              class="h-5 w-5 shrink-0 text-text-tertiary motion-safe:transition-transform motion-safe:duration-300 group-open:rotate-45"
-              aria-hidden="true"
-            />
-          </summary>
-          <p class="faq-a max-w-[60ch] pb-6 pl-[3.25rem] text-base font-light leading-relaxed text-text-secondary">{faq.a}</p>
-        </details>
-      {/each}
+    <div>
+      <label for="faq-search" class="mb-2 block text-sm font-medium">{t('guideSearch')}</label>
+      <input
+        id="faq-search"
+        type="search"
+        bind:value={query}
+        placeholder={t('guideSearchHint')}
+        class="mb-6 min-h-12 w-full rounded-lg border border-border-strong bg-surface px-4 text-base text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ct-orange-ink)]"
+      />
+      <p role="status" class="mb-4 text-sm text-text-secondary">{tc('guideResults', { n: filteredFaqs.length })}</p>
+      <div class="border-t border-border-strong">
+        {#each filteredFaqs as faq (faq.q)}
+          <details class="faq group border-b border-border-subtle">
+            <summary
+              class="grid min-h-[4rem] cursor-pointer list-none grid-cols-[2.5rem_minmax(0,1fr)_auto] items-center gap-3 py-4 text-left text-base font-medium text-text-primary [&::-webkit-details-marker]:hidden"
+            >
+              <span class="font-book text-sm font-bold tabular-nums text-text-tertiary"
+                >{String(faqs.indexOf(faq) + 1).padStart(2, '0')}</span
+              >
+              {faq.q}
+              <Plus
+                class="h-5 w-5 shrink-0 text-text-tertiary motion-safe:transition-transform motion-safe:duration-300 group-open:rotate-45"
+                aria-hidden="true"
+              />
+            </summary>
+            <p class="faq-a max-w-[60ch] pb-6 pl-[3.25rem] text-base font-light leading-relaxed text-text-secondary">
+              {faq.a}
+            </p>
+          </details>
+        {:else}
+          <p class="py-6 text-base text-text-secondary">{t('guideNoResults')}</p>
+          <button type="button" class="ct-link" onclick={() => (query = '')}>{t('guideClear')}</button>
+        {/each}
+      </div>
     </div>
   </div>
 </section>

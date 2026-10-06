@@ -6,6 +6,7 @@
   import PromoPopup from '../components/promo/PromoPopup.svelte';
   import PromoCarousel from '../components/promo/PromoCarousel.svelte';
   import Headline from '../components/home/Headline.svelte';
+  import VisitGuide from '../components/home/VisitGuide.svelte';
   import CoverSpread from '../components/home/CoverSpread.svelte';
   import DateRail from '../components/home/DateRail.svelte';
   import HomeStatusCheck from '../components/home/HomeStatusCheck.svelte';
@@ -55,6 +56,7 @@
 
 <div bind:this={page} class="home-book">
   <CoverSpread />
+  <VisitGuide />
 
   <!-- Announcements stay reachable on the page when the popup is off or was dismissed. -->
   {#if hasNews}
@@ -82,7 +84,11 @@
                   <h3 class="text-lg font-medium text-white">{promo.notice.title}</h3>
                 {/if}
                 {#if promo.notice.body}
-                  <p class="mt-2 whitespace-pre-line text-sm font-light leading-relaxed text-text-secondary sm:text-base">{promo.notice.body}</p>
+                  <p
+                    class="mt-2 whitespace-pre-line text-sm font-light leading-relaxed text-text-secondary sm:text-base"
+                  >
+                    {promo.notice.body}
+                  </p>
                 {/if}
               </div>
             {/if}
@@ -100,11 +106,11 @@
 
   <DateRail />
   <HomeStatusCheck />
+  <VisitSteps />
+  <SetTable />
+  <HomeFaq />
   <ChefTable />
   <CraftChapter />
-  <VisitSteps />
-  <HomeFaq />
-  <SetTable />
   <EndPage />
 
   <!-- Inside the book so it inherits the book's colours; it carries no data-chapter. -->

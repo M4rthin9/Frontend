@@ -67,19 +67,33 @@
   bind:this={root}
   id="home-cover"
   data-chapter="ctChCover"
-  class="relative isolate grid overflow-x-clip lg:min-h-[min(100svh,980px)] lg:grid-cols-2"
+  class="relative isolate grid overflow-x-clip lg:min-h-[min(90svh,860px)] lg:grid-cols-2"
   aria-labelledby="home-title"
 >
   <!-- The right-hand page of the book, first in reading order: the black cover. -->
-  <div class="ct-black cover relative z-10 flex flex-col justify-between gap-12 px-6 pb-12 pt-20 sm:px-10 lg:order-2 lg:px-14 lg:pb-14 lg:pt-24 xl:px-20">
+  <div
+    class="ct-black cover relative z-10 flex flex-col justify-between gap-8 px-6 pb-10 pt-12 sm:px-10 lg:order-2 lg:px-14 lg:pb-14 lg:pt-14 xl:px-20"
+  >
     <div>
       <div data-line class="flex items-center gap-3">
-        <img src="/cida-logo-128.webp" width="40" height="40" alt="กรมราชทัณฑ์" class="h-10 w-10 rounded-full object-cover" />
-        <img src="/logo-white-128.webp" width="40" height="40" alt="CC Cafe" class="h-10 w-10 rounded-full object-cover ring-1 ring-white/25" />
+        <img
+          src="/cida-logo-128.webp"
+          width="40"
+          height="40"
+          alt="กรมราชทัณฑ์"
+          class="h-10 w-10 rounded-full object-cover"
+        />
+        <img
+          src="/logo-white-128.webp"
+          width="40"
+          height="40"
+          alt="CC Cafe"
+          class="h-10 w-10 rounded-full object-cover ring-1 ring-white/25"
+        />
         <p class="min-w-0 text-xs leading-snug text-text-secondary sm:text-sm">{t('homeAgency')}</p>
       </div>
 
-      <p data-mast class="masthead mt-12 font-bold text-[var(--ct-orange)] lg:mt-16">
+      <p data-mast class="masthead mt-8 font-bold text-[var(--ct-orange)] lg:mt-10">
         {#each mastLines as line, i (i)}<span class="block">{line}</span>{/each}
       </p>
       <p data-line class="mt-3 text-lg font-light text-white/90 sm:text-xl">{t('ctMastSub')}</p>
@@ -90,7 +104,9 @@
         <Headline id="home-title" level={1} keep text={t('homeHeroTitle')} class="cover-title" />
       </div>
       <p data-line class="mt-5 max-w-[36rem] text-base font-light leading-relaxed text-text-secondary sm:text-lg">
-        {#each subPhrases as phrase, i (i)}<span class="inline-block">{phrase}{i < subPhrases.length - 1 ? ' ·' : ''}</span>{i < subPhrases.length - 1 ? ' ' : ''}{/each}
+        {#each subPhrases as phrase, i (i)}<span class="inline-block"
+            >{phrase}{i < subPhrases.length - 1 ? ' ·' : ''}</span
+          >{i < subPhrases.length - 1 ? ' ' : ''}{/each}
       </p>
 
       <div data-line class="mt-8 flex flex-wrap gap-3">
@@ -110,11 +126,16 @@
         <span class="inline-flex items-center gap-2" role="status">
           <span class="relative flex h-2 w-2" aria-hidden="true">
             {#if bookingOpen}
-              <span class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 motion-safe:animate-ping"></span>
+              <span
+                class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 motion-safe:animate-ping"
+              ></span>
             {/if}
-            <span class="relative inline-flex h-2 w-2 rounded-full {bookingOpen ? 'bg-emerald-400' : 'bg-amber-400'}"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full {bookingOpen ? 'bg-emerald-400' : 'bg-amber-400'}"
+            ></span>
           </span>
-          <span class="text-text-secondary">{bookingOpen ? t('homeStatusBookingOpen') : t('homeStatusBookingClosed')}</span>
+          <span class="text-text-secondary"
+            >{bookingOpen ? t('homeStatusBookingOpen') : t('homeStatusBookingClosed')}</span
+          >
         </span>
         <button type="button" class="ct-link" onclick={() => navigate('status')}>
           <Search class="h-4 w-4" aria-hidden="true" />{t('btnStatus')}
@@ -122,13 +143,21 @@
         <button type="button" class="ct-link" onclick={() => navigate('table-booking')}>
           <UtensilsCrossed class="h-4 w-4" aria-hidden="true" />{t('btnTableBook')}
           {#if settings.tableBooking.maintenance}
-            <span class="rounded-full border border-white/30 px-2 py-0.5 text-[11px] font-medium text-white/80">{t('tblComingSoonTitle')}</span>
+            <span class="rounded-full border border-white/30 px-2 py-0.5 text-[11px] font-medium text-white/80"
+              >{t('tblComingSoonTitle')}</span
+            >
           {/if}
         </button>
       </div>
 
       <!-- LINE, in its own green, so it is the one thing on the cover that is not book-coloured. -->
-      <a data-line href={LINE_ADD_URL} target="_blank" rel="noopener noreferrer" class="line-chip mt-7 inline-flex items-center gap-3 rounded-full py-1.5 pl-1.5 pr-5">
+      <a
+        data-line
+        href={LINE_ADD_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="line-chip mt-7 inline-flex items-center gap-3 rounded-full py-1.5 pl-1.5 pr-5"
+      >
         <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#06c755]">
           <LineIcon class="h-7 w-7" />
         </span>
@@ -155,12 +184,21 @@
           class="absolute inset-0 h-full w-full object-cover object-[50%_18%]"
         />
       </div>
-      <div data-unfold-shade class="unfold-shade pointer-events-none absolute inset-0 opacity-0" aria-hidden="true"></div>
-      <div class="spine pointer-events-none absolute inset-y-0 right-0 hidden w-[10%] lg:block" aria-hidden="true"></div>
+      <div
+        data-unfold-shade
+        class="unfold-shade pointer-events-none absolute inset-0 opacity-0"
+        aria-hidden="true"
+      ></div>
+      <div
+        class="spine pointer-events-none absolute inset-y-0 right-0 hidden w-[10%] lg:block"
+        aria-hidden="true"
+      ></div>
 
       <p class="tagline absolute inset-x-0 top-0 px-6 pt-[9%] text-center">
         {#each tagline as [lead, key], i (i)}
-          <span data-tag class="block"><span class="font-light">{lead}</span><span class="font-medium">{key}</span></span>
+          <span data-tag class="block"
+            ><span class="font-light">{lead}</span><span class="font-medium">{key}</span></span
+          >
         {/each}
       </p>
     </div>
@@ -170,7 +208,9 @@
 <style>
   .cover {
     /* A faint highlight where the black page rises from the spine. */
-    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 3%);
+    background-image:
+      radial-gradient(ellipse at 100% 0%, rgba(245, 130, 31, 0.16), transparent 65%),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.07), transparent 3%);
   }
   /* "CHEF TABLE" in Tinos Bold caps is about 6.8em wide: size it to fill the
      page's text column exactly (column width minus its padding, over 6.9). */
@@ -230,17 +270,19 @@
   }
 
   .photo-page {
-    min-height: 122vw;
+    min-height: 64vw;
+    max-height: 620px;
     background: #c9cfd2;
   }
   @media (min-width: 640px) {
     .photo-page {
-      min-height: 96vw;
+      min-height: 58vw;
     }
   }
   @media (min-width: 1024px) {
     .photo-page {
       min-height: 0;
+      max-height: none;
     }
   }
   /* The gutter: the page curves down into the binding. */
