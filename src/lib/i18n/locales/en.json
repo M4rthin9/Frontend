@@ -450,5 +450,6 @@
   "lineCopied": "Copied",
   "lineScan": "QR code to add us on LINE",
   "lineHint": "Tap to add us, or search this ID in the LINE app",
-  "lineFabLabel": "Add us on LINE, ID {id}"
+  "lineFabLabel": "Add us on LINE, ID {id}",
+  "backToTop": "Back to top"
 }

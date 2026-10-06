@@ -450,5 +450,6 @@
   "lineCopied": "Đã sao chép",
   "lineScan": "Mã QR để kết bạn qua LINE",
   "lineHint": "Chạm để kết bạn, hoặc tìm ID này trong ứng dụng LINE",
-  "lineFabLabel": "Kết bạn qua LINE, ID {id}"
+  "lineFabLabel": "Kết bạn qua LINE, ID {id}",
+  "backToTop": "Lên đầu trang"
 }

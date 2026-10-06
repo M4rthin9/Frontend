@@ -450,5 +450,6 @@
   "lineCopied": "คัดลอกแล้ว",
   "lineScan": "QR โค้ดสำหรับเพิ่มเพื่อนทาง LINE",
   "lineHint": "กดปุ่มเพื่อเพิ่มเพื่อน หรือค้นหา ID นี้ในแอป LINE",
-  "lineFabLabel": "เพิ่มเพื่อนทาง LINE ID {id}"
+  "lineFabLabel": "เพิ่มเพื่อนทาง LINE ID {id}",
+  "backToTop": "กลับขึ้นด้านบน"
 }

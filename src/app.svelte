@@ -11,6 +11,7 @@
   import Modal from './components/ui/Modal.svelte';
   import ChatWidget from './components/chat/ChatWidget.svelte';
   import LineFab from './components/layout/LineFab.svelte';
+  import BackToTop from './components/layout/BackToTop.svelte';
   import CookieConsent from './components/consent/CookieConsent.svelte';
   import HomePage from './pages/HomePage.svelte';
   import BookingPage from './pages/BookingPage.svelte';
@@ -87,6 +88,7 @@
     <Footer themeToggle={!bookPage} />
   </div>
   <LineFab />
+  <BackToTop />
   <ChatWidget />
   <Toast />
   <CookieConsent />

@@ -450,5 +450,6 @@
   "lineCopied": "已复制",
   "lineScan": "添加 LINE 好友的二维码",
   "lineHint": "点击按钮添加，或在 LINE 应用中搜索此 ID",
-  "lineFabLabel": "在 LINE 上添加我们，ID {id}"
+  "lineFabLabel": "在 LINE 上添加我们，ID {id}",
+  "backToTop": "返回顶部"
 }
