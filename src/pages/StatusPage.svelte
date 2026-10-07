@@ -30,6 +30,8 @@
   let notFoundQuery = $state('');
   let errorMsg = $state('');
   let showThankYou = $state(false);
+  let autoPay = $state(false);
+  let paymentReady = $state(false);
   let searchCount = 0;
 
   const thankYouCount = $derived(parseInt(String(found?.visitorCount)) || 1);
@@ -47,6 +49,7 @@
     // A push notification opens #/status?ref=… in a fresh tab, with no session.
     const linkRef = new URLSearchParams(window.location.hash.split('?')[1] || '').get('ref');
     if (linkRef) {
+      autoPay = new URLSearchParams(window.location.hash.split('?')[1] || '').get('pay') === '1';
       query = linkRef;
       void doSearch();
       return;
@@ -73,6 +76,7 @@
     const mode = isRef(raw) ? 'ref' : 'prisoner';
     const value = mode === 'ref' ? raw.toUpperCase() : raw;
     searching = true;
+    paymentReady = false;
     view = 'idle';
     showThankYou = false;
     searchCount = 0;
@@ -108,6 +112,7 @@
   }
 
   async function resetSearch(): Promise<void> {
+    autoPay = false;
     query = '';
     view = 'idle';
     found = null;
@@ -219,9 +224,10 @@
         </article>
       {:else if view === 'result' && found}
         {#key found.ref}
-          <div in:fly={{ y: 12, duration: 280 }}>
+          <div in:fly|global={{ y: 12, duration: 280 }} onintroend={() => paymentReady = true}>
             <StatusResult
               booking={found}
+              autoPay={autoPay && paymentReady}
               onpaid={() => {
                 showThankYou = true;
                 window.scrollTo(0, 0);

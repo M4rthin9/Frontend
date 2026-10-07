@@ -17,6 +17,7 @@
   import BookingPage from './pages/BookingPage.svelte';
   import { tableBooking } from './lib/store/booking.svelte';
   import StatusPage from './pages/StatusPage.svelte';
+  import TableOpeningCountdown from './components/booking/TableOpeningCountdown.svelte';
 
   const titles: Record<string, () => string> = {
     home: () => t('appName'),
@@ -32,6 +33,9 @@
   onMount(() => {
     ui.initDarkMode();
     void ui.loadPublicSettings();
+    const clock = window.setInterval(() => ui.tick(), 1000);
+    const refresh = window.setInterval(() => void ui.loadPublicSettings(), 15000);
+    return () => { window.clearInterval(clock); window.clearInterval(refresh); };
   });
 
   $effect(() => {
@@ -74,7 +78,11 @@
           <BookingPage />
         {:else if router.route === 'table-booking'}
           <!-- Same page, driven by the no-prisoner store. -->
-          <BookingPage store={tableBooking} />
+          {#if ui.publicSettingsLoaded && ui.tableBookingOpen}
+            <BookingPage store={tableBooking} />
+          {:else if !ui.publicSettingsLoaded}
+            <p class="p-8 text-center" role="status">{t('tblSettingsLoading')}</p>
+          {/if}
         {:else}
           <StatusPage />
         {/if}
@@ -93,13 +101,17 @@
   <Toast />
   <CookieConsent />
 
-  {#if router.route === 'table-booking' && ui.publicSettings.tableBooking.maintenance}
-    <Modal open dismissable={false} title={t('tblComingSoonTitle')}>
+  {#if router.route === 'table-booking' && ui.publicSettingsLoaded && !ui.tableBookingOpen}
+    <Modal open dismissable={false} title={ui.tableBookingScheduled ? t('tblCountdownTitle') : t('tblClosedTitle')}>
       <div class="text-center">
         <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-3xl">
-          🚧
+          ⏸
         </div>
-        <p class="text-sm leading-relaxed text-text-secondary">{@html t('tblComingSoonText')}</p>
+        {#if ui.tableBookingScheduled}
+          <TableOpeningCountdown />
+        {:else}
+          <p class="text-sm leading-relaxed text-text-secondary">{t('tblClosedText')}</p>
+        {/if}
         <button
           type="button"
           class="mt-6 w-full rounded-xl bg-red-700 px-6 py-3 text-sm font-bold text-white shadow-md transition-colors duration-200 hover:bg-red-800"

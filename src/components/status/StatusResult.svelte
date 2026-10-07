@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import Check from '@lucide/svelte/icons/check';
   import { i18n, t, tc } from '../../lib/i18n/i18n.svelte';
   import { navigate } from '../../lib/router.svelte';
@@ -20,13 +20,16 @@
   import { formatDateIn } from '../../lib/utils/date';
   import PaymentForm from './PaymentForm.svelte';
   import PushOptIn from '../ui/PushOptIn.svelte';
+  import { TABLE_NO_CHANGES_AGREEMENT_VERSIONS } from '../../lib/utils/tableAgreement';
 
   let {
     booking,
+    autoPay = false,
     onpaid = () => {},
     onsearchagain = () => {},
   }: {
     booking: PublicReservation;
+    autoPay?: boolean;
     onpaid?: () => void;
     onsearchagain?: () => void;
   } = $props();
@@ -38,6 +41,8 @@
   // Fails open: payment stays available unless the backend says otherwise.
   let paymentEnabled = $state(true);
   let paymentClosedMessage = $state('');
+  let paymentPanel = $state<HTMLDivElement>();
+  let paymentWindowLoaded = $state(false);
 
   const displayStatus = $derived(statusOverride ?? booking.status ?? '');
   const normalized = $derived(normalizeStatus(displayStatus));
@@ -49,12 +54,20 @@
     void loadPaymentWindow();
   });
 
+  $effect(() => {
+    if (autoPay && paymentWindowLoaded && isTable && normalized === 'รอชำระเงิน' && paymentEnabled) {
+      showPayment = true;
+      void tick().then(() => paymentPanel?.scrollIntoView({ block: 'start' }));
+    }
+  });
+
   async function loadPaymentWindow(): Promise<void> {
     const settings = await getPublicSettings();
     paymentEnabled = settings.paymentEnabled;
     paymentClosedMessage = settings.paymentClosedMessage;
     // Close the form if the window shut while this view was open.
     if (!paymentEnabled) showPayment = false;
+    paymentWindowLoaded = true;
   }
 
   async function loadNotes(): Promise<void> {
@@ -158,7 +171,8 @@
   });
 
   const rejectReason = $derived(String(booking.cancelReason || '').trim());
-  const showCancelBtn = $derived(!['ยกเลิก', 'เสร็จสิ้น'].includes(normalized));
+  const changesLocked = $derived(isTable && TABLE_NO_CHANGES_AGREEMENT_VERSIONS.includes(booking.tableAgreementVersion ?? ''));
+  const showCancelBtn = $derived(!changesLocked && !['ยกเลิก', 'เสร็จสิ้น'].includes(normalized));
 
   async function cancelBooking(): Promise<void> {
     if (!window.confirm(tc('cancelConfirmMsg', { ref: booking.ref, name: booking.visitorName || '—', status: displayStatus || '—' }))) {
@@ -323,7 +337,7 @@
   </article>
 
   {#if showPayment && paymentEnabled}
-    <div class="booking-app w-full !pb-0">
+    <div bind:this={paymentPanel} class="booking-app w-full !pb-0">
       <PaymentForm {booking} {onpaid} oncancel={() => (showPayment = false)} />
     </div>
   {/if}
@@ -344,6 +358,9 @@
       </div>
     {/if}
   </div>
+  {#if changesLocked}
+    <p class="text-sm leading-relaxed text-text-secondary">{t('tblNoChangesText')}</p>
+  {/if}
 </div>
 
 <style>

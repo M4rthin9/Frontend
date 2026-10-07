@@ -9,7 +9,7 @@
   import { ui } from '../../lib/store/ui.svelte';
 
   const bookingOpen = $derived(ui.publicSettings.bookingWindow.open);
-  const maintenance = $derived(ui.publicSettings.tableBooking.maintenance);
+  const tableClosed = $derived(!ui.tableBookingOpen);
   const shortcuts = $derived([
     { id: 'home-steps', label: t('ctChSteps') },
     { id: 'home-table', label: t('price') },
@@ -57,14 +57,14 @@
       </article>
       <article class="option">
         <div class="option-top">
-          <UtensilsCrossed size={24} aria-hidden="true" />{#if maintenance}<span class="availability"
-              >{t('tblComingSoonTitle')}</span
+          <UtensilsCrossed size={24} aria-hidden="true" />{#if tableClosed}<span class="availability"
+              >{ui.tableBookingScheduled ? t('tblCountdownTitle') : t('tblClosedTitle')}</span
             >{/if}
         </div>
         <h3>{t('guideTableTitle')}</h3>
         <p>{t('guideTableDesc')}</p>
         <button type="button" class="ct-btn ct-btn-line" onclick={() => navigate('table-booking')}
-          >{maintenance ? t('tblComingSoonTitle') : t('btnTableBook')}<ArrowRight
+          >{tableClosed ? t('tblClosedTitle') : t('btnTableBook')}<ArrowRight
             size={18}
             aria-hidden="true"
           /></button

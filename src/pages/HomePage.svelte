@@ -17,6 +17,7 @@
   import SetTable from '../components/home/SetTable.svelte';
   import EndPage from '../components/home/EndPage.svelte';
   import FolioBar from '../components/home/FolioBar.svelte';
+  import TableAnnouncement from '../components/home/TableAnnouncement.svelte';
 
   const promo = $derived(ui.publicSettings.promo);
   const bookingWindow = $derived(ui.publicSettings.bookingWindow);
@@ -56,6 +57,7 @@
 
 <div bind:this={page} class="home-book">
   <CoverSpread />
+  <TableAnnouncement />
   <VisitGuide />
 
   <!-- Announcements stay reachable on the page when the popup is off or was dismissed. -->

@@ -19,6 +19,9 @@ import { toThaiLong } from '../utils/date';
 import { validateIdFormat, validatePhone } from '../utils/validation';
 import { buildCalendarCells, calendarTitle, QUOTA } from '../utils/calendar';
 import { ui } from './ui.svelte';
+import { t } from '../i18n/i18n.svelte';
+import { TABLE_AGREEMENT_VERSION } from '../utils/tableAgreement';
+import { navigate } from '../router.svelte';
 import {
   loadTurnstileScript,
   renderTurnstile as renderTurnstileWidget,
@@ -195,6 +198,7 @@ class BookingStoreImpl {
   visitorAge = $state('');
   visitorCount = $state(1);
   consent = $state(false);
+  tableAgreementAccepted = $state(false);
   extras = $state<ExtraVisitor[]>([]);
 
   // ——— Prisoner ———
@@ -626,6 +630,7 @@ class BookingStoreImpl {
   }
 
   goBack(): void {
+    this.tableAgreementAccepted = false;
     this.resetTurnstile();
     this.turnstileWidgetId = '';
     this.turnstileError = '';
@@ -682,6 +687,17 @@ class BookingStoreImpl {
     if (this.submitting) return;
     if (!this.confirmData || !this.selectedDate) return;
     if (!this.isTable && !this.prisoner) return;
+
+    if (this.isTable) {
+      if (!ui.tableBookingOpen) {
+        this.inlineError = t('tblClosedText');
+        return;
+      }
+      if (!this.tableAgreementAccepted) {
+        this.inlineError = t('tblAgreementRequired');
+        return;
+      }
+    }
 
     const token = getTurnstileResponse(this.turnstileWidgetId);
     if (typeof window.turnstile !== 'object') {
@@ -772,7 +788,11 @@ class BookingStoreImpl {
     let submitError = '';
     try {
       const resp = this.isTable
-        ? await saveTableReservation(payload)
+        ? await saveTableReservation({
+            ...payload,
+            tableAgreementAccepted: this.tableAgreementAccepted,
+            tableAgreementVersion: TABLE_AGREEMENT_VERSION,
+          })
         : await saveReservation(payload);
       savedRef = String(resp.ref || '').trim() || ref;
     } catch (err) {
@@ -813,6 +833,10 @@ class BookingStoreImpl {
     if (this.prisoner) safeSetItem(sessionStorage, 'lastPrisonerId', this.prisoner.prisonerId);
 
     this.step = 3;
+    if (this.isTable) {
+      navigate(`status?ref=${encodeURIComponent(savedRef)}&pay=1`);
+      return;
+    }
     window.scrollTo(0, 0);
   }
 
@@ -841,6 +865,7 @@ class BookingStoreImpl {
     this.visitorAge = '';
     this.visitorCount = 1;
     this.consent = false;
+    this.tableAgreementAccepted = false;
     this.extras = [];
     this.prisoner = null;
     this.search = '';

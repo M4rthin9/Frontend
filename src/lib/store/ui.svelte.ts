@@ -23,6 +23,7 @@ const EMPTY_SETTINGS: PublicSettings = {
     holdMinutes: 60,
     seatsPerTable: 5,
     maintenance: true,
+    opensAt: '',
   },
   publicBooking: DEFAULT_PUBLIC_BOOKING,
   bookingWindow: DEFAULT_BOOKING_WINDOW,
@@ -36,6 +37,16 @@ class UIStore {
   publicSettings = $state<PublicSettings>(EMPTY_SETTINGS);
   /** True once the server answered (or failed) — the promo popup waits for it. */
   publicSettingsLoaded = $state(false);
+  now = $state(Date.now());
+  private serverOffset = 0;
+  tableBookingScheduled = $derived(
+    this.publicSettings.tableBooking.enabled && !this.publicSettings.tableBooking.maintenance &&
+    Date.parse(this.publicSettings.tableBooking.opensAt) > this.now
+  );
+  tableBookingOpen = $derived(
+    this.publicSettings.bookingWindow.open && this.publicSettings.tableBooking.enabled &&
+    !this.publicSettings.tableBooking.maintenance && !this.tableBookingScheduled
+  );
   private toastSeq = 0;
 
   initDarkMode(): void {
@@ -47,11 +58,18 @@ class UIStore {
   async loadPublicSettings(): Promise<void> {
     try {
       this.publicSettings = await getPublicSettings();
+      const serverTime = Date.parse(this.publicSettings.tableBooking.serverTime ?? '');
+      if (Number.isFinite(serverTime)) this.serverOffset = serverTime - Date.now();
+      this.tick();
     } catch {
       this.publicSettings = EMPTY_SETTINGS;
     } finally {
       this.publicSettingsLoaded = true;
     }
+  }
+
+  tick(): void {
+    this.now = Date.now() + this.serverOffset;
   }
 
   toggleDarkMode(): void {

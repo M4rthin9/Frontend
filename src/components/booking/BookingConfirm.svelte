@@ -9,6 +9,7 @@
   import Button from '../ui/Button.svelte';
   import Modal from '../ui/Modal.svelte';
   import Spinner from '../ui/Spinner.svelte';
+  import TableBookingTerms from './TableBookingTerms.svelte';
 
   // The page decides which flow this belongs to; defaults to the prisoner-visit
   // store so existing usages keep working unchanged.
@@ -17,12 +18,10 @@
   let turnstileEl: HTMLDivElement;
   let copiedSummary = $state(false);
   let showConfirmModal = $state(false);
-  let showTBLReminderModal = $state(false);
 
   onMount(() => {
     store.turnstileError = '';
     void store.setupTurnstile(turnstileEl);
-    if (store.isTable) showTBLReminderModal = true;
   });
 
   const data = $derived(store.confirmData);
@@ -45,6 +44,7 @@
 
   async function confirmAndSubmit(): Promise<void> {
     if (store.submitting || checkingNames) return;
+    if (store.isTable && !store.tableAgreementAccepted) return;
     if (store.isTable) {
       checkingNames = true;
       const names = [store.visitorName, ...store.extras.map((e) => e.name)];
@@ -58,7 +58,7 @@
       }
     }
     showConfirmModal = false;
-    void store.submit();
+    await store.submit();
   }
 
   async function copySummary(): Promise<void> {
@@ -87,10 +87,7 @@
 <div>
   {#if data}
     {#if store.isTable}
-      <div class="table-external-notice" role="note">
-        <h3>{t('tableExternalOnlyTitle')}</h3>
-        <p>{t('tableExternalOnlyText')}</p>
-      </div>
+      <TableBookingTerms />
     {/if}
 
     <div class="confirm-hero">
@@ -188,7 +185,7 @@
   {/if}
 
   <div style="display:flex;gap:10px;margin-bottom:1rem">
-    <Button variant="secondary" size="lg" style="flex:0.45" onclick={() => store.goBack()}>
+    <Button variant="secondary" size="lg" style="flex:0.45" disabled={store.submitting || checkingNames} onclick={() => store.goBack()}>
       ← {t('editBtn')}
     </Button>
     <Button
@@ -197,19 +194,20 @@
       style="flex:1"
       disabled={store.submitting}
       onclick={() => {
+        store.tableAgreementAccepted = false;
         showConfirmModal = true;
       }}
     >
       {#if store.submitting}
         <Spinner size="sm" />
       {:else}
-        {t('submitBtn')}
+        {store.isTable ? t('tblReviewAgreement') : t('submitBtn')}
       {/if}
     </Button>
   </div>
 </div>
 
-<Modal bind:open={showConfirmModal} title={t('confirmBookingTitle')} onClose={() => (showConfirmModal = false)}>
+<Modal bind:open={showConfirmModal} title={store.isTable ? t('tblAgreementTitle') : t('confirmBookingTitle')} dismissable={!store.submitting && !checkingNames} onClose={() => (showConfirmModal = false)}>
   <div class="review-grid">
     <div class="review-section">
       <div class="review-label">{t('lblVisitDate')}</div>
@@ -226,19 +224,27 @@
   </div>
 
   {#if store.isTable}
-    <div class="table-external-notice confirm-popup-notice" role="note">
-      <h3>{t('tableExternalOnlyTitle')}</h3>
-      <p>{t('tableExternalOnlyText')}</p>
-    </div>
+    <TableBookingTerms />
+    <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-amber-300 p-4 text-sm leading-relaxed">
+      <input
+        type="checkbox"
+        class="mt-1 h-5 w-5 shrink-0 accent-amber-700"
+        bind:checked={store.tableAgreementAccepted}
+        disabled={store.submitting || checkingNames}
+        required
+      />
+      <span>{t('tblAgreementAccept')}</span>
+    </label>
   {/if}
 
-  <p class="confirm-modal-text">{t('confirmBookingText')}</p>
+  <p class="confirm-modal-text">{store.isTable ? t('tblBookingFinalNotice') : t('confirmBookingText')}</p>
 
   <div style="display:flex;gap:10px;margin-top:1rem">
     <Button
       variant="secondary"
       size="lg"
       style="flex:0.45"
+      disabled={store.submitting || checkingNames}
       onclick={() => {
         showConfirmModal = false;
       }}
@@ -249,36 +255,14 @@
       variant="primary"
       size="lg"
       style="flex:1"
-      disabled={store.submitting || checkingNames}
+      disabled={store.submitting || checkingNames || (store.isTable && !store.tableAgreementAccepted)}
       onclick={() => void confirmAndSubmit()}
     >
       {#if store.submitting || checkingNames}
         <Spinner size="sm" />
       {:else}
-        ✓ {t('confirmBookingConfirm')}
+        ✓ {store.isTable ? t('tblAcceptAndBook') : t('confirmBookingConfirm')}
       {/if}
     </Button>
   </div>
 </Modal>
-
-{#if store.isTable}
-  <Modal
-    bind:open={showTBLReminderModal}
-    title={t('tblReminderTitle')}
-    onClose={() => (showTBLReminderModal = false)}
-  >
-    <p class="confirm-modal-text">{t('tblReminderText')}</p>
-    <div style="display:flex;gap:10px;margin-top:1rem">
-      <Button
-        variant="primary"
-        size="lg"
-        style="flex:1"
-        onclick={() => {
-          showTBLReminderModal = false;
-        }}
-      >
-        ✓ {t('tblReminderOk')}
-      </Button>
-    </div>
-  </Modal>
-{/if}

@@ -179,6 +179,8 @@ export interface TableBookingPublicConfig {
   seatsPerTable: number;
   /** When true the booking page blocks table booking behind a maintenance popup. */
   maintenance: boolean;
+  opensAt: string;
+  serverTime?: string;
 }
 
 /** Admin open/close switch plus per-date overrides (admin_settings.bookingWindow). */
@@ -247,6 +249,7 @@ const DEFAULT_TABLE_BOOKING: TableBookingPublicConfig = {
   holdMinutes: 60,
   seatsPerTable: 5,
   maintenance: true,
+  opensAt: '',
 };
 
 /** Public read of the booking-site settings. Fails open: if the backend is
@@ -285,6 +288,8 @@ export async function getPublicSettings(): Promise<PublicSettings> {
         holdMinutes: data.tableBooking?.holdMinutes ?? DEFAULT_TABLE_BOOKING.holdMinutes,
         seatsPerTable: data.tableBooking?.seatsPerTable ?? DEFAULT_TABLE_BOOKING.seatsPerTable,
         maintenance: data.tableBooking?.maintenance !== false,
+        opensAt: data.tableBooking?.opensAt ?? '',
+        serverTime: data.tableBooking?.serverTime,
       },
       publicBooking: { perDay: data.publicBooking?.perDay || DEFAULT_PUBLIC_BOOKING.perDay },
       bookingWindow: {

@@ -142,9 +142,9 @@
         </button>
         <button type="button" class="ct-link" onclick={() => navigate('table-booking')}>
           <UtensilsCrossed class="h-4 w-4" aria-hidden="true" />{t('btnTableBook')}
-          {#if settings.tableBooking.maintenance}
+          {#if !ui.tableBookingOpen}
             <span class="rounded-full border border-white/30 px-2 py-0.5 text-[11px] font-medium text-white/80"
-              >{t('tblComingSoonTitle')}</span
+              >{t('tblClosedTitle')}</span
             >
           {/if}
         </button>

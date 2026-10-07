@@ -56,6 +56,7 @@ export interface PublicReservation {
   timestamp?: string;
   status?: string;
   bookingType?: string;
+  tableAgreementVersion?: string;
   visitDate?: string;
   visitDateISO?: string;
   prisonerName?: string;
@@ -134,7 +135,11 @@ export interface SaveReservationPayload {
  * booking; `ref` may be blank (the server mints a TBL- one) and the prisoner
  * fields are ignored by the server's table field whitelist.
  */
-export type SaveTableReservationPayload = Omit<SaveReservationPayload, 'ref'> & { ref?: string };
+export type SaveTableReservationPayload = Omit<SaveReservationPayload, 'ref'> & {
+  ref?: string;
+  tableAgreementAccepted: boolean;
+  tableAgreementVersion: string;
+};
 
 export interface TableCounts {
   counts: Record<string, number>;
