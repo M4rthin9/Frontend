@@ -19,7 +19,7 @@
             <p class="text-lg font-semibold">{ui.tableBookingOpen ? t('tblNowOpen') : t('tblClosedTitle')}</p>
           {/if}
         </div>
-        <p class="mt-5 text-sm leading-relaxed">{t('tblNoPrisonerSeating')}</p>
+        <p class="mt-5 text-sm leading-relaxed">{t('tblOutsideGuestsOnly')}</p>
         <p class="mt-2 text-sm font-semibold leading-relaxed">{t('tblNoRefundText')}</p>
         <div class="mt-6 flex flex-wrap gap-4">
           <button class="ct-btn ct-btn-orange" type="button" onclick={() => navigate('table-booking')}>{ui.tableBookingScheduled ? t('tblCountdownTitle') : t('btnTableBook')}</button>

@@ -4,6 +4,7 @@
   import ArrowDown from '@lucide/svelte/icons/arrow-down';
   import Search from '@lucide/svelte/icons/search';
   import UtensilsCrossed from '@lucide/svelte/icons/utensils-crossed';
+  import CalendarDays from '@lucide/svelte/icons/calendar-days';
   import { t } from '../../lib/i18n/i18n.svelte';
   import { LINE_ADD_URL, LINE_ID } from '../../lib/line';
   import LineIcon from '../ui/LineIcon.svelte';
@@ -103,24 +104,33 @@
       <div data-line>
         <Headline id="home-title" level={1} keep text={t('homeHeroTitle')} class="cover-title" />
       </div>
+      <div data-line class="booking-actions mt-6 grid gap-3">
+        <button type="button" class="ct-btn ct-btn-orange booking-action" onclick={() => navigate('booking')}>
+          <CalendarDays class="h-7 w-7 shrink-0" aria-hidden="true" />
+          <span class="min-w-0 flex-1">
+            <span class="booking-action-title">{t('homeCtaVisit')}</span>
+            <span class="booking-action-description">{t('btnBookSub')}</span>
+          </span>
+          <ArrowRight class="ct-nudge h-5 w-5 shrink-0" aria-hidden="true" />
+        </button>
+        <button type="button" class="ct-btn booking-action booking-action-table" onclick={() => navigate('table-booking')}>
+          <UtensilsCrossed class="h-7 w-7 shrink-0" aria-hidden="true" />
+          <span class="min-w-0 flex-1">
+            <span class="booking-action-title">{t('btnTableBook')}</span>
+            <span class="booking-action-description">{t('tblOutsideGuestsOnly')}</span>
+            {#if ui.publicSettingsLoaded && !ui.tableBookingOpen}
+              <span class="booking-action-status">{ui.tableBookingScheduled ? t('tblCountdownTitle') : t('tblClosedTitle')}</span>
+            {/if}
+          </span>
+          <ArrowRight class="ct-nudge h-5 w-5 shrink-0" aria-hidden="true" />
+        </button>
+      </div>
+
       <p data-line class="mt-5 max-w-[36rem] text-base font-light leading-relaxed text-text-secondary sm:text-lg">
         {#each subPhrases as phrase, i (i)}<span class="inline-block"
             >{phrase}{i < subPhrases.length - 1 ? ' ·' : ''}</span
           >{i < subPhrases.length - 1 ? ' ' : ''}{/each}
       </p>
-
-      <div data-line class="mt-8 flex flex-wrap gap-3">
-        <button type="button" class="ct-btn ct-btn-orange" onclick={() => navigate('booking')}>
-          {t('homeCtaBook')}
-          <ArrowRight class="ct-nudge h-4 w-4" aria-hidden="true" />
-        </button>
-        {#if bookingOpen}
-          <button type="button" class="ct-btn ct-btn-line" onclick={toDates}>
-            {t('homeCtaDates')}
-            <ArrowDown class="h-4 w-4" aria-hidden="true" />
-          </button>
-        {/if}
-      </div>
 
       <div data-line class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm">
         <span class="inline-flex items-center gap-2" role="status">
@@ -140,14 +150,11 @@
         <button type="button" class="ct-link" onclick={() => navigate('status')}>
           <Search class="h-4 w-4" aria-hidden="true" />{t('btnStatus')}
         </button>
-        <button type="button" class="ct-link" onclick={() => navigate('table-booking')}>
-          <UtensilsCrossed class="h-4 w-4" aria-hidden="true" />{t('btnTableBook')}
-          {#if !ui.tableBookingOpen}
-            <span class="rounded-full border border-white/30 px-2 py-0.5 text-[11px] font-medium text-white/80"
-              >{t('tblClosedTitle')}</span
-            >
-          {/if}
-        </button>
+        {#if bookingOpen}
+          <button type="button" class="ct-link" onclick={toDates}>
+            <ArrowDown class="h-4 w-4" aria-hidden="true" />{t('homeCtaDates')}
+          </button>
+        {/if}
       </div>
 
       <!-- LINE, in its own green, so it is the one thing on the cover that is not book-coloured. -->
@@ -206,6 +213,48 @@
 </section>
 
 <style>
+  .booking-action {
+    width: 100%;
+    min-height: 6rem;
+    justify-content: space-between;
+    gap: 0.85rem;
+    padding: 1rem 1.25rem;
+    border: 2px solid transparent;
+    border-radius: 1rem;
+    text-align: left;
+    white-space: normal;
+  }
+  .booking-action-title {
+    display: block;
+    font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+    font-weight: 700;
+    line-height: 1.45;
+  }
+  .booking-action-description {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
+    font-weight: 400;
+    line-height: 1.55;
+  }
+  .booking-action-table {
+    background: var(--ct-paper);
+    color: var(--ct-ink);
+    border-color: var(--ct-orange);
+  }
+  .booking-action-status {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 99px;
+    background: #f8e5c9;
+    color: #734410;
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .booking-action-table:hover { background: #fff4e5; }
+  }
   .cover {
     /* A faint highlight where the black page rises from the spine. */
     background-image:

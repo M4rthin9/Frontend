@@ -51,8 +51,8 @@
         </div>
         <h3>{t('guideVisitTitle')}</h3>
         <p>{t('guideVisitDesc')}</p>
-        <button type="button" class="ct-btn ct-btn-orange" onclick={() => navigate('booking')}
-          >{t('homeCtaBook')}<ArrowRight size={18} aria-hidden="true" /></button
+        <button type="button" class="ct-btn ct-btn-orange reservation-button" onclick={() => navigate('booking')}
+          >{t('homeCtaVisit')}<ArrowRight size={22} aria-hidden="true" /></button
         >
       </article>
       <article class="option">
@@ -63,9 +63,9 @@
         </div>
         <h3>{t('guideTableTitle')}</h3>
         <p>{t('guideTableDesc')}</p>
-        <button type="button" class="ct-btn ct-btn-line" onclick={() => navigate('table-booking')}
-          >{tableClosed ? t('tblClosedTitle') : t('btnTableBook')}<ArrowRight
-            size={18}
+        <button type="button" class="ct-btn ct-btn-orange reservation-button" onclick={() => navigate('table-booking')}
+          >{t('btnTableBook')}<ArrowRight
+            size={22}
             aria-hidden="true"
           /></button
         >
@@ -216,6 +216,15 @@
     padding-top: 2rem;
     border-top: 1px solid var(--app-border-subtle);
   }
+  .option .reservation-button {
+    min-height: 4.5rem;
+    padding: 1rem 1.25rem;
+    border-radius: 0.85rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  .reservation-button :global(svg) { flex-shrink: 0; }
   .prepare > div {
     display: flex;
     align-items: start;
