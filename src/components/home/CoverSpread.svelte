@@ -109,7 +109,7 @@
           <CalendarDays class="h-7 w-7 shrink-0" aria-hidden="true" />
           <span class="min-w-0 flex-1">
             <span class="booking-action-title">{t('homeCtaVisit')}</span>
-            <span class="booking-action-description">{t('btnBookSub')}</span>
+            <span class="booking-action-description">{t('guideVisitTitle')}</span>
           </span>
           <ArrowRight class="ct-nudge h-5 w-5 shrink-0" aria-hidden="true" />
         </button>
