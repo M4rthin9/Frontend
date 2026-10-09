@@ -33,9 +33,21 @@
   // serves one plate; the others glide to their new seats.
   const COURSES = ['salmon', 'prawn', 'scallop', 'salad'];
   const guests = $derived([
-    ...Array.from({ length: visitPlan.adults }, (_, i) => ({ id: `a${i}`, img: COURSES[i % COURSES.length], size: 1 })),
-    ...Array.from({ length: visitPlan.kids58 }, (_, i) => ({ id: `k${i}`, img: 'salad', size: 0.8 })),
-    ...Array.from({ length: visitPlan.kidsUnder5 }, (_, i) => ({ id: `u${i}`, img: 'soup', size: 0.6 })),
+    ...Array.from({ length: visitPlan.adults }, (_, i) => ({
+      id: `a${i}`,
+      img: COURSES[i % COURSES.length],
+      size: 1,
+    })),
+    ...Array.from({ length: visitPlan.kids58 }, (_, i) => ({
+      id: `k${i}`,
+      img: 'salad',
+      size: 0.8,
+    })),
+    ...Array.from({ length: visitPlan.kidsUnder5 }, (_, i) => ({
+      id: `u${i}`,
+      img: 'soup',
+      size: 0.6,
+    })),
   ]);
 
   /**
@@ -124,21 +136,35 @@
   }
 </script>
 
-<section id="home-table" data-chapter="ctChTable" class="scroll-mt-4 bg-background-subtle py-20 sm:py-28" aria-labelledby="home-table-title">
+<section
+  id="home-table"
+  data-chapter="ctChTable"
+  class="scroll-mt-4 bg-background-subtle py-20 sm:py-28"
+  aria-labelledby="home-table-title"
+>
   <!-- Phones read heading, table, controls; wide screens put the table beside both. -->
-  <div class="mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-x-14 lg:gap-y-0">
+  <div
+    class="mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-x-14 lg:gap-y-0"
+  >
     <div class="lg:col-start-1 lg:row-start-1">
       <p class="ct-label">{t('ctChTable')}</p>
       <Headline id="home-table-title" text={t('ctTableTitle')} class="ct-h2 mt-4" />
-      <p class="mt-3 max-w-md text-base font-light leading-relaxed text-text-secondary">{t('ctTableSub')}</p>
+      <p class="mt-3 max-w-md text-base font-light leading-relaxed text-text-secondary">
+        {t('ctTableSub')}
+      </p>
     </div>
 
     <div class="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
       <!-- The table from above. Decorative: the controls beside it carry the same facts. -->
       <div class="cloth relative mx-auto w-full" aria-hidden="true">
         <!-- The seat already set for the person being visited. -->
-        <div class="setting head" style="--hl: {11 + lOff}%; --hp: {11 + pOff}%; --lw: 16; --pw: 22; --s: 1">
-          <div data-setting class="plate"><img src="/chef/plate-main.webp" alt="" width="240" height="240" /></div>
+        <div
+          class="setting head"
+          style="--hl: {11 + lOff}%; --hp: {11 + pOff}%; --lw: 16; --pw: 22; --s: 1"
+        >
+          <div data-setting class="plate">
+            <img src="/chef/plate-main.webp" alt="" width="240" height="240" />
+          </div>
           <span class="place-card">{t('ctTableSeatFor')}</span>
         </div>
 
@@ -149,22 +175,37 @@
             style="--lx: {p.lx}%; --ly: {p.ly}%; --lr: {p.lr}deg; --lw: {p.lw}; --px: {p.px}%; --py: {p.py}%; --pw: {p.pw}; --s: {g.size}"
           >
             <div in:serve={{ side: s % 2 }} out:serve={{ side: s % 2 }}>
-              <div data-setting class="plate"><img src="/chef/plate-{g.img}.webp" alt="" width="240" height="240" /></div>
+              <div data-setting class="plate">
+                <img src="/chef/plate-{g.img}.webp" alt="" width="240" height="240" />
+              </div>
             </div>
           </div>
         {/each}
 
         <!-- The reserved card in the middle of the table turns over when the date changes. -->
-        <div class="tent" style="--tl: {30 + ((cols - 1) * lStep) / 2 + lOff}%; --tp: {30 + ((cols - 1) * pStep) / 2 + pOff}%">
+        <div
+          class="tent"
+          style="--tl: {30 + ((cols - 1) * lStep) / 2 + lOff}%; --tp: {30 +
+            ((cols - 1) * pStep) / 2 +
+            pOff}%"
+        >
           {#key visitPlan.date}
             <div class="tent-card" in:fly={{ y: -10, duration: reduced() ? 0 : 380 }}>
-              <span class="font-book text-[0.7rem] font-bold uppercase tracking-[0.28em]">Reserved</span>
+              <span class="font-book text-[0.7rem] font-bold uppercase tracking-[0.28em]"
+                >{t('textSetTable1')}</span
+              >
               <span class="mt-1 block text-[0.78rem] leading-tight">
                 {visitPlan.date
-                  ? formatDateIn(visitPlan.date, i18n.lang, { weekday: 'short', day: 'numeric', month: 'short' })
+                  ? formatDateIn(visitPlan.date, i18n.lang, {
+                      weekday: 'short',
+                      day: 'numeric',
+                      month: 'short',
+                    })
                   : t('ctTablePickDate')}
               </span>
-              <span class="mt-0.5 block text-[0.7rem] text-[var(--ct-ink-3)]">{tc('ctTableSeats', { n: visitPlan.visitors + 1 })}</span>
+              <span class="mt-0.5 block text-[0.7rem] text-[var(--ct-ink-3)]"
+                >{tc('ctTableSeats', { n: visitPlan.visitors + 1 })}</span
+              >
             </div>
           {/key}
         </div>
@@ -178,15 +219,28 @@
         {#if visitPlan.date}
           <div class="mt-2 flex flex-wrap items-baseline justify-between gap-2">
             <p class="text-lg font-medium">
-              {formatDateIn(visitPlan.date, i18n.lang, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              {formatDateIn(visitPlan.date, i18n.lang, {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              })}
             </p>
-            <button type="button" class="ct-link min-h-0 text-sm" onclick={() => (visitPlan.date = null)}>{t('ticketChange')}</button>
+            <button
+              type="button"
+              class="ct-link min-h-0 text-sm"
+              onclick={() => (visitPlan.date = null)}>{t('ticketChange')}</button
+            >
           </div>
         {:else if quickDays.length > 0}
           <div class="mt-3 flex flex-wrap gap-2">
             {#each quickDays as day (day.date)}
               <button type="button" class="chip" onclick={() => visitPlan.toggleDate(day.date)}>
-                {formatDateIn(day.date, i18n.lang, { weekday: 'short', day: 'numeric', month: 'short' })}
+                {formatDateIn(day.date, i18n.lang, {
+                  weekday: 'short',
+                  day: 'numeric',
+                  month: 'short',
+                })}
               </button>
             {/each}
           </div>
@@ -222,7 +276,10 @@
                 >
                   <Minus class="h-4 w-4" aria-hidden="true" />
                 </button>
-                <span class="relative inline-flex w-9 justify-center overflow-hidden font-book text-xl font-bold tabular-nums" aria-live="polite">
+                <span
+                  class="relative inline-flex w-9 justify-center overflow-hidden font-book text-xl font-bold tabular-nums"
+                  aria-live="polite"
+                >
                   {#key visitPlan[row.field]}
                     <span in:fly={{ y: 10, duration: 220 }}>{visitPlan[row.field]}</span>
                   {/key}
@@ -249,16 +306,31 @@
       <div class="mt-6 border-t border-border-strong pt-5">
         <div class="flex items-end justify-between gap-4" aria-live="polite">
           <p class="text-base font-medium">{t('ticketTotal')}</p>
-          <p class="font-book text-[2.6rem] font-bold leading-none tabular-nums">{baht(shownTotal)}</p>
+          <p class="font-book text-[2.6rem] font-bold leading-none tabular-nums">
+            {baht(shownTotal)}
+          </p>
         </div>
-        <p class="mt-3 text-xs font-light leading-relaxed text-text-tertiary">{t('homePriceSub')} · {t('ticketNamesNote')}</p>
-        <p class="mt-1 text-xs font-light leading-relaxed text-text-tertiary">{t('homeRule1')} · {t('homeRule2')}</p>
+        <p class="mt-3 text-xs font-light leading-relaxed text-text-tertiary">
+          {t('homePriceSub')} · {t('ticketNamesNote')}
+        </p>
+        <p class="mt-1 text-xs font-light leading-relaxed text-text-tertiary">
+          {t('homeRule1')} · {t('homeRule2')}
+        </p>
 
-        <button type="button" class="ct-btn ct-btn-orange mt-6 min-h-[3.4rem] w-full text-[1.05rem]" disabled={!bookingOpen || leaving} onclick={book}>
+        <button
+          type="button"
+          class="ct-btn ct-btn-orange mt-6 min-h-[3.4rem] w-full text-[1.05rem]"
+          disabled={!bookingOpen || leaving}
+          onclick={book}
+        >
           {bookingOpen ? t('ctTableBook') : t('homeStatusBookingClosed')}
           {#if bookingOpen}<ArrowRight class="ct-nudge h-4 w-4" aria-hidden="true" />{/if}
         </button>
-        <button type="button" class="ct-link mt-3 text-left text-sm" onclick={() => navigate('table-booking')}>{t('ticketTableLink')}</button>
+        <button
+          type="button"
+          class="ct-link mt-3 text-left text-sm"
+          onclick={() => navigate('table-booking')}>{t('ticketTableLink')}</button
+        >
       </div>
     </div>
   </div>

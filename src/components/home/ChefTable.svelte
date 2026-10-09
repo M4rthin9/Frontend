@@ -24,7 +24,8 @@
 
   let picked = $state(0);
   const dish = $derived(dishes[picked]);
-  const src = (key: string, w: number) => (key === 'dessert' ? '/chef/dish-dessert-620.webp' : `/chef/dish-${key}-${w}.webp`);
+  const src = (key: string, w: number) =>
+    key === 'dessert' ? '/chef/dish-dessert-620.webp' : `/chef/dish-${key}-${w}.webp`;
 
   /** A plate on the table photograph opens its page in the menu. */
   function fromTable(key: string): void {
@@ -40,7 +41,11 @@
       gsap.fromTo(
         '[data-story-img]',
         { yPercent: -4 },
-        { yPercent: 4, ease: 'none', scrollTrigger: { trigger: story, start: 'top bottom', end: 'bottom top', scrub: 0.6 } },
+        {
+          yPercent: 4,
+          ease: 'none',
+          scrollTrigger: { trigger: story, start: 'top bottom', end: 'bottom top', scrub: 0.6 },
+        },
       );
       gsap.from(story.querySelectorAll('[data-story-line]'), {
         opacity: 0,
@@ -71,10 +76,18 @@
   });
 </script>
 
-{#snippet lines(text: string)}{#each text.split('\n') as seg, i (i)}{i > 0 ? sep : ''}<span class={i > 0 ? 'lg:block' : ''}>{seg}</span>{/each}{/snippet}
+{#snippet lines(text: string)}{#each text.split('\n') as seg, i (i)}{i > 0 ? sep : ''}<span
+      class={i > 0 ? 'lg:block' : ''}>{seg}</span
+    >{/each}{/snippet}
 
 <!-- The book's spread "CHEF TABLE ในเรือนจำ": the whole menu from above, the type set on the linen. -->
-<section bind:this={story} id="home-story" data-chapter="ctChStory" class="relative overflow-hidden" aria-labelledby="home-story-title">
+<section
+  bind:this={story}
+  id="home-story"
+  data-chapter="ctChStory"
+  class="relative overflow-hidden"
+  aria-labelledby="home-story-title"
+>
   <div class="relative mx-auto max-w-[1680px]">
     <div class="table-photo relative aspect-[1600/1096] w-full overflow-hidden">
       <!-- Photo and markers move together, so a marker never slides off its plate. -->
@@ -106,20 +119,30 @@
     </div>
 
     <!-- On wide screens the type sits on the linen at the right, right-aligned as in the book. -->
-    <div class="story-type px-4 pb-4 pt-10 sm:px-6 lg:absolute lg:right-[2.5%] lg:top-[5%] lg:w-[21%] lg:p-0 lg:text-right">
-      <h2 id="home-story-title" data-story-line class="ct-masthead story-mast">Chef<br />Table</h2>
+    <div
+      class="story-type px-4 pb-4 pt-10 sm:px-6 lg:absolute lg:right-[2.5%] lg:top-[5%] lg:w-[21%] lg:p-0 lg:text-right"
+    >
+      <h2 id="home-story-title" data-story-line class="ct-masthead story-mast">
+        {t('textChefTable1')}<br />{t('textChefTable2')}
+      </h2>
       <p data-story-line class="mt-2 text-[1.35em] font-light">{t('ctMastIn')}</p>
-      <p data-story-line class="mt-3 font-light leading-snug text-text-secondary">{@render lines(t('ctStoryNot'))}</p>
+      <p data-story-line class="mt-3 font-light leading-snug text-text-secondary">
+        {@render lines(t('ctStoryNot'))}
+      </p>
       <div class="mt-6 flex flex-col gap-3 leading-snug">
         {#each [t('ctStoryFirst'), t('ctStorySecond')] as line, i (i)}
           {@const [when, where] = line.split('|')}
-          <p data-story-line class="font-light"><span class="font-medium">{when}</span>{@render lines(where ?? '')}</p>
+          <p data-story-line class="font-light">
+            <span class="font-medium">{when}</span>{@render lines(where ?? '')}
+          </p>
         {/each}
       </div>
     </div>
   </div>
 
-  <div class="mx-auto grid w-full max-w-6xl gap-8 px-4 pb-20 pt-8 sm:px-6 sm:pb-24 lg:grid-cols-2 lg:gap-16 lg:pt-16">
+  <div
+    class="mx-auto grid w-full max-w-6xl gap-8 px-4 pb-20 pt-8 sm:px-6 sm:pb-24 lg:grid-cols-2 lg:gap-16 lg:pt-16"
+  >
     <div>
       <h3 class="text-lg font-medium">{t('ctStoryP1T')}</h3>
       <p class="mt-3 text-base font-light leading-relaxed text-text-secondary">{t('ctStoryP1')}</p>
@@ -132,12 +155,22 @@
 </section>
 
 <!-- The book gives each plate its own page. Here the reader turns them. -->
-<section bind:this={menu} id="home-menu" data-chapter="ctChMenu" class="scroll-mt-6 bg-background-subtle py-20 sm:py-28" aria-labelledby="home-menu-title">
-  <div class="mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-0">
+<section
+  bind:this={menu}
+  id="home-menu"
+  data-chapter="ctChMenu"
+  class="scroll-mt-6 bg-background-subtle py-20 sm:py-28"
+  aria-labelledby="home-menu-title"
+>
+  <div
+    class="mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-0"
+  >
     <div class="lg:col-start-1 lg:row-start-1">
       <p class="ct-label">{t('ctChMenu')}</p>
       <Headline id="home-menu-title" text={t('ctMenuTitle')} class="ct-h2 mt-4" />
-      <p class="mt-3 max-w-md text-sm font-light leading-relaxed text-text-secondary">{t('homeKitchenSub')}</p>
+      <p class="mt-3 max-w-md text-sm font-light leading-relaxed text-text-secondary">
+        {t('homeKitchenSub')}
+      </p>
     </div>
 
     <figure class="lg:col-start-2 lg:row-span-2 lg:row-start-1">
@@ -145,7 +178,9 @@
         {#each dishes as d, i (d.key)}
           <img
             src={src(d.key, 960)}
-            srcset={d.key === 'dessert' ? undefined : `${src(d.key, 560)} 560w, ${src(d.key, 960)} 960w`}
+            srcset={d.key === 'dessert'
+              ? undefined
+              : `${src(d.key, 560)} 560w, ${src(d.key, 960)} 960w`}
             sizes="(min-width: 1024px) 34rem, 100vw"
             width="960"
             height="960"
@@ -160,7 +195,9 @@
       </div>
       <figcaption class="mt-4 flex items-baseline justify-between gap-4" aria-live="polite">
         <span class="min-w-0">
-          <span class="block text-xs font-medium tracking-[0.06em] text-[var(--ct-orange-ink)]">{dish.course}</span>
+          <span class="block text-xs font-medium tracking-[0.06em] text-[var(--ct-orange-ink)]"
+            >{dish.course}</span
+          >
           <span class="mt-1 block text-lg font-medium leading-snug">{dish.name}</span>
         </span>
         <span class="shrink-0 font-book text-sm font-bold tabular-nums text-text-tertiary">
@@ -180,7 +217,9 @@
             onclick={() => (picked = i)}
             onpointerenter={(e) => e.pointerType === 'mouse' && (picked = i)}
           >
-            <span class="num w-8 shrink-0 font-book text-lg font-bold tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+            <span class="num w-8 shrink-0 font-book text-lg font-bold tabular-nums"
+              >{String(i + 1).padStart(2, '0')}</span
+            >
             <span class="min-w-0 flex-1">
               <span class="block text-xs tracking-[0.06em] text-text-tertiary">{d.course}</span>
               <span class="name block text-base leading-snug sm:text-lg">{d.name}</span>

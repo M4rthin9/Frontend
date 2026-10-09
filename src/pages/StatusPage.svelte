@@ -36,10 +36,16 @@
 
   const thankYouCount = $derived(parseInt(String(found?.visitorCount)) || 1);
   const thankYouIsTable = $derived(
-    String(found?.bookingType || '').trim().toLowerCase() === 'table' ||
-      String(found?.ref || '').toUpperCase().startsWith('TBL-'),
+    String(found?.bookingType || '')
+      .trim()
+      .toLowerCase() === 'table' ||
+      String(found?.ref || '')
+        .toUpperCase()
+        .startsWith('TBL-'),
   );
-  const thankYouCoPrisoners = $derived(thankYouIsTable ? [] : parseExtraPrisoners(found?.extraPrisoners));
+  const thankYouCoPrisoners = $derived(
+    thankYouIsTable ? [] : parseExtraPrisoners(found?.extraPrisoners),
+  );
   const thankYouPrisoners = $derived(thankYouIsTable ? 0 : 1 + thankYouCoPrisoners.length);
   const thankYouTotal = $derived(
     parseInt(String(found?.total)) || (thankYouCount + thankYouPrisoners) * 1000,
@@ -131,10 +137,14 @@
         {t('backHome')}
       </button>
       <p class="ct-label mt-10 flex sm:mt-14">{t('statusSearch')}</p>
-      <h1 class="mt-4 text-balance text-[clamp(2.1rem,1.5rem+2.6vw,3.25rem)] font-medium leading-[1.15] tracking-[-0.01em]">
+      <h1
+        class="mt-4 text-balance text-[clamp(2.1rem,1.5rem+2.6vw,3.25rem)] font-medium leading-[1.15] tracking-[-0.01em]"
+      >
         {t('statusH1')}
       </h1>
-      <p class="mt-3 max-w-xl text-base font-light leading-relaxed text-text-secondary">{t('statusP')}</p>
+      <p class="mt-3 max-w-xl text-base font-light leading-relaxed text-text-secondary">
+        {t('statusP')}
+      </p>
     </div>
   </header>
 
@@ -159,9 +169,16 @@
         autocapitalize="characters"
         spellcheck="false"
       />
-      <button type="submit" class="ct-btn ct-btn-ink shrink-0 px-5" disabled={!query.trim() || searching}>
+      <button
+        type="submit"
+        class="ct-btn ct-btn-ink shrink-0 px-5"
+        disabled={!query.trim() || searching}
+      >
         {#if searching}
-          <span class="spin h-4 w-4 rounded-full border-2 border-white/35 border-t-white" aria-hidden="true"></span>
+          <span
+            class="spin h-4 w-4 rounded-full border-2 border-white/35 border-t-white"
+            aria-hidden="true"
+          ></span>
         {/if}
         {t('checkStatus')}
       </button>
@@ -185,46 +202,74 @@
         </section>
       {:else if showThankYou && found}
         <article class="panel px-5 py-8 text-center sm:px-10" in:fly={{ y: 12, duration: 280 }}>
-          <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[#e9f6ef] text-[#1f6b45]">
+          <span
+            class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[#e9f6ef] text-[#1f6b45]"
+          >
             <CircleCheck class="h-7 w-7" aria-hidden="true" />
           </span>
           <h2 class="mt-4 text-2xl font-medium text-text-primary">{t('successPage')}</h2>
           <p class="mt-2 text-sm text-text-secondary">{t('successPageSub')}</p>
 
-          <p class="mt-6 text-xs font-medium tracking-[0.06em] text-text-tertiary">{t('refLabel')}</p>
-          <p class="mt-1 font-mono text-3xl font-semibold tracking-wide text-text-primary">{found.ref}</p>
+          <p class="mt-6 text-xs font-medium tracking-[0.06em] text-text-tertiary">
+            {t('refLabel')}
+          </p>
+          <p class="mt-1 font-mono text-3xl font-semibold tracking-wide text-text-primary">
+            {found.ref}
+          </p>
 
-          <dl class="mx-auto mt-6 grid max-w-md gap-3 border-t border-border-subtle pt-6 text-left text-sm">
-            <div class="row"><dt>{t('lblVisitor')}</dt><dd>{found.visitorName || '—'}</dd></div>
+          <dl
+            class="mx-auto mt-6 grid max-w-md gap-3 border-t border-border-subtle pt-6 text-left text-sm"
+          >
+            <div class="row">
+              <dt>{t('lblVisitor')}</dt>
+              <dd>{found.visitorName || '—'}</dd>
+            </div>
             {#if !thankYouIsTable}
               <div class="row">
                 <dt>{t('lblPrisoner')}</dt>
                 <dd>{maskPrisonerName(found.prisonerName) || '—'} · {found.wing || '—'}</dd>
               </div>
               {#each thankYouCoPrisoners as p (p.id)}
-                <div class="row"><dt>{t('lblCoPrisoner')}</dt><dd>{maskPrisonerName(p.name) || '—'} · {p.wing || '—'}</dd></div>
+                <div class="row">
+                  <dt>{t('lblCoPrisoner')}</dt>
+                  <dd>{maskPrisonerName(p.name) || '—'} · {p.wing || '—'}</dd>
+                </div>
               {/each}
             {/if}
-            <div class="row"><dt>{t('lblVisitDate')}</dt><dd>{found.visitDate || '—'}</dd></div>
+            <div class="row">
+              <dt>{t('lblVisitDate')}</dt>
+              <dd>{found.visitDate || '—'}</dd>
+            </div>
             <div class="row">
               <dt>{t('lblCount')}</dt>
               <dd>
                 {thankYouIsTable
                   ? tc('countFormatTable', { n: thankYouCount })
-                  : tc('countFormat', { n: thankYouCount, p: thankYouPrisoners, total: thankYouCount + thankYouPrisoners })}
+                  : tc('countFormat', {
+                      n: thankYouCount,
+                      p: thankYouPrisoners,
+                      total: thankYouCount + thankYouPrisoners,
+                    })}
               </dd>
             </div>
-            <div class="row"><dt>{t('lblCost')}</dt><dd>{thankYouTotal.toLocaleString()} บาท</dd></div>
+            <div class="row">
+              <dt>{t('lblCost')}</dt>
+              <dd>{thankYouTotal.toLocaleString()} {t('textStatusPage1')}</dd>
+            </div>
           </dl>
 
           <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <button type="button" class="ct-btn ct-btn-line" onclick={() => void resetSearch()}>{t('searchAgain')}</button>
-            <button type="button" class="ct-btn ct-btn-ink" onclick={() => navigate('home')}>{t('backHomeShort')}</button>
+            <button type="button" class="ct-btn ct-btn-line" onclick={() => void resetSearch()}
+              >{t('searchAgain')}</button
+            >
+            <button type="button" class="ct-btn ct-btn-ink" onclick={() => navigate('home')}
+              >{t('backHomeShort')}</button
+            >
           </div>
         </article>
       {:else if view === 'result' && found}
         {#key found.ref}
-          <div in:fly|global={{ y: 12, duration: 280 }} onintroend={() => paymentReady = true}>
+          <div in:fly|global={{ y: 12, duration: 280 }} onintroend={() => (paymentReady = true)}>
             <StatusResult
               booking={found}
               autoPay={autoPay && paymentReady}
@@ -238,24 +283,36 @@
         {/key}
       {:else if view === 'notfound'}
         <article class="panel px-5 py-10 text-center sm:px-10" in:fly={{ y: 12, duration: 280 }}>
-          <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-background-subtle text-text-secondary">
+          <span
+            class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-background-subtle text-text-secondary"
+          >
             <SearchX class="h-7 w-7" aria-hidden="true" />
           </span>
           <h2 class="mt-4 text-xl font-medium text-text-primary">{t('notFoundTitle')}</h2>
-          <p class="mt-2 text-sm leading-relaxed text-text-secondary">{@html tc('notFoundText', { query: escHtml(notFoundQuery) })}</p>
+          <p class="mt-2 text-sm leading-relaxed text-text-secondary">
+            {tc('notFoundText', { query: escHtml(notFoundQuery) })}
+          </p>
           <div class="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-            <button type="button" class="ct-btn ct-btn-line" onclick={() => void resetSearch()}>{t('searchAgain')}</button>
-            <button type="button" class="ct-btn ct-btn-ink" onclick={() => navigate('booking')}>{t('bookNew')}</button>
+            <button type="button" class="ct-btn ct-btn-line" onclick={() => void resetSearch()}
+              >{t('searchAgain')}</button
+            >
+            <button type="button" class="ct-btn ct-btn-ink" onclick={() => navigate('booking')}
+              >{t('bookNew')}</button
+            >
           </div>
         </article>
       {:else if view === 'error'}
         <article class="panel px-5 py-10 text-center sm:px-10" in:fly={{ y: 12, duration: 280 }}>
-          <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[#fcecec] text-[#a12d2d]">
+          <span
+            class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[#fcecec] text-[#a12d2d]"
+          >
             <CircleAlert class="h-7 w-7" aria-hidden="true" />
           </span>
           <h2 class="mt-4 text-xl font-medium text-text-primary">{t('errorTitle')}</h2>
           <p class="mt-2 text-sm leading-relaxed text-text-secondary">{errorMsg}</p>
-          <button type="button" class="ct-btn ct-btn-ink mt-6" onclick={() => void doSearch()}>{t('retryBtn')}</button>
+          <button type="button" class="ct-btn ct-btn-ink mt-6" onclick={() => void doSearch()}
+            >{t('retryBtn')}</button
+          >
         </article>
       {/if}
     </div>

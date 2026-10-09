@@ -42,43 +42,47 @@
 
       <div class="booking-details">
         <div style="text-align:center;margin-bottom:8px">
-          <strong style="color:var(--blue)">ส่งคำขอเรียบร้อย — Ref: {success.ref}</strong>
+          <strong style="color:var(--blue)">{t('textBookingSuccess1')} {success.ref}</strong>
         </div>
         <div class="detail-row">
-          <span class="detail-label">วันที่เข้าร่วม</span>
+          <span class="detail-label">{t('textBookingSuccess2')}</span>
           <span class="detail-value">{success.visitDate}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">จำนวนผู้เข้าร่วม</span>
+          <span class="detail-label">{t('textBookingSuccess3')}</span>
           <span class="detail-value">
             {#if store.isTable}
-              {success.totalPersons} คน
+              {success.totalPersons} {t('textBookingSuccess4')}
             {:else}
-              ญาติ {success.visitorCount} คน + ผู้ต้องขัง 1 คน = {success.totalPersons} คน
+              {t('textBookingSuccess5')}
+              {success.visitorCount}
+              {t('textBookingSuccess6')}
+              {success.totalPersons}
+              {t('textBookingSuccess7')}
             {/if}
           </span>
         </div>
         {#if !store.isTable}
           <div class="detail-row">
-            <span class="detail-label">ชื่อผู้ต้องขัง</span>
+            <span class="detail-label">{t('textBookingSuccess8')}</span>
             <span class="detail-value">{success.prisonerName}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">เลขประจำตัวผู้ต้องขัง</span>
+            <span class="detail-label">{t('textBookingSuccess9')}</span>
             <span class="detail-value">{success.prisonerId}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">แดนของผู้ต้องขัง</span>
+            <span class="detail-label">{t('textBookingSuccess10')}</span>
             <span class="detail-value">{success.wing}</span>
           </div>
         {/if}
         <div class="detail-row">
-          <span class="detail-label">ชื่อผู้จอง</span>
+          <span class="detail-label">{t('textBookingSuccess11')}</span>
           <span class="detail-value">{success.visitorName}</span>
         </div>
         {#if success.extras.length > 0}
           <div class="detail-row">
-            <span class="detail-label">รายชื่อผู้เข้าร่วมเพิ่มเติม</span>
+            <span class="detail-label">{t('textBookingSuccess12')}</span>
             <span class="detail-value" style="line-height:1.8">
               {#each success.extras as v, i (v.name + i)}
                 <div>{i + 2}. {v.name}{store.isTable ? '' : ` (${v.relation})`}</div>
@@ -89,7 +93,7 @@
       </div>
 
       <div style="font-size:11px;color:var(--app-text-tertiary);text-align:center;margin-top:12px">
-        ใช้ปุ่ม "ตรวจสอบสถานะ" เพื่อติดตาม หรือคัดลอก Ref ด้านบน
+        {t('textBookingSuccess13')}
       </div>
 
       <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:1rem">
@@ -107,7 +111,7 @@
           style="flex:0.6;min-width:130px"
           onclick={() => void store.copyRef()}
         >
-          {store.copied ? 'คัดลอกแล้ว' : t('copyRef')}
+          {store.copied ? t('textBookingSuccess14') : t('copyRef')}
         </Button>
       </div>
 

@@ -1,3 +1,4 @@
+import { t, tc } from '../i18n/i18n.svelte';
 import {
   getPrisoners,
   getCountsByDate,
@@ -19,7 +20,6 @@ import { toThaiLong } from '../utils/date';
 import { validateIdFormat, validatePhone } from '../utils/validation';
 import { buildCalendarCells, calendarTitle, QUOTA } from '../utils/calendar';
 import { ui } from './ui.svelte';
-import { t } from '../i18n/i18n.svelte';
 import { TABLE_AGREEMENT_VERSION } from '../utils/tableAgreement';
 import { navigate } from '../router.svelte';
 import {
@@ -112,17 +112,21 @@ export function calcCost(
       if (a < 5) {
         mainFee = PRICE_CHILD_UNDER_5;
         kidsUnder5++;
-        kidsUnder5Names.push('ผู้จอง');
+        kidsUnder5Names.push(t('bookingMainVisitor'));
       } else if (a <= 8) {
         mainFee = PRICE_CHILD_5_8;
         kids5_8++;
-        kids5_8Names.push('ผู้จอง');
+        kids5_8Names.push(t('bookingMainVisitor'));
       }
     }
   }
   if (mainFee === PRICE_PER_PERSON) adults = 1;
   if (allowChildDiscount && CHILD_RELATIONS.includes(mainRelation) && mainFee < PRICE_PER_PERSON) {
-    discountNotes.push(`ผู้จอง: ${mainFee === 0 ? 'ฟรี' : mainFee + ' บาท'}`);
+    discountNotes.push(
+      tc('bookingMainDiscount', {
+        fee: mainFee === 0 ? t('textbookingMessage1') : tc('bookingFee', { fee: mainFee }),
+      }),
+    );
   }
 
   extras.forEach((v, idx) => {
@@ -147,7 +151,12 @@ export function calcCost(
     extraFees += fee;
     if (!isChild) adults++;
     if (allowChildDiscount && CHILD_RELATIONS.includes(v.relation) && fee < PRICE_PER_PERSON) {
-      discountNotes.push(`คนที่ ${idx + 2}: ${fee === 0 ? 'ฟรี' : fee + ' บาท'}`);
+      discountNotes.push(
+        tc('bookingExtraDiscount', {
+          n: idx + 2,
+          fee: fee === 0 ? t('textbookingMessage2') : tc('bookingFee', { fee }),
+        }),
+      );
     }
   });
 
@@ -297,7 +306,7 @@ class BookingStoreImpl {
 
   async loadBookingCounts(): Promise<void> {
     this.countsState = 'loading';
-    this.countsMsg = '⏳ กำลังโหลดข้อมูลการจอง...';
+    this.countsMsg = t('textbookingMessage3');
     try {
       // The two pools are independent: table availability must not be affected by
       // prisoner-visit volume, so each mode reads its own counts endpoint.
@@ -319,7 +328,7 @@ class BookingStoreImpl {
     } catch (err) {
       console.error('[Booking] loadBookingCounts failed:', err);
       this.countsState = 'error';
-      this.countsMsg = '⚠️ ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้ — จำนวนที่ว่างอาจไม่ถูกต้อง';
+      this.countsMsg = t('textbookingMessage4');
     }
   }
 
@@ -359,10 +368,10 @@ class BookingStoreImpl {
     if (cached) {
       this.prisonerMaster = cached;
       this.prisonerLoadState = 'loaded';
-      this.prisonerLoadMsg = `✓ โหลดรายชื่อสำเร็จ (${cached.length} คน)`;
+      this.prisonerLoadMsg = tc('textbookingMessage5', { p1: cached.length });
     } else {
       this.prisonerLoadState = 'loading';
-      this.prisonerLoadMsg = '⏳ กำลังโหลดรายชื่อผู้ต้องขังจากฐานข้อมูล...';
+      this.prisonerLoadMsg = t('textbookingMessage6');
     }
 
     try {
@@ -370,7 +379,7 @@ class BookingStoreImpl {
       this.prisonerMaster = prisoners;
       this.savePrisonerToCache(prisoners);
       this.prisonerLoadState = 'loaded';
-      this.prisonerLoadMsg = `✓ โหลดรายชื่อสำเร็จ (${prisoners.length} คน)`;
+      this.prisonerLoadMsg = tc('textbookingMessage7', { p1: prisoners.length });
     } catch (err) {
       if (cached) {
         console.warn('[Booking] background refresh failed, using cached data:', err);
@@ -380,8 +389,8 @@ class BookingStoreImpl {
       this.prisonerLoadState = 'error';
       let detail = err instanceof ApiError ? err.message : '';
       if (/failed to fetch|network|load failed|abort/i.test(String(err)))
-        detail = 'เครือข่ายไม่เสถียร';
-      this.prisonerLoadMsg = `⚠️ โหลดรายชื่อจากฐานข้อมูลไม่ได้${detail ? ` (${detail})` : ''} — กรอกเองได้ชั่วคราว`;
+        detail = t('textbookingMessage8');
+      this.prisonerLoadMsg = tc('textbookingMessage9', { p1: detail ? ` (${detail})` : '' });
     }
   }
 
@@ -423,7 +432,7 @@ class BookingStoreImpl {
     if (isRestricted && !this.disciplineExpired(p.vinaiDate)) {
       this.errors = {
         ...this.errors,
-        prisonerSearch: '⚠️ ผู้ต้องขังรายนี้อยู่ในสถานะ "ติดวินัย งดเยี่ยม" — ไม่สามารถจองได้',
+        prisonerSearch: t('textbookingMessage10'),
       };
       return;
     }
@@ -472,75 +481,71 @@ class BookingStoreImpl {
 
     // Prisoner selection first — a table booking has none to select.
     if (!this.isTable && !this.prisoner) {
-      errs.prisonerSearch = 'กรุณาเลือกผู้ต้องขังจากรายการค้นหา';
+      errs.prisonerSearch = t('textbookingMessage11');
       this.errors = errs;
       return false;
     }
 
-    if (!this.visitorName.trim()) errs.visitorName = 'กรุณากรอก ชื่อผู้ร่วมกิจกรรม';
-    if (!this.visitorId.trim()) errs.visitorId = 'กรุณากรอก เลขประจำตัว';
+    if (!this.visitorName.trim()) errs.visitorName = t('textbookingMessage12');
+    if (!this.visitorId.trim()) errs.visitorId = t('textbookingMessage13');
     else {
       const idResult = validateIdFormat(this.visitorId.trim());
       if (!idResult.valid && idResult.error) errs.visitorId = idResult.error;
     }
 
-    if (!this.visitorPhone.trim()) errs.visitorPhone = 'กรุณากรอก เบอร์โทรศัพท์';
+    if (!this.visitorPhone.trim()) errs.visitorPhone = t('textbookingMessage14');
     else {
       const phoneResult = validatePhone(this.visitorPhone.trim());
       if (!phoneResult.valid && phoneResult.error) errs.visitorPhone = phoneResult.error;
     }
 
-    if (!this.isTable && !this.relation) errs.relation = 'กรุณาเลือกความสัมพันธ์';
-    if (!this.religion.trim()) errs.religion = 'กรุณาเลือกศาสนา';
-    if (!this.allergy.trim()) errs.allergy = 'กรุณาระบุการแพ้อาหาร (ถ้าไม่มีให้กรอก "ไม่มี")';
+    if (!this.isTable && !this.relation) errs.relation = t('textbookingMessage15');
+    if (!this.religion.trim()) errs.religion = t('textbookingMessage16');
+    if (!this.allergy.trim()) errs.allergy = t('textbookingMessage17');
 
     // Main visitor child discount requires age — but only in the prisoner-visit
     // flow; table bookings have no relationship so no child discount applies.
     if (!this.isTable && CHILD_RELATIONS.includes(this.relation)) {
       const mainAgeNum = parseInt(this.visitorAge, 10);
       if (isNaN(mainAgeNum) || mainAgeNum < 0) {
-        errs.visitorAge = 'กรุณากรอกอายุ (ปี) ของผู้จอง (บุตร/ธิดา)';
+        errs.visitorAge = t('textbookingMessage18');
       }
     }
 
     // Extra visitors
     this.extras.forEach((v, i) => {
       const n = i + 2;
-      if (!v.name.trim()) errs[`extraName${n}`] = `กรุณากรอกชื่อผู้เข้าร่วมกิจกรรมคนที่ ${n}`;
-      if (!v.id.trim()) errs[`extraId${n}`] = `กรุณากรอกเลขประจำตัวผู้เข้าร่วมกิจกรรมคนที่ ${n}`;
+      if (!v.name.trim()) errs[`extraName${n}`] = tc('textbookingMessage19', { p1: n });
+      if (!v.id.trim()) errs[`extraId${n}`] = tc('textbookingMessage20', { p1: n });
       else {
         const r = validateIdFormat(v.id.trim());
-        if (!r.valid && r.error) errs[`extraId${n}`] = `ผู้เข้าร่วมคนที่ ${n}: ${r.error}`;
+        if (!r.valid && r.error)
+          errs[`extraId${n}`] = tc('textbookingMessage21', { p1: n, p2: r.error });
       }
-      if (!v.religion.trim())
-        errs[`extraReligion${n}`] = `กรุณาเลือกศาสนาสำหรับผู้เข้าร่วมกิจกรรมคนที่ ${n}`;
-      if (!v.allergy.trim())
-        errs[`extraAllergy${n}`] =
-          `กรุณาระบุการแพ้อาหารสำหรับผู้เข้าร่วมกิจกรรมคนที่ ${n} (ถ้าไม่มีให้กรอก "ไม่มี")`;
+      if (!v.religion.trim()) errs[`extraReligion${n}`] = tc('textbookingMessage22', { p1: n });
+      if (!v.allergy.trim()) errs[`extraAllergy${n}`] = tc('textbookingMessage23', { p1: n });
       if (!this.isTable && !v.relation)
-        errs[`extraRelation${n}`] = `กรุณาเลือกความสัมพันธ์ผู้ร่วมกิจกรรมคนที่ ${n}`;
+        errs[`extraRelation${n}`] = tc('textbookingMessage24', { p1: n });
       if (!this.isTable && CHILD_RELATIONS.includes(v.relation)) {
         const a = parseInt(v.age, 10);
-        if (isNaN(a) || a < 0)
-          errs[`extraAge${n}`] =
-            `กรุณากรอกอายุ (ปี) สำหรับผู้เข้าร่วมกิจกรรมคนที่ ${n} (บุตร/ธิดา)`;
+        if (isNaN(a) || a < 0) errs[`extraAge${n}`] = tc('textbookingMessage25', { p1: n });
       }
     });
 
     // Date selection
     if (!this.selectedDate) {
-      this.inlineError = 'กรุณาเลือกวันที่ต้องการร่วมกิจกรรม';
+      this.inlineError = t('textbookingMessage26');
       this.errors = errs;
       return false;
     }
     // The admin may close the date after it was picked; the server refuses it anyway.
     if (ui.publicSettings.bookingWindow.closedDates[this.selectedDate] !== undefined) {
-      this.inlineError = 'วันที่เลือกปิดรับจอง กรุณาเลือกวันอื่น';
+      this.inlineError = t('textbookingMessage27');
       this.errors = errs;
       return false;
     }
     if ((this.bookings[this.selectedDate] || 0) >= this.perDay) {
-      this.inlineError = 'วันที่เลือกเต็มแล้ว กรุณาเลือกวันอื่น';
+      this.inlineError = t('textbookingMessage28');
       this.errors = errs;
       return false;
     }
@@ -554,12 +559,11 @@ class BookingStoreImpl {
             p.wing === this.prisoner!.wing),
       );
       if (!exists) {
-        errs.prisonerSearch =
-          '⚠️ ไม่พบข้อมูลผู้ต้องขังนี้ในฐานข้อมูล\n\nคุณต้องการดำเนินการต่อหรือไม่?\n(เจ้าหน้าที่จะตรวจสอบอีกครั้ง)';
+        errs.prisonerSearch = t('textbookingMessage29');
       }
     }
 
-    if (!this.consent) this.inlineError = 'กรุณายืนยันและยินยอมก่อนดำเนินการ';
+    if (!this.consent) this.inlineError = t('textbookingMessage30');
 
     this.errors = errs;
     return Object.keys(errs).length === 0 && this.inlineError === '';
@@ -701,16 +705,15 @@ class BookingStoreImpl {
 
     const token = getTurnstileResponse(this.turnstileWidgetId);
     if (typeof window.turnstile !== 'object') {
-      this.inlineError = '⚠️ ระบบ CAPTCHA ยังไม่พร้อม — กรุณารอสักครู่แล้วลองอีกครั้ง';
+      this.inlineError = t('textbookingMessage31');
       return;
     }
     if (this.turnstileError) {
-      this.inlineError =
-        '⚠️ ระบบตรวจสอบความปลอดภัย (Turnstile) ไม่สามารถโหลดได้ — กรุณาตรวจสอบว่าอยู่ในหน้าต่างที่อนุญาตแล้วลองใหม่อีกครั้ง';
+      this.inlineError = t('textbookingMessage32');
       return;
     }
     if (!token) {
-      this.inlineError = '⚠️ กรุณากดยืนยัน CAPTCHA ก่อนส่งคำขอจอง';
+      this.inlineError = t('textbookingMessage33');
       return;
     }
     this.turnstileToken = token;
@@ -733,7 +736,10 @@ class BookingStoreImpl {
         if (duplicate) {
           this.submitting = false;
           this.resetTurnstile();
-          this.inlineError = `⚠️ ไม่สามารถจองได้ — มีการจองผู้ต้องขังหมายเลข "${this.prisoner.prisonerId}" ในวันนี้อยู่แล้ว (Ref: ${duplicate.ref})`;
+          this.inlineError = tc('textbookingMessage34', {
+            p1: this.prisoner.prisonerId,
+            p2: duplicate.ref,
+          });
           return;
         }
       } catch (err) {
@@ -808,9 +814,7 @@ class BookingStoreImpl {
         submitError.indexOf('⚠️') === 0 ||
         submitError.indexOf('ไม่สามารถจองได้') === 0 ||
         submitError.indexOf('Cannot change') === 0;
-      this.inlineError = isServerRejection
-        ? submitError
-        : '❌ การส่งคำขอจองล้มเหลว — กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต แล้วลองใหม่อีกครั้ง\n⚠️ หากหน้าจอก่อนหน้าแสดงเลขอ้างอิงแล้ว กรุณาไปที่หน้า "ตรวจสอบสถานะ" ก่อนส่งซ้ำ เพื่อหลีกเลี่ยงการจองซ้ำ';
+      this.inlineError = isServerRejection ? submitError : t('textbookingMessage35');
       return;
     }
 

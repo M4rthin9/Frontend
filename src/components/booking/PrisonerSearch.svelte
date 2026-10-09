@@ -23,7 +23,7 @@
       <input
         id="prisonerSearch"
         type="text"
-        placeholder="พิมพ์เลขผู้ต้องขัง หรือ ชื่อ-นามสกุล..."
+        placeholder={t('textPrisonerSearch1')}
         bind:value={store.search}
         oninput={() => store.onSearchInput()}
         onfocus={() => {
@@ -78,12 +78,12 @@
           size="sm"
           variant="ghost"
           onclick={() => {
-            store.prisonerLoadMsg = '⏳ กำลังโหลดรายชื่อผู้ต้องขังจากฐานข้อมูล...';
+            store.prisonerLoadMsg = t('textbookingMessage6');
             store.prisonerLoadState = 'loading';
             void store.loadPrisonerMaster();
           }}
         >
-          ลองใหม่
+          {t('textPrisonerSearch2')}
         </Button>
       </div>
     {:else}
@@ -103,7 +103,7 @@
           type="button"
           class="selected-prisoner-clear"
           onclick={() => store.clearPrisoner()}
-          aria-label="ยกเลิกการเลือกผู้ต้องขัง"
+          aria-label={t('textPrisonerSearch3')}
         >
           ✕
         </button>
@@ -126,7 +126,7 @@
   {/if}
 
   <div class="prisoner-hint">
-    {t('extraVisitorSub')} — ค้นหาแล้วคลิกเลือกจากรายการด้านบน — ชื่อ + เลข + แดน จะแสดงอัตโนมัติ
-    (ไม่ต้องพิมเอง)
+    {t('extraVisitorSub')}
+    {t('textPrisonerSearch4')}
   </div>
 </div>

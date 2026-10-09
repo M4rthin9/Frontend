@@ -1,4 +1,5 @@
 import { safeGetItem, safeSetItem } from '../utils/storage';
+import { i18n } from '../i18n/i18n.svelte';
 import {
   DEFAULT_BOOKING_WINDOW,
   DEFAULT_PDPA,
@@ -15,6 +16,7 @@ export interface Toast {
 }
 
 const EMPTY_SETTINGS: PublicSettings = {
+  frontendContent: {},
   paymentEnabled: true,
   paymentClosedMessage: '',
   tableBooking: {
@@ -40,12 +42,15 @@ class UIStore {
   now = $state(Date.now());
   private serverOffset = 0;
   tableBookingScheduled = $derived(
-    this.publicSettings.tableBooking.enabled && !this.publicSettings.tableBooking.maintenance &&
-    Date.parse(this.publicSettings.tableBooking.opensAt) > this.now
+    this.publicSettings.tableBooking.enabled &&
+      !this.publicSettings.tableBooking.maintenance &&
+      Date.parse(this.publicSettings.tableBooking.opensAt) > this.now,
   );
   tableBookingOpen = $derived(
-    this.publicSettings.bookingWindow.open && this.publicSettings.tableBooking.enabled &&
-    !this.publicSettings.tableBooking.maintenance && !this.tableBookingScheduled
+    this.publicSettings.bookingWindow.open &&
+      this.publicSettings.tableBooking.enabled &&
+      !this.publicSettings.tableBooking.maintenance &&
+      !this.tableBookingScheduled,
   );
   private toastSeq = 0;
 
@@ -64,6 +69,7 @@ class UIStore {
     } catch {
       this.publicSettings = EMPTY_SETTINGS;
     } finally {
+      i18n.setContent(this.publicSettings.frontendContent);
       this.publicSettingsLoaded = true;
     }
   }

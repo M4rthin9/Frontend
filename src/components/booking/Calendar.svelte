@@ -15,23 +15,33 @@
 
 <div class="calendar-wrap">
   <div class="cal-header">
-    <button type="button" class="cal-nav" onclick={() => store.changeMonth(-1)} aria-label="เดือนก่อนหน้า">
+    <button
+      type="button"
+      class="cal-nav"
+      onclick={() => store.changeMonth(-1)}
+      aria-label={t('textCalendar1')}
+    >
       &#8249;
     </button>
     <span class="cal-title">{store.calTitle}</span>
-    <button type="button" class="cal-nav" onclick={() => store.changeMonth(1)} aria-label="เดือนถัดไป">
+    <button
+      type="button"
+      class="cal-nav"
+      onclick={() => store.changeMonth(1)}
+      aria-label={t('textCalendar2')}
+    >
       &#8250;
     </button>
   </div>
 
   <div class="day-names">
-    <div class="day-name">อา</div>
-    <div class="day-name">จ</div>
-    <div class="day-name">อ</div>
-    <div class="day-name">พ</div>
-    <div class="day-name">พฤ</div>
-    <div class="day-name">ศ</div>
-    <div class="day-name">ส</div>
+    <div class="day-name">{t('textCalendar3')}</div>
+    <div class="day-name">{t('textCalendar4')}</div>
+    <div class="day-name">{t('textCalendar5')}</div>
+    <div class="day-name">{t('textCalendar6')}</div>
+    <div class="day-name">{t('textCalendar7')}</div>
+    <div class="day-name">{t('textCalendar8')}</div>
+    <div class="day-name">{t('textCalendar9')}</div>
   </div>
 
   <div class="date-grid">
@@ -67,24 +77,40 @@
 
   {#if store.selectedDate}
     <div class="selected-date-display">
-      เลือก: {toThaiLong(parseLocal(store.selectedDate))}
+      {t('textCalendar10')}
+      {toThaiLong(parseLocal(store.selectedDate))}
     </div>
   {/if}
 
   <div class="quota-info">
-    <span><span class="quota-dot" style="background:var(--blue)"></span><span>{t('quotaAvailable')}</span></span>
-    <span><span class="quota-dot" style="background:var(--red)"></span><span>{t('quotaFull')} ({store.perDay}/{store.perDay})</span></span>
-    <span><span class="quota-dot" style="background:var(--gray-200)"></span><span>{t('quotaPast')}</span></span>
-    <span><span class="quota-dot" style="background:#fca5a5"></span><span>{t('quotaHoliday')}</span></span>
+    <span
+      ><span class="quota-dot" style="background:var(--blue)"></span><span
+        >{t('quotaAvailable')}</span
+      ></span
+    >
+    <span
+      ><span class="quota-dot" style="background:var(--red)"></span><span
+        >{t('quotaFull')} ({store.perDay}/{store.perDay})</span
+      ></span
+    >
+    <span
+      ><span class="quota-dot" style="background:var(--gray-200)"></span><span
+        >{t('quotaPast')}</span
+      ></span
+    >
+    <span
+      ><span class="quota-dot" style="background:#fca5a5"></span><span>{t('quotaHoliday')}</span
+      ></span
+    >
   </div>
 
   {#if store.countsState === 'loading'}
-    <div class="counts-status">กำลังโหลดข้อมูลการจอง...</div>
+    <div class="counts-status">{t('textCalendar11')}</div>
   {:else if store.countsState === 'error'}
     <div class="counts-status counts-error">
       <span>{store.countsMsg}</span>
       <button type="button" class="counts-retry" onclick={() => void store.loadBookingCounts()}>
-        ลองใหม่
+        {t('textCalendar12')}
       </button>
     </div>
   {/if}

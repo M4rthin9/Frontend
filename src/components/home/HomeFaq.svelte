@@ -36,7 +36,9 @@
     { q: t('homeFaq8Q'), a: t('homeFaq8A') },
   ]);
   const filteredFaqs = $derived(
-    faqs.filter((faq) => `${faq.q} ${faq.a}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()))
+    faqs.filter((faq) =>
+      `${faq.q} ${faq.a}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()),
+    ),
   );
 </script>
 
@@ -59,10 +61,19 @@
           <MessageCircle class="h-5 w-5 text-[var(--ct-orange-ink)]" aria-hidden="true" />
           {t('homeHelpHeading')}
         </p>
-        <p class="mt-2 max-w-sm text-sm font-light leading-relaxed text-text-secondary">{t('homeHelpText')}</p>
+        <p class="mt-2 max-w-sm text-sm font-light leading-relaxed text-text-secondary">
+          {t('homeHelpText')}
+        </p>
         <div class="mt-4 flex flex-wrap gap-x-6 gap-y-1">
-          <button type="button" class="ct-link" onclick={() => chat.openChat()}>{t('homeHelpChat')}</button>
-          <a class="ct-link" href="https://main.correct.go.th" target="_blank" rel="noopener noreferrer">
+          <button type="button" class="ct-link" onclick={() => chat.openChat()}
+            >{t('homeHelpChat')}</button
+          >
+          <a
+            class="ct-link"
+            href="https://main.correct.go.th"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {t('homeHelpWebsite')}
             <ExternalLink class="h-4 w-4" aria-hidden="true" />
           </a>
@@ -79,12 +90,13 @@
           />
           <div class="min-w-0">
             <p class="flex items-center gap-2 text-sm font-medium">
-              <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[#06c755] text-white"
+              <span
+                class="flex h-7 w-7 items-center justify-center rounded-full bg-[#06c755] text-white"
                 ><LineIcon class="h-5 w-5" /></span
               >
               {t('lineAdd')}
             </p>
-            <p class="mt-2 text-xs text-text-tertiary">LINE ID</p>
+            <p class="mt-2 text-xs text-text-tertiary">{t('textHomeFaq1')}</p>
             <p class="font-book text-[1.7rem] font-bold leading-none tabular-nums">{LINE_ID}</p>
             <p class="mt-2 text-xs font-light text-text-secondary">{t('lineHint')}</p>
             <div class="mt-3 flex flex-wrap gap-2">
@@ -117,7 +129,9 @@
         placeholder={t('guideSearchHint')}
         class="mb-6 min-h-12 w-full rounded-lg border border-border-strong bg-surface px-4 text-base text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ct-orange-ink)]"
       />
-      <p role="status" class="mb-4 text-sm text-text-secondary">{tc('guideResults', { n: filteredFaqs.length })}</p>
+      <p role="status" class="mb-4 text-sm text-text-secondary">
+        {tc('guideResults', { n: filteredFaqs.length })}
+      </p>
       <div class="border-t border-border-strong">
         {#each filteredFaqs as faq (faq.q)}
           <details class="faq group border-b border-border-subtle">
@@ -133,13 +147,17 @@
                 aria-hidden="true"
               />
             </summary>
-            <p class="faq-a max-w-[60ch] pb-6 pl-[3.25rem] text-base font-light leading-relaxed text-text-secondary">
+            <p
+              class="faq-a max-w-[60ch] pb-6 pl-[3.25rem] text-base font-light leading-relaxed text-text-secondary"
+            >
               {faq.a}
             </p>
           </details>
         {:else}
           <p class="py-6 text-base text-text-secondary">{t('guideNoResults')}</p>
-          <button type="button" class="ct-link" onclick={() => (query = '')}>{t('guideClear')}</button>
+          <button type="button" class="ct-link" onclick={() => (query = '')}
+            >{t('guideClear')}</button
+          >
         {/each}
       </div>
     </div>

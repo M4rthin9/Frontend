@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { t } from '../../lib/i18n/i18n.svelte';
   import { tick } from 'svelte';
   import { fly, fade } from 'svelte/transition';
   import type { Snippet } from 'svelte';
@@ -58,10 +59,15 @@
       if (dismissable && e.target === e.currentTarget) close();
     }}
   >
-    <div class="absolute inset-0 bg-slate-950/40 backdrop-blur-sm" transition:fade={{ duration: 200 }}></div>
+    <div
+      class="absolute inset-0 bg-slate-950/40 backdrop-blur-sm"
+      transition:fade={{ duration: 200 }}
+    ></div>
     <div
       bind:this={panel}
-      class="relative max-h-[calc(100dvh-2rem)] w-full overflow-y-auto {fullWidth ? 'max-w-none' : 'max-w-lg'} rounded-2xl bg-surface p-4 shadow-2xl border border-border-subtle sm:p-6"
+      class="relative max-h-[calc(100dvh-2rem)] w-full overflow-y-auto {fullWidth
+        ? 'max-w-none'
+        : 'max-w-lg'} rounded-2xl bg-surface p-4 shadow-2xl border border-border-subtle sm:p-6"
       transition:fly={{ y: 16, duration: 250 }}
     >
       {#if title}
@@ -71,10 +77,18 @@
             <button
               type="button"
               class="rounded-lg p-1.5 text-text-tertiary transition-all duration-200 hover:bg-background-subtle hover:text-text-primary"
-              aria-label="Close"
+              aria-label={t('textModal1')}
               onclick={close}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg
+              >
             </button>
           {/if}
         </div>

@@ -1,3 +1,4 @@
+import { t } from '../i18n/i18n.svelte';
 /** Thai national ID (X-XXXX-XXXXX-XX-X) or Passport (alnum 6-20). */
 export function validateIdFormat(val: string): { valid: boolean; error?: string } {
   if (!val) return { valid: true };
@@ -5,13 +6,13 @@ export function validateIdFormat(val: string): { valid: boolean; error?: string 
     const valid = /^\d{1}-\d{4}-\d{5}-\d{2}-\d{1}$/.test(val);
     return {
       valid,
-      error: valid ? undefined : 'รูปแบบเลขบัตรประชาชนไม่ถูกต้อง (X-XXXX-XXXXX-XX-X)',
+      error: valid ? undefined : t('textvalidationMessage1'),
     };
   }
   const valid = /^[A-Za-z0-9]{6,20}$/.test(val);
   return {
     valid,
-    error: valid ? undefined : 'รูปแบบ Passport ไม่ถูกต้อง (ตัวอักษร/ตัวเลข 6-20 หลัก)',
+    error: valid ? undefined : t('textvalidationMessage2'),
   };
 }
 
@@ -25,6 +26,6 @@ export function validatePhone(val: string): { cleaned: string; valid: boolean; e
   return {
     cleaned,
     valid: cleaned.length === 10,
-    error: 'เบอร์โทรศัพท์ต้องมี 10 ตัวเลข',
+    error: t('textvalidationMessage3'),
   };
 }

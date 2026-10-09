@@ -3,7 +3,7 @@ import type { PublicReservation } from '../api/types';
 import { escHtml } from '../utils/helpers';
 import { safeGetItem, safeSetItem } from '../utils/storage';
 import { toThaiLong, parseLocalDate } from '../utils/date';
-import { i18n } from '../i18n/i18n.svelte';
+import { i18n, defaultText } from '../i18n/i18n.svelte';
 
 type ChatLang = 'th' | 'en' | 'zh';
 
@@ -150,7 +150,10 @@ const chatI18n: Record<ChatLang, Record<string, string>> = {
 };
 
 function getI18n(key: string, langCode: ChatLang): string {
-  return chatI18n[langCode]?.[key] || chatI18n.th[key] || key;
+  const override = i18n.override(`chatReply${key}`, langCode);
+  return override === undefined
+    ? chatI18n[langCode]?.[key] || chatI18n.th[key] || defaultText(`chatReply${key}`, langCode)
+    : escHtml(override).replace(/\n/g, '<br>');
 }
 
 function formatI18n(key: string, params: Record<string, string>, langCode: ChatLang): string {
@@ -422,10 +425,7 @@ async function getBotResponse(message: string): Promise<string> {
     try {
       rows = await lookupByRef({ ref });
     } catch {
-      if (activeLang === 'th')
-        return '⚠️ ไม่สามารถเชื่อมต่อระบบได้ในขณะนี้ — กรุณาลองใหม่ภายหลัง หรือใช้หน้า "ตรวจสอบสถานะ"';
-      if (activeLang === 'zh') return '⚠️ 目前无法连接系统 — 请稍后再试或使用"查询状态"页面';
-      return '⚠️ Cannot connect to the system at the moment — please try again later or use the "Check Status" page';
+      return getI18n('connectionError', activeLang);
     }
     const booking = rows.find((r) => (r.ref || '').toUpperCase() === ref) || null;
     if (!booking) {

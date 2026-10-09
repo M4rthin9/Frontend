@@ -8,7 +8,9 @@
 
   const quote = $derived(t('ctWallQuote').split('|'));
   const words = $derived(t('ctSkillsWords').split('|'));
-  const areas = $derived([1, 2, 3, 4].map((n) => ({ title: t(`ctSkill${n}T`), desc: t(`ctSkill${n}D`) })));
+  const areas = $derived(
+    [1, 2, 3, 4].map((n) => ({ title: t(`ctSkill${n}T`), desc: t(`ctSkill${n}D`) })),
+  );
 
   onMount(() => {
     const mm = gsap.matchMedia();
@@ -17,10 +19,22 @@
     // the ingredients behind it come up into the light, the stylist's line with it.
     mm.add(MQ.motion, () => {
       gsap
-        .timeline({ scrollTrigger: { trigger: wall, start: 'top 72%', end: 'center 42%', scrub: 0.6 } })
-        .fromTo('[data-wall]', { clipPath: 'inset(0% 0% 0% 0%)' }, { clipPath: 'inset(100% 0% 0% 0%)', ease: 'none' }, 0)
+        .timeline({
+          scrollTrigger: { trigger: wall, start: 'top 72%', end: 'center 42%', scrub: 0.6 },
+        })
+        .fromTo(
+          '[data-wall]',
+          { clipPath: 'inset(0% 0% 0% 0%)' },
+          { clipPath: 'inset(100% 0% 0% 0%)', ease: 'none' },
+          0,
+        )
         .fromTo('[data-wall-photo]', { scale: 1.12 }, { scale: 1, ease: 'none' }, 0)
-        .fromTo('[data-quote]', { opacity: 0.12 }, { opacity: 1, ease: 'none', stagger: 0.12 }, 0.1);
+        .fromTo(
+          '[data-quote]',
+          { opacity: 0.12 },
+          { opacity: 1, ease: 'none', stagger: 0.12 },
+          0.1,
+        );
 
       gsap.from(skills.querySelectorAll('[data-skill]'), {
         opacity: 0,
@@ -35,8 +49,16 @@
   });
 </script>
 
-<section bind:this={wall} id="home-craft" data-chapter="ctChCraft" class="py-20 sm:py-28" aria-labelledby="home-craft-title">
-  <div class="mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center lg:gap-16">
+<section
+  bind:this={wall}
+  id="home-craft"
+  data-chapter="ctChCraft"
+  class="py-20 sm:py-28"
+  aria-labelledby="home-craft-title"
+>
+  <div
+    class="mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center lg:gap-16"
+  >
     <figure class="relative aspect-[1168/1099] overflow-hidden bg-[#ccd3d4]">
       <img
         data-wall-photo
@@ -53,7 +75,9 @@
     </figure>
 
     <div class="lg:text-right">
-      <h2 id="home-craft-title" class="ct-masthead craft-mast">Food<br />Stylist</h2>
+      <h2 id="home-craft-title" class="ct-masthead craft-mast">
+        {t('textCraftChapter1')}<br />{t('textCraftChapter2')}
+      </h2>
       <p class="quote mt-6 font-light leading-snug lg:mt-8">
         {#each quote as line, i (i)}<span data-quote class="block">{line}</span>{/each}
       </p>
@@ -61,14 +85,24 @@
   </div>
 </section>
 
-<section bind:this={skills} id="home-skills" data-chapter="ctChSkills" class="ct-black py-20 sm:py-28" aria-labelledby="home-skills-title">
-  <div class="mx-auto grid w-full max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
+<section
+  bind:this={skills}
+  id="home-skills"
+  data-chapter="ctChSkills"
+  class="ct-black py-20 sm:py-28"
+  aria-labelledby="home-skills-title"
+>
+  <div
+    class="mx-auto grid w-full max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16"
+  >
     <div>
       <p class="ct-label">{t('ctSkillsLabel')}</p>
       <h2 id="home-skills-title" class="words mt-6 font-medium">
         {#each words as word, i (i)}<span class="block">{word}</span>{/each}
       </h2>
-      <p class="mt-8 max-w-md text-base font-light leading-relaxed text-text-secondary">{t('ctSkillsIntro')}</p>
+      <p class="mt-8 max-w-md text-base font-light leading-relaxed text-text-secondary">
+        {t('ctSkillsIntro')}
+      </p>
     </div>
 
     <div>
@@ -81,7 +115,9 @@
           </li>
         {/each}
       </ol>
-      <blockquote class="mt-14 border-l-2 border-[var(--ct-orange)] pl-6 text-lg font-light leading-relaxed sm:text-xl">
+      <blockquote
+        class="mt-14 border-l-2 border-[var(--ct-orange)] pl-6 text-lg font-light leading-relaxed sm:text-xl"
+      >
         {t('ctSkillsQuote')}
       </blockquote>
     </div>

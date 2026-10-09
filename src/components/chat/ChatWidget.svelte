@@ -14,10 +14,37 @@
       .trim();
 
   const quickQuestions = $derived([
-    { label: plain(t('price')), question: i18n.lang === 'th' ? 'ค่าใช้จ่ายเท่าไหร่' : i18n.lang === 'zh' ? '费用多少钱' : 'How much does it cost' },
-    { label: plain(t('stepBooking')), question: i18n.lang === 'th' ? 'จองยังไง' : i18n.lang === 'zh' ? '怎么预约' : 'How to book' },
-    { label: plain(t('step2')), question: i18n.lang === 'th' ? 'เช็คสถานะยังไง' : i18n.lang === 'zh' ? '怎么查询状态' : 'How to check status' },
-    { label: plain(t('rules')), question: i18n.lang === 'th' ? 'ติดต่อเจ้าหน้าที่' : i18n.lang === 'zh' ? '联系工作人员' : 'Contact officers' },
+    {
+      label: plain(t('price')),
+      question:
+        i18n.lang === 'th'
+          ? 'ค่าใช้จ่ายเท่าไหร่'
+          : i18n.lang === 'zh'
+            ? '费用多少钱'
+            : 'How much does it cost',
+    },
+    {
+      label: plain(t('stepBooking')),
+      question: i18n.lang === 'th' ? 'จองยังไง' : i18n.lang === 'zh' ? '怎么预约' : 'How to book',
+    },
+    {
+      label: plain(t('step2')),
+      question:
+        i18n.lang === 'th'
+          ? 'เช็คสถานะยังไง'
+          : i18n.lang === 'zh'
+            ? '怎么查询状态'
+            : 'How to check status',
+    },
+    {
+      label: plain(t('rules')),
+      question:
+        i18n.lang === 'th'
+          ? 'ติดต่อเจ้าหน้าที่'
+          : i18n.lang === 'zh'
+            ? '联系工作人员'
+            : 'Contact officers',
+    },
   ]);
 
   function ask(question: string) {
@@ -31,25 +58,29 @@
   }
 </script>
 
-<svelte:window onkeydown={(e) => {
-  if (e.key === 'Escape' && chat.open) chat.close();
-}} />
+<svelte:window
+  onkeydown={(e) => {
+    if (e.key === 'Escape' && chat.open) chat.close();
+  }}
+/>
 
 {#if !chat.open}
   <button
     type="button"
     class="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-600 text-2xl text-white shadow-lg shadow-indigo-600/30 transition hover:scale-105 hover:bg-indigo-700"
-    aria-label="เปิดแชทบอท"
+    aria-label={t('textChatWidget1')}
     onclick={() => chat.toggle()}
   >
     💬
   </button>
 {:else}
-  <div class="fixed bottom-4 right-4 z-50 flex h-[min(560px,calc(100dvh-5rem))] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl bg-indigo-950 text-white shadow-2xl ring-1 ring-white/10">
+  <div
+    class="fixed bottom-4 right-4 z-50 flex h-[min(560px,calc(100dvh-5rem))] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl bg-indigo-950 text-white shadow-2xl ring-1 ring-white/10"
+  >
     <div class="flex items-center justify-between border-b border-white/10 bg-indigo-900 px-4 py-3">
       <div class="flex items-center gap-2">
         <span class="text-lg">🤖</span>
-        <h3 class="text-sm font-bold">M4RTHIN9 AI</h3>
+        <h3 class="text-sm font-bold">{t('textChatWidget2')}</h3>
       </div>
       <button
         type="button"
@@ -57,13 +88,19 @@
         aria-label={chat.closeLabel()}
         onclick={() => chat.close()}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg
+        >
       </button>
     </div>
 
-    <div
-      class="chat-scroll flex-1 space-y-2 overflow-y-auto px-4 py-3 text-sm leading-relaxed"
-    >
+    <div class="chat-scroll flex-1 space-y-2 overflow-y-auto px-4 py-3 text-sm leading-relaxed">
       {#each chat.messages as msg (msg.id)}
         <div class="chat-msg {msg.sender === 'user' ? 'chat-msg-user' : 'chat-msg-bot'}">
           {#if msg.sender === 'user'}
@@ -106,7 +143,7 @@
       <button
         type="button"
         class="rounded-lg bg-amber-400 px-3 py-2 text-sm font-bold text-indigo-950 transition hover:bg-amber-300"
-        aria-label="ส่ง"
+        aria-label={t('textChatWidget3')}
         onclick={onSend}
       >
         ➤

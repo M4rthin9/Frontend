@@ -1,4 +1,5 @@
 import { callAction, callGet, assertOk } from './client';
+import { t } from '../i18n/i18n.svelte';
 import { rebuildPrisonerObjects } from '../utils/helpers';
 import type {
   ApiResult,
@@ -215,6 +216,7 @@ export interface PdpaPublic {
 }
 
 export interface PublicSettings {
+  frontendContent: Partial<Record<'th' | 'en' | 'zh' | 'vi', Record<string, string>>>;
   paymentEnabled: boolean;
   paymentClosedMessage: string;
   tableBooking: TableBookingPublicConfig;
@@ -265,6 +267,7 @@ export async function getPublicSettings(): Promise<PublicSettings> {
       bookingWindow?: Partial<BookingWindow>;
       promo?: Partial<Promo>;
       pdpa?: Partial<PdpaPublic>;
+      frontendContent?: PublicSettings['frontendContent'];
     }>('/api/public-settings', {});
     if (data.status !== 'ok') {
       return {
@@ -275,12 +278,14 @@ export async function getPublicSettings(): Promise<PublicSettings> {
         bookingWindow: DEFAULT_BOOKING_WINDOW,
         promo: EMPTY_PROMO,
         pdpa: DEFAULT_PDPA,
+        frontendContent: {},
       };
     }
     const bw = data.bookingWindow;
     const promo = data.promo;
     return {
       paymentEnabled: data.paymentEnabled !== false,
+      frontendContent: data.frontendContent ?? {},
       paymentClosedMessage: data.paymentClosedMessage ?? '',
       tableBooking: {
         enabled: data.tableBooking?.enabled !== false,
@@ -318,6 +323,7 @@ export async function getPublicSettings(): Promise<PublicSettings> {
       bookingWindow: DEFAULT_BOOKING_WINDOW,
       promo: EMPTY_PROMO,
       pdpa: DEFAULT_PDPA,
+      frontendContent: {},
     };
   }
 }
@@ -354,7 +360,7 @@ export async function getPaymentQr(ref: string): Promise<PaymentQrResponse> {
   }>('/api/promptpay/qr', { ref });
   assertOk(data);
   if (!data.payload || !data.qrDataUrl) {
-    throw new Error(data.message || 'QR generation failed');
+    throw new Error(data.message || t('errorQrGeneration'));
   }
   return {
     payload: data.payload,

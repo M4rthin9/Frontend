@@ -7,7 +7,8 @@ import { safeGetItem, safeSetItem } from '../utils/storage';
 export type Lang = 'th' | 'en' | 'zh' | 'vi';
 
 const dictionaries: Record<Lang, Record<string, string>> = { th, en, zh, vi };
-const langNames: Record<Lang, string> = { th: 'ไทย', en: 'EN', zh: '中文', vi: 'Tiếng Việt' };
+export const defaultText = (key: string, lang: Lang = 'th'): string =>
+  dictionaries[lang][key] ?? dictionaries.th[key] ?? key;
 
 function detectInitial(): Lang {
   const stored = safeGetItem(window.localStorage, 'lang');
@@ -21,6 +22,16 @@ function detectInitial(): Lang {
 
 class I18nStore {
   lang = $state<Lang>(detectInitial());
+  content = $state<Partial<Record<Lang, Record<string, string>>>>({});
+
+  setContent(content: Partial<Record<Lang, Record<string, string>>>): void {
+    this.content = content;
+  }
+
+  override(key: string, lang: Lang = this.lang): string | undefined {
+    const value = this.content[lang]?.[key];
+    return typeof value === 'string' ? value : undefined;
+  }
 
   setLanguage(next: Lang): void {
     if (!dictionaries[next]) return;
@@ -37,13 +48,13 @@ class I18nStore {
   }
 
   langName(l: Lang = this.lang): string {
-    return langNames[l] || l;
+    return this.t(`languageName${l}`);
   }
 
   /** Translate a key for the current language (falls back to Thai). */
   t(key: string): string {
     const dict = dictionaries[this.lang];
-    return (dict && dict[key]) || dictionaries.th[key] || key;
+    return this.override(key) ?? (dict && dict[key]) ?? dictionaries.th[key] ?? key;
   }
 
   /** Translate + interpolate `{param}` placeholders. */

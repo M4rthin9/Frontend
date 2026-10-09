@@ -17,8 +17,13 @@
   }
 </script>
 
-<header class="sticky top-0 z-40 border-b border-border-subtle bg-surface/80 backdrop-blur-xl supports-[backdrop-filter]:bg-surface/80 shadow-sm">
-  <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold-200/40 to-transparent"></div>
+<header
+  class="sticky top-0 z-40 border-b border-border-subtle bg-surface/80 backdrop-blur-xl supports-[backdrop-filter]:bg-surface/80 shadow-sm"
+>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold-200/40 to-transparent"
+  ></div>
   <div class="mx-auto flex h-16 max-w-3xl items-center gap-3 px-4 sm:px-6">
     <button
       type="button"
@@ -32,18 +37,20 @@
         sizes="36px"
         width="64"
         height="64"
-        alt="กรมราชทัณฑ์"
+        alt={t('textHeader1')}
         class="h-9 w-9 rounded-full object-cover ring-2 ring-border-subtle"
       />
-      <span class="hidden text-sm font-bold text-text-primary sm:block">{@html t('appName')}</span>
+      <span class="hidden text-sm font-bold text-text-primary sm:block">{t('appName')}</span>
     </button>
 
-    <nav class="ml-auto flex items-center gap-1" aria-label="Main">
+    <nav class="ml-auto flex items-center gap-1" aria-label={t('textHeader2')}>
       {#each navItems as item (item.path)}
         <button
           type="button"
           onclick={() => navigate(item.path)}
-          class="relative rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 sm:block {isActive(item.path)
+          class="relative rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 sm:block {isActive(
+            item.path,
+          )
             ? 'bg-red-50 text-red-700'
             : 'text-text-tertiary hover:bg-background-subtle hover:text-text-primary'}"
         >

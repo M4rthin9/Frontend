@@ -179,7 +179,8 @@
     if (!result) return '';
     if (result.status === 'ok') return t('slipVerifyOk');
     if (result.status === 'slip_verify') return t('slipVerifyReview');
-    if (result.status === 'mismatch') return tc('slipVerifyMismatch', { fields: mismatchFields(result) });
+    if (result.status === 'mismatch')
+      return tc('slipVerifyMismatch', { fields: mismatchFields(result) });
     if (result.status === 'duplicate') return t('slipVerifyDuplicate');
     return t('slipVerifyUnreadable');
   }
@@ -244,10 +245,7 @@
         verifyResult = verify;
         const v = verify;
         if (v.status === 'mismatch' || v.status === 'unreadable' || v.status === 'duplicate') {
-          showAlert(
-            'err',
-            `${verifyNotice(v)}<br/><span style="font-size:12px">${t('slipVerifyBlocked')}</span>`,
-          );
+          showAlert('err', `${verifyNotice(v)}\n${t('slipVerifyBlocked')}`);
           progressVisible = false;
           return;
         }
@@ -279,7 +277,9 @@
   </div>
 
   <div class="pay-bank-card border-t-2 border-gold-200">
-    <div class="promptpay-tag flex items-center justify-center gap-2"><QrCode class="h-4 w-4" />{t('promptpayTag')}</div>
+    <div class="promptpay-tag flex items-center justify-center gap-2">
+      <QrCode class="h-4 w-4" />{t('promptpayTag')}
+    </div>
 
     <div class="qr-card-box">
       {#if qrCardSvg}
@@ -306,12 +306,12 @@
     <div class="account-name">{t('accountName')}</div>
 
     <div class="pay-amount-box">
-      {t('amountDueShort')} <strong>{total.toLocaleString()} บาท</strong>
+      {t('amountDueShort')} <strong>{total.toLocaleString()} {t('textPaymentForm1')}</strong>
       <br />
       <span class="pay-per-person">{tc('perPerson', { n: totalPersons })}</span>
     </div>
 
-    <div class="pay-ref-note">{@html tc('refOnTransfer', { ref: booking.ref })}</div>
+    <div class="pay-ref-note">{tc('refOnTransfer', { ref: booking.ref })}</div>
 
     <!-- Cross-border: foreign bank apps can scan the same QR. Collapsed by default
          so the slip upload stays right under the QR for most payers. -->
@@ -325,7 +325,14 @@
       <div class="cross-border-flags" aria-hidden="true">
         {#each CROSS_BORDER_GROUPS as g (g.code)}
           <span class="flag-chip" title={t(g.nameKey)}>
-            <img src={g.flag} alt={t(g.nameKey)} width="20" height="14" loading="lazy" class="flag-img" />
+            <img
+              src={g.flag}
+              alt={t(g.nameKey)}
+              width="20"
+              height="14"
+              loading="lazy"
+              class="flag-img"
+            />
             <span class="flag-code">{g.code}</span>
           </span>
         {/each}
@@ -353,7 +360,7 @@
                       img.style.display = 'none';
                     }}
                   />
-                  {b.name}
+                  {t(`bankLabel${b.logo.split('/').pop()?.replace('.png', '')}`)}
                 </span>
               {/each}
             </div>
@@ -388,7 +395,12 @@
     >
       <input type="file" accept="image/*" bind:this={fileInput} onchange={onFileChange} />
       {#if previewUrl}
-        <img src={previewUrl} class="preview-img" alt="slip preview" style="display:block" />
+        <img
+          src={previewUrl}
+          class="preview-img"
+          alt={t('textPaymentForm2')}
+          style="display:block"
+        />
       {:else}
         <div class="upload-icon">📄</div>
         <p>{t('uploadPrompt')}</p>
@@ -421,7 +433,7 @@
 
     {#if alertMsg}
       <div class="alert-strip {alertType}">
-        {@html alertMsg}
+        <span class="whitespace-pre-line">{alertMsg}</span>
       </div>
     {/if}
   </div>

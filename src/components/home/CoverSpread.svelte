@@ -25,7 +25,9 @@
 
   function toDates(): void {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    document.getElementById('home-dates')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    document
+      .getElementById('home-dates')
+      ?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   }
 
   onMount(() => {
@@ -81,14 +83,14 @@
           src="/cida-logo-128.webp"
           width="40"
           height="40"
-          alt="กรมราชทัณฑ์"
+          alt={t('textCoverSpread1')}
           class="h-10 w-10 rounded-full object-cover"
         />
         <img
           src="/logo-white-128.webp"
           width="40"
           height="40"
-          alt="CC Cafe"
+          alt={t('textCoverSpread2')}
           class="h-10 w-10 rounded-full object-cover ring-1 ring-white/25"
         />
         <p class="min-w-0 text-xs leading-snug text-text-secondary sm:text-sm">{t('homeAgency')}</p>
@@ -105,7 +107,11 @@
         <Headline id="home-title" level={1} keep text={t('homeHeroTitle')} class="cover-title" />
       </div>
       <div data-line class="booking-actions mt-6 grid gap-3">
-        <button type="button" class="ct-btn ct-btn-orange booking-action" onclick={() => navigate('booking')}>
+        <button
+          type="button"
+          class="ct-btn ct-btn-orange booking-action"
+          onclick={() => navigate('booking')}
+        >
           <CalendarDays class="h-7 w-7 shrink-0" aria-hidden="true" />
           <span class="min-w-0 flex-1">
             <span class="booking-action-title">{t('homeCtaVisit')}</span>
@@ -113,20 +119,29 @@
           </span>
           <ArrowRight class="ct-nudge h-5 w-5 shrink-0" aria-hidden="true" />
         </button>
-        <button type="button" class="ct-btn booking-action booking-action-table" onclick={() => navigate('table-booking')}>
+        <button
+          type="button"
+          class="ct-btn booking-action booking-action-table"
+          onclick={() => navigate('table-booking')}
+        >
           <UtensilsCrossed class="h-7 w-7 shrink-0" aria-hidden="true" />
           <span class="min-w-0 flex-1">
             <span class="booking-action-title">{t('btnTableBook')}</span>
             <span class="booking-action-description">{t('tblOutsideGuestsOnly')}</span>
             {#if ui.publicSettingsLoaded && !ui.tableBookingOpen}
-              <span class="booking-action-status">{ui.tableBookingScheduled ? t('tblCountdownTitle') : t('tblClosedTitle')}</span>
+              <span class="booking-action-status"
+                >{ui.tableBookingScheduled ? t('tblCountdownTitle') : t('tblClosedTitle')}</span
+              >
             {/if}
           </span>
           <ArrowRight class="ct-nudge h-5 w-5 shrink-0" aria-hidden="true" />
         </button>
       </div>
 
-      <p data-line class="mt-5 max-w-[36rem] text-base font-light leading-relaxed text-text-secondary sm:text-lg">
+      <p
+        data-line
+        class="mt-5 max-w-[36rem] text-base font-light leading-relaxed text-text-secondary sm:text-lg"
+      >
         {#each subPhrases as phrase, i (i)}<span class="inline-block"
             >{phrase}{i < subPhrases.length - 1 ? ' ·' : ''}</span
           >{i < subPhrases.length - 1 ? ' ' : ''}{/each}
@@ -140,7 +155,10 @@
                 class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 motion-safe:animate-ping"
               ></span>
             {/if}
-            <span class="relative inline-flex h-2 w-2 rounded-full {bookingOpen ? 'bg-emerald-400' : 'bg-amber-400'}"
+            <span
+              class="relative inline-flex h-2 w-2 rounded-full {bookingOpen
+                ? 'bg-emerald-400'
+                : 'bg-amber-400'}"
             ></span>
           </span>
           <span class="text-text-secondary"
@@ -165,12 +183,16 @@
         rel="noopener noreferrer"
         class="line-chip mt-7 inline-flex items-center gap-3 rounded-full py-1.5 pl-1.5 pr-5"
       >
-        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#06c755]">
+        <span
+          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#06c755]"
+        >
           <LineIcon class="h-7 w-7" />
         </span>
         <span class="text-sm font-medium leading-tight">
           {t('lineAsk')}
-          <span class="block text-base font-semibold tabular-nums tracking-wide">LINE ID: {LINE_ID}</span>
+          <span class="block text-base font-semibold tabular-nums tracking-wide"
+            >{t('textCoverSpread3')} {LINE_ID}</span
+          >
         </span>
       </a>
     </div>
@@ -253,7 +275,9 @@
     line-height: 1.5;
   }
   @media (hover: hover) and (pointer: fine) {
-    .booking-action-table:hover { background: #fff4e5; }
+    .booking-action-table:hover {
+      background: #fff4e5;
+    }
   }
   .cover {
     /* A faint highlight where the black page rises from the spine. */
@@ -336,7 +360,12 @@
   }
   /* The gutter: the page curves down into the binding. */
   .spine {
-    background: linear-gradient(270deg, rgba(20, 16, 17, 0.42), rgba(20, 16, 17, 0.12) 35%, rgba(20, 16, 17, 0));
+    background: linear-gradient(
+      270deg,
+      rgba(20, 16, 17, 0.42),
+      rgba(20, 16, 17, 0.12) 35%,
+      rgba(20, 16, 17, 0)
+    );
   }
   /* While the page is still lifting it catches less light. */
   .unfold-shade {

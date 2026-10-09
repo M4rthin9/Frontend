@@ -1,3 +1,4 @@
+import { t, tc } from '../i18n/i18n.svelte';
 import { toLocalDateStr, addDays, parseLocalDate } from './date';
 
 /** Default maximum number of bookings (tables) per day for the prisoner-visit
@@ -72,6 +73,35 @@ export const HOLIDAYS: Record<string, string> = {
   '2026-08-14': 'เยี่ยมญาติใกล้ชิด',
   '2026-08-17': 'เยี่ยมญาติใกล้ชิด',
   '2026-08-18': 'เยี่ยมญาติใกล้ชิด',
+};
+
+const HOLIDAY_LABEL_KEYS: Record<string, string> = {
+  วันขึ้นปีใหม่: 'bookingHoliday1',
+  มาฆบูชา: 'bookingHoliday2',
+  จักรี: 'bookingHoliday3',
+  สงกรานต์: 'bookingHoliday4',
+  แรงงาน: 'bookingHoliday5',
+  ฉัตรมงคล: 'bookingHoliday6',
+  วิสาขบูชา: 'bookingHoliday7',
+  วันพระราชินี: 'bookingHoliday8',
+  'วันเฉลิม ร.10': 'bookingHoliday9',
+  อาสาฬหบูชา: 'bookingHoliday10',
+  หยุดชดเชย: 'bookingHoliday11',
+  วันแม่: 'bookingHoliday12',
+  'วันสวรรคต ร.9': 'bookingHoliday13',
+  'หยุดพิเศษ กทม.': 'bookingHoliday14',
+  จุฬาลงกรณ์: 'bookingHoliday15',
+  วันพ่อ: 'bookingHoliday16',
+  ชดเชยวันพ่อ: 'bookingHoliday17',
+  รัฐธรรมนูญ: 'bookingHoliday18',
+  วันสิ้นปี: 'bookingHoliday19',
+  ชดเชยมาฆบูชา: 'bookingHoliday20',
+  ชดเชยแรงงาน: 'bookingHoliday21',
+  เข้าพรรษา: 'bookingHoliday22',
+  ชดเชยจุฬาลงกรณ์: 'bookingHoliday23',
+  ปิดจอง: 'bookingHoliday24',
+  เต็ม: 'bookingHoliday25',
+  เยี่ยมญาติใกล้ชิด: 'bookingHoliday26',
 };
 
 export type CalendarCellKind =
@@ -236,7 +266,14 @@ export function buildCalendarCells(
       day: d,
       kind,
       quota: used,
-      label: isHol,
+      label:
+        closedNote !== undefined
+          ? closedNote || t('bookingCalendarClosed')
+          : opensLater
+            ? tc('bookingCalendarOpens', { time: bangkokTime(new Date(opensAt!)) })
+            : isHol
+              ? t(HOLIDAY_LABEL_KEYS[isHol] ?? isHol)
+              : undefined,
       blocked: isPast || isNotWithinWindow || !!isHol || isWknd || isFull,
     });
   }

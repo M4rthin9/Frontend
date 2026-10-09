@@ -1,4 +1,5 @@
 import { ApiError } from './errors';
+import { t } from '../i18n/i18n.svelte';
 
 export const API_BASE: string =
   (import.meta.env.VITE_API_BASE as string | undefined) ??
@@ -44,7 +45,7 @@ export async function callAction<T extends object = ApiResult>(
     });
   } catch (e) {
     if (isTimeoutAbort(e)) {
-      throw new ApiError('เซิร์ฟเวอร์ไม่ตอบกลับภายในเวลาที่กำหนด — กรุณาลองใหม่อีกครั้ง');
+      throw new ApiError(t('errorServerTimeout'));
     }
     throw e;
   } finally {
@@ -53,7 +54,7 @@ export async function callAction<T extends object = ApiResult>(
 
   const data = (await res.json().catch(() => ({}))) as ApiResult;
   if (typeof data !== 'object' || data === null || !('status' in data)) {
-    throw new ApiError('การตอบสนองจากเซิร์ฟเวอร์ไม่ถูกต้อง');
+    throw new ApiError(t('errorInvalidResponse'));
   }
   return data as T;
 }
@@ -75,7 +76,7 @@ export async function callGet<T extends object = ApiResult>(
     });
   } catch (e) {
     if (isTimeoutAbort(e)) {
-      throw new ApiError('เซิร์ฟเวอร์ไม่ตอบกลับภายในเวลาที่กำหนด — กรุณาลองใหม่อีกครั้ง');
+      throw new ApiError(t('errorServerTimeout'));
     }
     throw e;
   } finally {
@@ -83,7 +84,7 @@ export async function callGet<T extends object = ApiResult>(
   }
   const data = (await res.json().catch(() => ({}))) as ApiResult;
   if (typeof data !== 'object' || data === null || !('status' in data)) {
-    throw new ApiError('การตอบสนองจากเซิร์ฟเวอร์ไม่ถูกต้อง');
+    throw new ApiError(t('errorInvalidResponse'));
   }
   return data as T;
 }
@@ -91,6 +92,6 @@ export async function callGet<T extends object = ApiResult>(
 /** Throw if the backend replied with status !== 'ok'. */
 export function assertOk<T extends { status?: string }>(data: T): void {
   if (data?.status !== 'ok') {
-    throw new ApiError(String((data as { message?: unknown })?.message ?? 'Unknown server error'));
+    throw new ApiError(String((data as { message?: unknown })?.message ?? t('errorServerUnknown')));
   }
 }

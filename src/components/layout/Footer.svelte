@@ -11,7 +11,10 @@
 </script>
 
 <footer class="border-t border-border-subtle bg-surface">
-  <div aria-hidden="true" class="h-px w-full bg-gradient-to-r from-transparent via-gold-200/60 to-transparent"></div>
+  <div
+    aria-hidden="true"
+    class="h-px w-full bg-gradient-to-r from-transparent via-gold-200/60 to-transparent"
+  ></div>
   <div class="mx-auto max-w-3xl px-4 py-10 text-center sm:px-6">
     <div class="mb-4 flex items-center justify-center gap-2">
       <img
@@ -20,56 +23,60 @@
         sizes="32px"
         width="64"
         height="64"
-        alt="กรมราชทัณฑ์"
+        alt={t('textFooter1')}
         class="h-8 w-8 rounded-full object-cover opacity-70"
       />
-      <span class="text-sm font-semibold text-text-secondary">{@html t('appName')}</span>
+      <span class="text-sm font-semibold text-text-secondary">{t('appName')}</span>
     </div>
-    <p class="text-sm leading-relaxed text-text-tertiary">{@html t('footer')}</p>
+    <p class="text-sm leading-relaxed text-text-tertiary">{t('footer')}</p>
     <a
       href="https://main.correct.go.th"
       target="_blank"
       rel="noopener"
       class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--footer-link,var(--color-red-700))] transition-colors hover:opacity-80"
     >
-      main.correct.go.th
+      {t('textFooter2')}
       <ExternalLink class="h-3.5 w-3.5" />
     </a>
 
     <div class="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
       <LangSwitcher />
       {#if themeToggle}
-      <button
-        type="button"
-        class="inline-flex items-center gap-2 rounded-full border border-border-strong px-3 py-1.5 text-xs font-semibold text-text-tertiary transition-all duration-200 hover:bg-background-subtle hover:text-text-primary"
-        aria-label={ui.darkMode ? t('themeLight') : t('themeDark')}
-        onclick={() => ui.toggleDarkMode()}
-      >
-        {#if ui.darkMode}
-          <Sun class="h-4 w-4" />
-          {t('themeLight')}
-        {:else}
-          <Moon class="h-4 w-4" />
-          {t('themeDark')}
-        {/if}
-      </button>
+        <button
+          type="button"
+          class="inline-flex items-center gap-2 rounded-full border border-border-strong px-3 py-1.5 text-xs font-semibold text-text-tertiary transition-all duration-200 hover:bg-background-subtle hover:text-text-primary"
+          aria-label={ui.darkMode ? t('themeLight') : t('themeDark')}
+          onclick={() => ui.toggleDarkMode()}
+        >
+          {#if ui.darkMode}
+            <Sun class="h-4 w-4" />
+            {t('themeLight')}
+          {:else}
+            <Moon class="h-4 w-4" />
+            {t('themeDark')}
+          {/if}
+        </button>
       {/if}
     </div>
 
     <div class="mt-6 flex items-center justify-center gap-6 text-xs text-text-tertiary">
       <span>© {new Date().getFullYear()}</span>
       <span class="h-1 w-1 rounded-full bg-border-strong"></span>
-      <span>กรมราชทัณฑ์</span>
+      <span>{t('textFooter3')}</span>
       <span class="h-1 w-1 rounded-full bg-border-strong"></span>
       <!-- PDPA: consent must be as easy to change or withdraw as it was to give. -->
-      <button type="button" class="underline-offset-2 hover:text-text-primary hover:underline" onclick={() => consent.openSettings()}>
+      <button
+        type="button"
+        class="underline-offset-2 hover:text-text-primary hover:underline"
+        onclick={() => consent.openSettings()}
+      >
         {t('ckSettings')}
       </button>
     </div>
 
     <div class="mt-4 border-t border-border-subtle pt-4">
       <p class="text-xs text-text-tertiary">
-        ออกแบบและพัฒนาโดย <span class="font-semibold text-text-secondary">M4RTHIN9</span>
+        {t('textFooter4')} <span class="font-semibold text-text-secondary">{t('textFooter5')}</span>
       </p>
     </div>
   </div>

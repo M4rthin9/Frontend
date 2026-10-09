@@ -55,7 +55,13 @@
   });
 
   $effect(() => {
-    if (autoPay && paymentWindowLoaded && isTable && normalized === 'รอชำระเงิน' && paymentEnabled) {
+    if (
+      autoPay &&
+      paymentWindowLoaded &&
+      isTable &&
+      normalized === 'รอชำระเงิน' &&
+      paymentEnabled
+    ) {
       showPayment = true;
       void tick().then(() => paymentPanel?.scrollIntoView({ block: 'start' }));
     }
@@ -73,11 +79,16 @@
   async function loadNotes(): Promise<void> {
     try {
       const result = await getNotes(booking.ref);
-      notes = result.filter((n) => String(n.text || '').trim()).map((n) => ({
-        text: String(n.text || '').replace(/^ยกเลิก:\s*/i, '').trim() || String(n.text || ''),
-        user: String(n.user || ''),
-        timestamp: String(n.timestamp || ''),
-      }));
+      notes = result
+        .filter((n) => String(n.text || '').trim())
+        .map((n) => ({
+          text:
+            String(n.text || '')
+              .replace(/^ยกเลิก:\s*/i, '')
+              .trim() || String(n.text || ''),
+          user: String(n.user || ''),
+          timestamp: String(n.timestamp || ''),
+        }));
     } catch (e) {
       console.warn('Failed to load cancel notes:', e);
     }
@@ -85,8 +96,12 @@
 
   const visitorCount = $derived(parseInt(String(booking.visitorCount)) || 1);
   const isTable = $derived(
-    String(booking.bookingType || '').trim().toLowerCase() === 'table' ||
-      String(booking.ref || '').toUpperCase().startsWith('TBL-'),
+    String(booking.bookingType || '')
+      .trim()
+      .toLowerCase() === 'table' ||
+      String(booking.ref || '')
+        .toUpperCase()
+        .startsWith('TBL-'),
   );
   const coPrisoners = $derived(isTable ? [] : parseExtraPrisoners(booking.extraPrisoners));
   const prisonerCount = $derived(isTable ? 0 : 1 + coPrisoners.length);
@@ -98,7 +113,12 @@
     isTable
       ? []
       : [
-          { name: String(booking.prisonerName ?? ''), id: String(booking.prisonerId ?? ''), wing: String(booking.wing ?? ''), extra: false },
+          {
+            name: String(booking.prisonerName ?? ''),
+            id: String(booking.prisonerId ?? ''),
+            wing: String(booking.wing ?? ''),
+            extra: false,
+          },
           ...coPrisoners.map((p) => ({ ...p, extra: true })),
         ],
   );
@@ -121,12 +141,23 @@
   const visitDateText = $derived.by(() => {
     const iso = String(booking.visitDateISO ?? '').trim();
     return /^\d{4}-\d{2}-\d{2}$/.test(iso)
-      ? formatDateIn(iso, i18n.lang, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+      ? formatDateIn(iso, i18n.lang, {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        })
       : String(booking.visitDate || '—');
   });
 
   // The booking's road, one stop per status. A table booking starts at payment.
-  const VISIT_STEPS = ['รอตรวจสอบผู้เข้าร่วม', 'รอตรวจสอบวินัย', 'รอชำระเงิน', 'ชำระแล้ว', 'เสร็จสิ้น'];
+  const VISIT_STEPS = [
+    'รอตรวจสอบผู้เข้าร่วม',
+    'รอตรวจสอบวินัย',
+    'รอชำระเงิน',
+    'ชำระแล้ว',
+    'เสร็จสิ้น',
+  ];
   const TABLE_STEPS = ['รอชำระเงิน', 'ชำระแล้ว', 'เสร็จสิ้น'];
   const STEP_LABEL: Record<string, string> = {
     รอตรวจสอบผู้เข้าร่วม: 'stepParticipants',
@@ -162,20 +193,38 @@
       return { title: t('noticeCancelled'), text: t('noticeCancelledText'), kind: 'cancel' };
     }
     if (s === 'รอตรวจสอบวินัย') {
-      return { title: t('noticeReviewDiscipline'), text: t('noticeReviewDisciplineText'), kind: 'pending' };
+      return {
+        title: t('noticeReviewDiscipline'),
+        text: t('noticeReviewDisciplineText'),
+        kind: 'pending',
+      };
     }
     if (s === 'รอตรวจสอบผู้เข้าร่วม') {
-      return { title: t('noticeReviewParticipants'), text: t('noticeReviewParticipantsText'), kind: 'pending' };
+      return {
+        title: t('noticeReviewParticipants'),
+        text: t('noticeReviewParticipantsText'),
+        kind: 'pending',
+      };
     }
     return { title: t('noticeReviewDefault'), text: t('noticeReviewDefaultText'), kind: 'pending' };
   });
 
   const rejectReason = $derived(String(booking.cancelReason || '').trim());
-  const changesLocked = $derived(isTable && TABLE_NO_CHANGES_AGREEMENT_VERSIONS.includes(booking.tableAgreementVersion ?? ''));
+  const changesLocked = $derived(
+    isTable && TABLE_NO_CHANGES_AGREEMENT_VERSIONS.includes(booking.tableAgreementVersion ?? ''),
+  );
   const showCancelBtn = $derived(!changesLocked && !['ยกเลิก', 'เสร็จสิ้น'].includes(normalized));
 
   async function cancelBooking(): Promise<void> {
-    if (!window.confirm(tc('cancelConfirmMsg', { ref: booking.ref, name: booking.visitorName || '—', status: displayStatus || '—' }))) {
+    if (
+      !window.confirm(
+        tc('cancelConfirmMsg', {
+          ref: booking.ref,
+          name: booking.visitorName || '—',
+          status: displayStatus || '—',
+        }),
+      )
+    ) {
       return;
     }
     cancelling = true;
@@ -197,11 +246,18 @@
   <article class="sheet" aria-labelledby="status-ref">
     <header class="flex flex-wrap items-start justify-between gap-4 px-5 pb-5 pt-6 sm:px-8 sm:pt-7">
       <div class="min-w-0">
-        <p class="text-xs font-medium tracking-[0.06em] text-text-tertiary">{t('resultRefLabel')}</p>
-        <p id="status-ref" class="mt-1 font-mono text-[1.75rem] font-semibold leading-tight tracking-wide text-text-primary sm:text-3xl">
+        <p class="text-xs font-medium tracking-[0.06em] text-text-tertiary">
+          {t('resultRefLabel')}
+        </p>
+        <p
+          id="status-ref"
+          class="mt-1 font-mono text-[1.75rem] font-semibold leading-tight tracking-wide text-text-primary sm:text-3xl"
+        >
           {booking.ref}
         </p>
-        <p class="mt-1.5 text-sm text-text-tertiary">{tc('bookedAt', { timestamp: booking.timestamp || '—' })}</p>
+        <p class="mt-1.5 text-sm text-text-tertiary">
+          {tc('bookedAt', { timestamp: booking.timestamp || '—' })}
+        </p>
       </div>
       <span class="ct-pill {statusTone(displayStatus)}">
         <span class="dot" aria-hidden="true"></span>
@@ -210,13 +266,17 @@
     </header>
 
     {#if !stopped}
-      <section class="border-t border-border-subtle px-5 py-6 sm:px-8" aria-label={t('statusProgress')}>
+      <section
+        class="border-t border-border-subtle px-5 py-6 sm:px-8"
+        aria-label={t('statusProgress')}
+      >
         <ol class="steps" style="--n: {steps.length}">
           {#each steps as s, i (s)}
             {@const state = stepState(i)}
             <li class="step {state}" aria-current={state === 'now' ? 'step' : undefined}>
               <span class="mark" aria-hidden="true">
-                {#if state === 'done'}<Check class="h-3.5 w-3.5" strokeWidth={3} />{:else}{i + 1}{/if}
+                {#if state === 'done'}<Check class="h-3.5 w-3.5" strokeWidth={3} />{:else}{i +
+                    1}{/if}
               </span>
               <span class="step-label">{t(STEP_LABEL[s])}</span>
             </li>
@@ -225,7 +285,9 @@
         <!-- Phones have no room for every label: name the current stop under the line. -->
         <p class="mt-4 text-center text-sm text-text-secondary sm:hidden">
           {Math.min(currentStep, steps.length - 1) + 1}/{steps.length} ·
-          <span class="font-semibold text-text-primary">{t(STEP_LABEL[steps[Math.max(0, currentStep)]])}</span>
+          <span class="font-semibold text-text-primary"
+            >{t(STEP_LABEL[steps[Math.max(0, currentStep)]])}</span
+          >
         </p>
         <!-- Booking notices end at "paid", so there is nothing left to follow after it. -->
         {#if normalized !== 'ชำระแล้ว' && normalized !== 'เสร็จสิ้น'}
@@ -235,7 +297,10 @@
     {/if}
 
     <!-- What happens next, and the one thing the visitor can do about it. -->
-    <section class="notice {statusTone(displayStatus)} mx-5 mb-6 sm:mx-8 {stopped ? 'mt-1' : ''}" aria-live="polite">
+    <section
+      class="notice {statusTone(displayStatus)} mx-5 mb-6 sm:mx-8 {stopped ? 'mt-1' : ''}"
+      aria-live="polite"
+    >
       <h2 class="text-base font-semibold">{cleanLabel(statusNotice.title)}</h2>
       <p class="mt-1 text-sm leading-relaxed text-text-secondary">{statusNotice.text}</p>
 
@@ -256,7 +321,9 @@
               <li class="text-sm text-text-primary">
                 {n.text}
                 {#if n.user || n.timestamp}
-                  <span class="block text-xs text-text-tertiary">{n.user}{n.user && n.timestamp ? ' · ' : ''}{n.timestamp}</span>
+                  <span class="block text-xs text-text-tertiary"
+                    >{n.user}{n.user && n.timestamp ? ' · ' : ''}{n.timestamp}</span
+                  >
                 {/if}
               </li>
             {/each}
@@ -268,17 +335,26 @@
         <div class="pay-row mt-4 flex flex-wrap items-end justify-between gap-4 pt-4">
           <div>
             <p class="text-xs text-text-tertiary">{t('amountDue')}</p>
-            <p class="text-2xl font-semibold tabular-nums text-text-primary">{total.toLocaleString()} <span class="text-base font-normal">บาท</span></p>
+            <p class="text-2xl font-semibold tabular-nums text-text-primary">
+              {total.toLocaleString()}
+              <span class="text-base font-normal">{t('textStatusResult1')}</span>
+            </p>
             <p class="text-xs text-text-tertiary">{tc('perPerson', { n: totalPersons })}</p>
           </div>
           {#if paymentEnabled}
-            <button type="button" class="ct-btn ct-btn-orange w-full sm:w-auto" onclick={() => (showPayment = true)}>
+            <button
+              type="button"
+              class="ct-btn ct-btn-orange w-full sm:w-auto"
+              onclick={() => (showPayment = true)}
+            >
               {t('payNow')}
             </button>
           {:else}
             <div class="w-full">
               <p class="text-sm font-semibold text-text-primary">{t('paymentClosedTitle')}</p>
-              <p class="mt-0.5 text-sm text-text-secondary">{paymentClosedMessage || t('paymentClosedText')}</p>
+              <p class="mt-0.5 text-sm text-text-secondary">
+                {paymentClosedMessage || t('paymentClosedText')}
+              </p>
             </div>
           {/if}
         </div>
@@ -300,7 +376,10 @@
       </div>
       <div>
         <dt>{t('lblCost')}</dt>
-        <dd><span class="font-semibold tabular-nums">{total.toLocaleString()}</span> บาท</dd>
+        <dd>
+          <span class="font-semibold tabular-nums">{total.toLocaleString()}</span>
+          {t('textStatusResult2')}
+        </dd>
       </div>
     </dl>
 
@@ -311,8 +390,12 @@
           {#each prisoners as p, i (p.id || i)}
             <li class="person">
               <span class="min-w-0">
-                <span class="block truncate font-medium text-text-primary">{maskPrisonerName(p.name) || '—'}</span>
-                <span class="block text-sm text-text-tertiary">#{p.id || '—'} · {p.wing || '—'}</span>
+                <span class="block truncate font-medium text-text-primary"
+                  >{maskPrisonerName(p.name) || '—'}</span
+                >
+                <span class="block text-sm text-text-tertiary"
+                  >#{p.id || '—'} · {p.wing || '—'}</span
+                >
               </span>
               {#if p.extra}<span class="tag">{t('coPrisonerTag')}</span>{/if}
             </li>
@@ -327,7 +410,13 @@
         {#each visitors as v, i (i)}
           <li class="person">
             <span class="min-w-0 truncate text-text-primary">{v.name}</span>
-            <span class="chip {v.state === 'yes' ? 'is-done' : v.state === 'no' ? 'is-stop' : 'is-wait'}">
+            <span
+              class="chip {v.state === 'yes'
+                ? 'is-done'
+                : v.state === 'no'
+                  ? 'is-stop'
+                  : 'is-wait'}"
+            >
               {cleanLabel(v.state === 'pending' ? t('statusPillPending') : approvalLabel(v.state))}
             </span>
           </li>
@@ -345,13 +434,22 @@
   <div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
     <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
       {#if stopped}
-        <button type="button" class="ct-btn ct-btn-ink" onclick={() => navigate('booking')}>{t('bookNew')}</button>
+        <button type="button" class="ct-btn ct-btn-ink" onclick={() => navigate('booking')}
+          >{t('bookNew')}</button
+        >
       {/if}
-      <button type="button" class="ct-btn ct-btn-line" onclick={() => onsearchagain()}>{t('searchAgain')}</button>
+      <button type="button" class="ct-btn ct-btn-line" onclick={() => onsearchagain()}
+        >{t('searchAgain')}</button
+      >
     </div>
     {#if showCancelBtn}
       <div class="text-center sm:text-right">
-        <button type="button" class="cancel" disabled={cancelling} onclick={() => void cancelBooking()}>
+        <button
+          type="button"
+          class="cancel"
+          disabled={cancelling}
+          onclick={() => void cancelBooking()}
+        >
           {t('cancelBooking')}
         </button>
         <p class="text-xs text-text-tertiary">{cleanLabel(t('cancelHint'))}</p>
