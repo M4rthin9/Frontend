@@ -18,6 +18,7 @@
   import EndPage from '../components/home/EndPage.svelte';
   import FolioBar from '../components/home/FolioBar.svelte';
   import TableAnnouncement from '../components/home/TableAnnouncement.svelte';
+  import VisitAnnouncement from '../components/home/VisitAnnouncement.svelte';
 
   const promo = $derived(ui.publicSettings.promo);
   const bookingWindow = $derived(ui.publicSettings.bookingWindow);
@@ -57,6 +58,7 @@
 
 <div bind:this={page} class="home-book">
   <CoverSpread />
+  <VisitAnnouncement />
   <TableAnnouncement />
   <VisitGuide />
 
@@ -72,10 +74,13 @@
             {#if !bookingWindow.open}
               <div role="status">
                 <h3 class="flex items-center gap-2 text-base font-medium text-[var(--ct-orange)]">
-                  <span class="h-2 w-2 rounded-full bg-[var(--ct-orange)]" aria-hidden="true"></span>
+                  <span class="h-2 w-2 rounded-full bg-[var(--ct-orange)]" aria-hidden="true"
+                  ></span>
                   {t('bookingClosedTitle')}
                 </h3>
-                <p class="mt-2 whitespace-pre-line text-sm font-light leading-relaxed text-text-secondary sm:text-base">
+                <p
+                  class="mt-2 whitespace-pre-line text-sm font-light leading-relaxed text-text-secondary sm:text-base"
+                >
                   {bookingWindow.closedMessage || t('bookingClosedText')}
                 </p>
               </div>

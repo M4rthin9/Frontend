@@ -329,7 +329,8 @@
 
         <div class="rules">
           <strong>{t('confirmRules')}</strong><br />
-          <span>{t('rulesDesc')}</span><br />
+          <span class="whitespace-pre-line">{t(isTable ? 'rulesDesc' : 'homeVisRulesText')}</span
+          ><br />
           {#if isTable}
             {t('textBookingPage14')} <strong>{store.perDay} {t('textBookingPage15')}</strong>
             {t('textBookingPage16')} <strong>{t('textBookingPage17')}</strong><br />

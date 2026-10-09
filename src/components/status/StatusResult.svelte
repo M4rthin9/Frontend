@@ -304,6 +304,15 @@
       <h2 class="text-base font-semibold">{cleanLabel(statusNotice.title)}</h2>
       <p class="mt-1 text-sm leading-relaxed text-text-secondary">{statusNotice.text}</p>
 
+      {#if !isTable && (normalized === 'ชำระแล้ว' || normalized === 'เสร็จสิ้น')}
+        <div class="mt-4 border-t border-border-subtle pt-4">
+          <h3 class="text-sm font-semibold">{t('homeVisRulesTitle')}</h3>
+          <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-text-secondary">
+            {t('homeVisRulesText')}
+          </p>
+        </div>
+      {/if}
+
       {#if rejectReason && (statusNotice.kind === 'reject' || statusNotice.kind === 'cancel')}
         <div class="mt-3 border-l-2 border-[var(--tone)] pl-3">
           <p class="text-xs font-medium text-text-tertiary">

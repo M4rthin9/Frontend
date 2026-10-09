@@ -376,7 +376,9 @@
       <Upload class="h-5 w-5 text-red-700" />{t('uploadSlipTitle')}
     </div>
 
-    <div class="upload-note">{t('uploadSlipNote')}</div>
+    {#if !booking.ref.toUpperCase().startsWith('TBL-')}
+      <div class="upload-note whitespace-pre-line">{t('uploadSlipNote')}</div>
+    {/if}
 
     <div
       class="upload-area {dragOver ? 'drag-over' : ''}"
