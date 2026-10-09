@@ -811,5 +811,8 @@
   "homeVisPhone": "Điện thoại di động không được phép mang vào khu thăm gặp. Vui lòng tuân thủ quy định của trại.",
   "homeVisWalletTitle": "Mua thêm bằng QR Wallet",
   "homeVisWallet": "Sẽ có QR Wallet để mua thêm thức ăn, bánh và đồ uống không nằm trong thực đơn trọn gói. Các món này được tính phí riêng.",
-  "homeVisRulesText": "Sau khi thanh toán, vui lòng đến Cơ sở Cải huấn Đặc biệt Trung ương vào ngày đã đặt để đăng ký từ 08:00–10:30. Giờ thăm gặp từ 11:00–13:00.\nMang theo thẻ căn cước hoặc hộ chiếu bản gốc để đăng ký.\nĐiện thoại di động không được phép mang vào khu thăm gặp. Vui lòng tuân thủ quy định của trại.\nSẽ có QR Wallet để mua thêm thức ăn, bánh và đồ uống không nằm trong thực đơn trọn gói. Các món này được tính phí riêng."
+  "homeVisRulesText": "Sau khi thanh toán, vui lòng đến Cơ sở Cải huấn Đặc biệt Trung ương vào ngày đã đặt để đăng ký từ 08:00–10:30. Giờ thăm gặp từ 11:00–13:00.\nMang theo thẻ căn cước hoặc hộ chiếu bản gốc để đăng ký.\nĐiện thoại di động không được phép mang vào khu thăm gặp. Vui lòng tuân thủ quy định của trại.\nSẽ có QR Wallet để mua thêm thức ăn, bánh và đồ uống không nằm trong thực đơn trọn gói. Các món này được tính phí riêng.",
+  "statusPillRefunded": "Đã hoàn tiền",
+  "noticeRefunded": "Đã hoàn tiền",
+  "noticeRefundedText": "Bộ phận tài chính đã ghi nhận hoàn tiền cho đặt chỗ này. Vui lòng liên hệ nhân viên để xác nhận số tiền hoặc chi tiết hoàn tiền."
 }

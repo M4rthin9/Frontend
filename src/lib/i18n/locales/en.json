@@ -811,5 +811,8 @@
   "homeVisPhone": "Mobile phones are not permitted in the visiting area. Please follow the institution’s rules.",
   "homeVisWalletTitle": "Additional purchases with QR Wallet",
   "homeVisWallet": "A QR Wallet will be available to buy food, bakery items, and drinks outside the course. These purchases are charged separately from the course fee.",
-  "homeVisRulesText": "After payment, come to Central Special Correctional Institution on your booked date to register from 8:00–10:30 a.m. Visitation is from 11:00 a.m.–1:00 p.m.\nBring your original national ID card or passport for registration.\nMobile phones are not permitted in the visiting area. Please follow the institution’s rules.\nA QR Wallet will be available to buy food, bakery items, and drinks outside the course. These purchases are charged separately from the course fee."
+  "homeVisRulesText": "After payment, come to Central Special Correctional Institution on your booked date to register from 8:00–10:30 a.m. Visitation is from 11:00 a.m.–1:00 p.m.\nBring your original national ID card or passport for registration.\nMobile phones are not permitted in the visiting area. Please follow the institution’s rules.\nA QR Wallet will be available to buy food, bakery items, and drinks outside the course. These purchases are charged separately from the course fee.",
+  "statusPillRefunded": "Refunded",
+  "noticeRefunded": "Refunded",
+  "noticeRefundedText": "Finance has recorded a refund for this booking. Contact staff to confirm the amount or refund details."
 }

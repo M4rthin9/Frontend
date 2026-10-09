@@ -8,6 +8,7 @@ export type NormalizedStatus =
   | 'รอชำระเงิน'
   | 'ชำระแล้ว'
   | 'เสร็จสิ้น'
+  | 'คืนเงินแล้ว'
   | 'ยกเลิก'
   | 'ไม่อนุมัติ';
 
@@ -17,6 +18,7 @@ const CANONICAL: NormalizedStatus[] = [
   'รอชำระเงิน',
   'ชำระแล้ว',
   'เสร็จสิ้น',
+  'คืนเงินแล้ว',
   'ยกเลิก',
   'ไม่อนุมัติ',
 ];
@@ -31,6 +33,7 @@ export function normalizeStatus(status: string | null | undefined): NormalizedSt
   if (low === 'rejected') return 'ไม่อนุมัติ';
   if (low === 'paid') return 'ชำระแล้ว';
   if (low === 'done') return 'เสร็จสิ้น';
+  if (low === 'refunded' || low === 'refund') return 'คืนเงินแล้ว';
   if (low === 'cancelled') return 'ยกเลิก';
   return 'รอตรวจสอบผู้เข้าร่วม';
 }
@@ -45,6 +48,8 @@ export function statusPillLabel(status: string | null | undefined): string {
       return i18n.t('statusPillPaid');
     case 'เสร็จสิ้น':
       return i18n.t('statusPillDone');
+    case 'คืนเงินแล้ว':
+      return i18n.t('statusPillRefunded');
     case 'ยกเลิก':
       return i18n.t('statusPillCancelled');
     case 'ไม่อนุมัติ':
@@ -64,13 +69,16 @@ export function cleanLabel(label: string): string {
 }
 
 /** Colour family for a status on the Chef Table pages (`.ct-pill.is-*`). */
-export function statusTone(status: string | null | undefined): 'is-wait' | 'is-pay' | 'is-done' | 'is-stop' {
+export function statusTone(
+  status: string | null | undefined,
+): 'is-wait' | 'is-pay' | 'is-done' | 'is-stop' {
   switch (normalizeStatus(status)) {
     case 'ชำระแล้ว':
     case 'เสร็จสิ้น':
       return 'is-done';
     case 'รอชำระเงิน':
       return 'is-pay';
+    case 'คืนเงินแล้ว':
     case 'ยกเลิก':
     case 'ไม่อนุมัติ':
       return 'is-stop';
@@ -89,6 +97,7 @@ export function statusPillClass(status: string | null | undefined): string {
       return 'status-paid';
     case 'เสร็จสิ้น':
       return 'status-paid';
+    case 'คืนเงินแล้ว':
     case 'ยกเลิก':
       return 'status-cancelled';
     case 'ไม่อนุมัติ':
@@ -108,6 +117,7 @@ export function statusCardClass(status: string | null | undefined): string {
       return 'status-paid';
     case 'เสร็จสิ้น':
       return 'status-paid';
+    case 'คืนเงินแล้ว':
     case 'ยกเลิก':
       return 'status-cancelled';
     case 'ไม่อนุมัติ':
@@ -125,7 +135,7 @@ export function pickBooking(
 ): PublicReservation | null {
   if (!Array.isArray(rows) || rows.length === 0) return null;
   const todayStr = toLocalDateStr(new Date());
-  const cancelled = new Set(['ยกเลิก', 'cancelled']);
+  const cancelled = new Set(['ยกเลิก', 'cancelled', 'คืนเงินแล้ว', 'refunded']);
   const completed = new Set(['เสร็จสิ้น', 'done']);
 
   if (mode === 'ref') {
@@ -168,7 +178,9 @@ export function pickBooking(
 
 /** Parse the reference's extraVisitorNames payload into plain names. */
 /** Prisoners seated at the booking's table besides the main one (`name|id|wing` rows joined by `;;`). */
-export function parseExtraPrisoners(raw: string | null | undefined): { name: string; id: string; wing: string }[] {
+export function parseExtraPrisoners(
+  raw: string | null | undefined,
+): { name: string; id: string; wing: string }[] {
   return String(raw ?? '')
     .split(';;')
     .map((e) => {

@@ -167,7 +167,7 @@
     เสร็จสิ้น: 'stepReady',
   };
   const steps = $derived(isTable ? TABLE_STEPS : VISIT_STEPS);
-  const stopped = $derived(normalized === 'ยกเลิก' || normalized === 'ไม่อนุมัติ');
+  const stopped = $derived(normalized === 'ยกเลิก' || normalized === 'ไม่อนุมัติ' || normalized === 'คืนเงินแล้ว');
   const currentStep = $derived(steps.indexOf(normalized));
 
   function stepState(i: number): 'done' | 'now' | 'next' {
@@ -189,6 +189,7 @@
     if (s === 'เสร็จสิ้น') {
       return { title: t('noticeDone'), text: t('noticeDoneText'), kind: 'done' };
     }
+    if (s === 'คืนเงินแล้ว') return { title: t('noticeRefunded'), text: t('noticeRefundedText'), kind: 'cancel' };
     if (s === 'ยกเลิก') {
       return { title: t('noticeCancelled'), text: t('noticeCancelledText'), kind: 'cancel' };
     }
@@ -213,7 +214,7 @@
   const changesLocked = $derived(
     isTable && TABLE_NO_CHANGES_AGREEMENT_VERSIONS.includes(booking.tableAgreementVersion ?? ''),
   );
-  const showCancelBtn = $derived(!changesLocked && !['ยกเลิก', 'เสร็จสิ้น'].includes(normalized));
+  const showCancelBtn = $derived(!changesLocked && !['ยกเลิก', 'เสร็จสิ้น', 'คืนเงินแล้ว'].includes(normalized));
 
   async function cancelBooking(): Promise<void> {
     if (
