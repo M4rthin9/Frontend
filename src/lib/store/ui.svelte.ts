@@ -39,8 +39,10 @@ class UIStore {
   publicSettings = $state<PublicSettings>(EMPTY_SETTINGS);
   /** True once the server answered (or failed) — the promo popup waits for it. */
   publicSettingsLoaded = $state(false);
+  publicSettingsError = $state(false);
   now = $state(Date.now());
   private serverOffset = 0;
+  private loadingSettings = false;
   tableBookingScheduled = $derived(
     this.publicSettings.tableBooking.enabled &&
       !this.publicSettings.tableBooking.maintenance &&
@@ -61,14 +63,18 @@ class UIStore {
   }
 
   async loadPublicSettings(): Promise<void> {
+    if (this.loadingSettings) return;
+    this.loadingSettings = true;
     try {
-      this.publicSettings = await getPublicSettings();
+      this.publicSettings = await getPublicSettings(true);
+      this.publicSettingsError = false;
       const serverTime = Date.parse(this.publicSettings.tableBooking.serverTime ?? '');
       if (Number.isFinite(serverTime)) this.serverOffset = serverTime - Date.now();
       this.tick();
     } catch {
-      this.publicSettings = EMPTY_SETTINGS;
+      this.publicSettingsError = true;
     } finally {
+      this.loadingSettings = false;
       i18n.setContent(this.publicSettings.frontendContent);
       this.publicSettingsLoaded = true;
     }

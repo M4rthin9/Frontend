@@ -19,6 +19,7 @@
   import FolioBar from '../components/home/FolioBar.svelte';
   import TableAnnouncement from '../components/home/TableAnnouncement.svelte';
   import VisitAnnouncement from '../components/home/VisitAnnouncement.svelte';
+  import ReservationOverview from '../components/home/ReservationOverview.svelte';
 
   const promo = $derived(ui.publicSettings.promo);
   const bookingWindow = $derived(ui.publicSettings.bookingWindow);
@@ -58,6 +59,7 @@
 
 <div bind:this={page} class="home-book">
   <CoverSpread />
+  <ReservationOverview />
   <VisitAnnouncement />
   <TableAnnouncement />
   <VisitGuide />

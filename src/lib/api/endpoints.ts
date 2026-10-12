@@ -154,7 +154,7 @@ export async function getPushPublicKey(): Promise<{ publicKey: string; pushEnabl
 }
 
 /** Link this browser's push subscription to a booking (status changes reach it)
- *  and/or opt it in to the "booking opens" alerts. */
+ *  and/or opt it in to opening and returned-table availability alerts. */
 export async function subscribePush(input: {
   ref?: string;
   openingAlerts?: boolean;
@@ -256,7 +256,7 @@ const DEFAULT_TABLE_BOOKING: TableBookingPublicConfig = {
 
 /** Public read of the booking-site settings. Fails open: if the backend is
  *  unreachable we must never wrongly tell a visitor that payment is closed. */
-export async function getPublicSettings(): Promise<PublicSettings> {
+export async function getPublicSettings(strict = false): Promise<PublicSettings> {
   try {
     const data = await callGet<{
       status: string;
@@ -270,6 +270,7 @@ export async function getPublicSettings(): Promise<PublicSettings> {
       frontendContent?: PublicSettings['frontendContent'];
     }>('/api/public-settings', {});
     if (data.status !== 'ok') {
+      if (strict) assertOk(data);
       return {
         paymentEnabled: true,
         paymentClosedMessage: '',
@@ -314,7 +315,8 @@ export async function getPublicSettings(): Promise<PublicSettings> {
         contact: data.pdpa?.contact ?? '',
       },
     };
-  } catch {
+  } catch (error) {
+    if (strict) throw error;
     return {
       paymentEnabled: true,
       paymentClosedMessage: '',

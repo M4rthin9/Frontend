@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350" role="img" aria-labelledby="title desc">
+  <title id="title">คู่มือการจองภาษาไทย — เช็กสถานะก่อนจอง</title>
+  <desc id="desc">แนะนำสถานะยังจองได้ เต็มแล้ว และยังไม่เปิดจอง พร้อมกติกาและการตรวจสอบรอบถัดไปบนเว็บไซต์ ภาพนี้เป็นคู่มือ ไม่ใช่ข้อมูลที่ว่างปัจจุบัน</desc>
+  <style>text { font-family: 'Noto Sans Thai', Tahoma, sans-serif; } .body { font-size: 29px; fill: #514d48; } .small { font-size: 25px; fill: #625e58; } .heading { font-size: 35px; font-weight: 700; fill: #27231f; }</style>
+  <rect width="1080" height="1350" fill="#f6f2e9"/>
+  <rect width="1080" height="260" fill="#27231f"/>
+  <rect x="60" y="48" width="8" height="150" rx="4" fill="#ff9c46"/>
+  <text x="92" y="88" fill="#ff9c46" font-size="25" font-weight="700">CHEF TABLE ในเรือนจำ • คู่มือการจอง</text>
+  <text x="92" y="155" fill="white" font-size="57" font-weight="700">ยังว่างไหม? เปิดจองเมื่อไร?</text>
+  <text x="92" y="208" fill="#e1ddd6" font-size="29">เช็กได้ที่หน้าแรก ก่อนกรอกแบบฟอร์มจอง</text>
+
+  <text x="60" y="321" class="heading">อ่านสถานะให้เข้าใจใน 3 สี</text>
+  <rect x="60" y="345" width="960" height="104" rx="16" fill="#e7f3e9"/>
+  <circle cx="100" cy="394" r="12" fill="#15803d"/>
+  <text x="130" y="407" fill="#166534" font-size="34" font-weight="700">ยังจองได้</text>
+  <text x="370" y="407" class="body">เลือกวันที่ว่าง แล้วส่งคำขอจอง</text>
+  <rect x="60" y="463" width="960" height="104" rx="16" fill="#fae9e5"/>
+  <circle cx="100" cy="512" r="12" fill="#b91c1c"/>
+  <text x="130" y="525" fill="#b91c1c" font-size="34" font-weight="700">เต็มแล้ว</text>
+  <text x="370" y="525" class="body">เลือกวันอื่น หรือรอเปิดจองวันใหม่</text>
+  <rect x="60" y="581" width="960" height="104" rx="16" fill="#fff0d2"/>
+  <circle cx="100" cy="630" r="12" fill="#a16207"/>
+  <text x="130" y="643" fill="#854d0e" font-size="34" font-weight="700">ยังไม่เปิดจอง</text>
+  <text x="400" y="643" class="body">รอวันและเวลาที่ระบบแสดง</text>
+
+  <text x="60" y="750" class="heading">เปิดจองรอบถัดไป ดูตรงไหน?</text>
+  <text x="60" y="798" class="body">ดูช่อง “เปิดจองรอบถัดไป” ที่หน้าแรกของเว็บไซต์</text>
+  <text x="60" y="842" class="body">ตรวจให้ครบทั้งวันเปิดจอง เวลา และวันเข้าร่วมกิจกรรม</text>
+  <text x="60" y="885" class="small">วันเปิดจองกับวันเข้าร่วมกิจกรรม เป็นคนละวันกัน</text>
+  <line x1="60" y1="916" x2="1020" y2="916" stroke="#d9d1c4"/>
+
+  <text x="60" y="970" class="heading">กติกาสำคัญก่อนจอง</text>
+  <text x="60" y="1015" class="body">• จองตั้งแต่วันพรุ่งนี้ ล่วงหน้าไม่เกิน 14 วันทำการ</text>
+  <text x="60" y="1059" class="body">• รอบปกติเปิดวันใหม่เวลา 07:00 น. ตามเวลาประเทศไทย</text>
+  <text x="82" y="1100" class="small">วันหยุด / วันปิดรับจอง / รอบพิเศษ ให้ยึดประกาศบนเว็บไซต์</text>
+  <text x="60" y="1148" class="body">• จองเยี่ยม: รออนุมัติ แล้วชำระเมื่อขึ้น “รอชำระเงิน”</text>
+  <text x="60" y="1192" class="body">• จองโต๊ะ: ชำระภายในเวลาที่ระบบกำหนด เพื่อยืนยันโต๊ะ</text>
+
+  <rect y="1233" width="1080" height="117" fill="#27231f"/>
+  <text x="60" y="1280" fill="#ffb77a" font-size="29" font-weight="700">เช็กจำนวนว่างล่าสุด: cida.dpdns.org</text>
+  <text x="60" y="1322" fill="#e1ddd6" font-size="23">ภาพนี้เป็นคู่มือ • สถานะและกติกาปัจจุบันให้ตรวจสอบบนเว็บไซต์</text>
+</svg>

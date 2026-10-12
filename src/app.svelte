@@ -34,8 +34,18 @@
     ui.initDarkMode();
     void ui.loadPublicSettings();
     const clock = window.setInterval(() => ui.tick(), 1000);
-    const refresh = window.setInterval(() => void ui.loadPublicSettings(), 15000);
-    return () => { window.clearInterval(clock); window.clearInterval(refresh); };
+    const refresh = window.setInterval(() => {
+      if (document.visibilityState === 'visible') void ui.loadPublicSettings();
+    }, 60000);
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') void ui.loadPublicSettings();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      window.clearInterval(clock);
+      window.clearInterval(refresh);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   });
 
   $effect(() => {
@@ -92,7 +102,11 @@
 
   <!-- On the home page the footer is the back of the book: the end page's black continues into it.
        The book keeps its own colours there, so the light/dark switch is left to the other pages. -->
-  <div class={bookPage ? 'home-book ct-black [--surface:var(--ct-black)] [--footer-link:var(--ct-orange)]' : ''}>
+  <div
+    class={bookPage
+      ? 'home-book ct-black [--surface:var(--ct-black)] [--footer-link:var(--ct-orange)]'
+      : ''}
+  >
     <Footer themeToggle={!bookPage} />
   </div>
   <LineFab />
@@ -102,9 +116,15 @@
   <CookieConsent />
 
   {#if router.route === 'table-booking' && ui.publicSettingsLoaded && !ui.tableBookingOpen}
-    <Modal open dismissable={false} title={ui.tableBookingScheduled ? t('tblCountdownTitle') : t('tblClosedTitle')}>
+    <Modal
+      open
+      dismissable={false}
+      title={ui.tableBookingScheduled ? t('tblCountdownTitle') : t('tblClosedTitle')}
+    >
       <div class="text-center">
-        <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-3xl">
+        <div
+          class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-3xl"
+        >
           ⏸
         </div>
         {#if ui.tableBookingScheduled}

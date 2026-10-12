@@ -363,8 +363,8 @@
   "homeUnitSeconds": "giây",
   "pushEnable": "Thông báo cho tôi khi đến lượt thanh toán và khi thanh toán thành công",
   "pushOn": "Đã bật thông báo. Chúng tôi sẽ báo khi đến lượt thanh toán và khi thanh toán thành công.",
-  "pushAlertEnable": "Thông báo cho tôi 10 phút trước khi mở đặt chỗ và khi đã mở",
-  "pushAlertOn": "Đã bật thông báo. Chúng tôi sẽ báo 10 phút trước khi mở đặt chỗ (6:50 sáng) và khi mở (7:00 sáng, giờ Thái Lan).",
+  "pushAlertEnable": "Báo khi mở đặt chỗ hoặc có bàn trống trở lại",
+  "pushAlertOn": "Đã bật thông báo. Chúng tôi sẽ báo 10 phút trước khi mở đặt chỗ, khi mở và khi ngày đã kín có bàn trống trở lại.",
   "pushDenied": "Thông báo đang bị chặn. Bạn có thể cho phép trong cài đặt trang web của trình duyệt.",
   "pushError": "Không bật được thông báo. Vui lòng thử lại.",
   "pushIosTitle": "Người dùng iPhone có thể nhận thông báo:",
@@ -814,5 +814,6 @@
   "homeVisRulesText": "Sau khi thanh toán, vui lòng đến Cơ sở Cải huấn Đặc biệt Trung ương vào ngày đã đặt để đăng ký từ 08:00–10:30. Giờ thăm gặp từ 11:00–13:00.\nMang theo thẻ căn cước hoặc hộ chiếu bản gốc để đăng ký.\nĐiện thoại di động không được phép mang vào khu thăm gặp. Vui lòng tuân thủ quy định của trại.\nSẽ có QR Wallet để mua thêm thức ăn, bánh và đồ uống không nằm trong thực đơn trọn gói. Các món này được tính phí riêng.",
   "statusPillRefunded": "Đã hoàn tiền",
   "noticeRefunded": "Đã hoàn tiền",
-  "noticeRefundedText": "Bộ phận tài chính đã ghi nhận hoàn tiền cho đặt chỗ này. Vui lòng liên hệ nhân viên để xác nhận số tiền hoặc chi tiết hoàn tiền."
+  "noticeRefundedText": "Bộ phận tài chính đã ghi nhận hoàn tiền cho đặt chỗ này. Vui lòng liên hệ nhân viên để xác nhận số tiền hoặc chi tiết hoàn tiền.",
+  "pushAvailabilityInfo": "Nhận thông báo mở đặt chỗ và bàn trống do hủy đặt hoặc hết thời hạn thanh toán. Thông báo không giữ bàn; hãy kiểm tra chỗ trống trước khi đặt."
 }

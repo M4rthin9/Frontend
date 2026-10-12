@@ -8,7 +8,7 @@
   import Button from './Button.svelte';
 
   // Opt-in Web Push. kind 'booking': payment-due / paid notices for `ref`.
-  // kind 'opening': the 06:50 and 07:00 "booking opens" alerts, no ref.
+  // kind 'opening': new booking dates and full tables becoming available, no ref.
   // Hidden where push cannot work — no service worker (dev/local), or no
   // PushManager (iPhone Safari outside a home-screen app).
   let {
@@ -40,7 +40,9 @@
   );
 
   function keyBytes(b64url: string): Uint8Array<ArrayBuffer> {
-    const b64 = (b64url + '='.repeat((4 - (b64url.length % 4)) % 4)).replace(/-/g, '+').replace(/_/g, '/');
+    const b64 = (b64url + '='.repeat((4 - (b64url.length % 4)) % 4))
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
     return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
   }
 
@@ -56,7 +58,10 @@
       const reg = await navigator.serviceWorker.ready;
       const sub =
         (await reg.pushManager.getSubscription()) ??
-        (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(publicKey) }));
+        (await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: keyBytes(publicKey),
+        }));
       const json = sub.toJSON();
       await subscribePush({
         ...(opening ? { openingAlerts: true } : { ref }),
@@ -72,7 +77,14 @@
 </script>
 
 {#if supported && (ref || opening)}
-  <div class="mt-3 flex flex-col gap-2 {align === 'start' ? 'items-start text-left' : 'items-center text-center'}">
+  <div
+    class="mt-3 flex flex-col gap-2 {align === 'start'
+      ? 'items-start text-left'
+      : 'items-center text-center'}"
+  >
+    {#if opening}<p class="max-w-xl text-xs leading-relaxed text-[var(--app-text-secondary)]">
+        {t('pushAvailabilityInfo')}
+      </p>{/if}
     {#if state === 'on'}
       <p class="flex items-center gap-2 text-sm font-medium text-[var(--app-text)]" role="status">
         <BellRing class="h-4 w-4 text-[var(--ct-orange-ink)]" aria-hidden="true" />
@@ -84,7 +96,12 @@
         {t('pushDenied')}
       </p>
     {:else}
-      <Button variant="secondary" size="md" disabled={state === 'busy'} onclick={() => void enable()}>
+      <Button
+        variant="secondary"
+        size="md"
+        disabled={state === 'busy'}
+        onclick={() => void enable()}
+      >
         <Bell class="h-4 w-4" aria-hidden="true" />
         {t(opening ? 'pushAlertEnable' : 'pushEnable')}
       </Button>
@@ -95,7 +112,8 @@
   </div>
 {:else if iosNeedsInstall && (ref || opening)}
   <div
-    class="ios-hint mt-3 flex items-start gap-2 rounded-md px-3 py-2.5 text-sm leading-relaxed {align === 'start'
+    class="ios-hint mt-3 flex items-start gap-2 rounded-md px-3 py-2.5 text-sm leading-relaxed {align ===
+    'start'
       ? 'text-left'
       : 'mx-auto max-w-md text-left'}"
   >

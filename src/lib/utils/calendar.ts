@@ -174,11 +174,13 @@ function nextRoll(now: Date, overrides: DateOverrides): { dates: string[]; at: D
     const last = lastOpenDate(day);
     for (let d = addDays(parseLocalDate(prev), 1); toLocalDateStr(d) <= last; d = addDays(d, 1)) {
       const date = toLocalDateStr(d);
-      // A date with its own opening time opens then, not at the roll.
-      if (!isShut(date, overrides) && !overrides.openAt?.[date]) {
+      // A scheduled opening before the date enters the window still waits for the roll.
+      const roll = new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate()));
+      const scheduled = overrides.openAt?.[date];
+      if (!isShut(date, overrides) && (!scheduled || new Date(scheduled) <= roll)) {
         return {
           dates: [date],
-          at: new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate())),
+          at: roll,
         };
       }
     }
@@ -198,10 +200,17 @@ export function nextOpening(
 ): { dates: string[]; at: Date } | null {
   let best = nextRoll(now, overrides);
   for (const [date, iso] of Object.entries(overrides.openAt ?? {})) {
-    const at = new Date(iso);
-    if (!(at > now) || isShut(date, overrides)) continue;
+    let at = new Date(iso);
+    if (!Number.isFinite(at.getTime()) || isShut(date, overrides)) continue;
+    // A scheduled date still has to enter the rolling booking window.
+    for (let k = 0; date > lastOpenDate(bookingDay(at)) && k < 366; k++) {
+      at = new Date(Date.UTC(at.getUTCFullYear(), at.getUTCMonth(), at.getUTCDate() + 1));
+    }
+    if (!(at > now) || date > lastOpenDate(bookingDay(at))) continue;
+    if (date <= new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Bangkok' }).format(at)) continue;
     if (!best || at < best.at) best = { dates: [date], at };
-    else if (at.getTime() === best.at.getTime()) best = { dates: [...best.dates, date].sort(), at };
+    else if (at.getTime() === best.at.getTime())
+      best = { dates: [...new Set([...best.dates, date])].sort(), at };
   }
   return best;
 }
@@ -214,13 +223,14 @@ export function buildCalendarCells(
   bookings: Record<string, number>,
   perDay: number = QUOTA,
   overrides: DateOverrides = NO_OVERRIDES,
+  now: Date = new Date(),
 ): CalendarCell[] {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const today = new Date();
+  const today = now;
 
-  const todayStr = toLocalDateStr(today);
-  const minAllowedStr = toLocalDateStr(addDays(today, 1)); // พรุ่งนี้
+  const todayStr = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Bangkok' }).format(today);
+  const minAllowedStr = toLocalDateStr(addDays(parseLocalDate(todayStr), 1)); // พรุ่งนี้ในประเทศไทย
   const maxAllowedStr = lastOpenDate(bookingDay(today));
 
   const cells: CalendarCell[] = [];

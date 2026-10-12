@@ -363,8 +363,8 @@
   "homeUnitSeconds": "sec",
   "pushEnable": "Notify me when it is time to pay and when payment is confirmed",
   "pushOn": "Notifications are on. We will tell you when it is time to pay and when your payment is confirmed.",
-  "pushAlertEnable": "Notify me 10 minutes before booking opens, and when it opens",
-  "pushAlertOn": "Notifications are on. We will tell you 10 minutes before booking opens (6:50 a.m.) and when it opens (7:00 a.m., Thailand time).",
+  "pushAlertEnable": "Notify me when booking opens or a table becomes available again",
+  "pushAlertOn": "Notifications are on. We will notify you 10 minutes before booking opens, when it opens, and when a full table date becomes available again.",
   "pushDenied": "Notifications are blocked. You can allow them in your browser site settings.",
   "pushError": "Could not turn on notifications. Please try again.",
   "pushIosTitle": "iPhone users can get notifications:",
@@ -814,5 +814,6 @@
   "homeVisRulesText": "After payment, come to Central Special Correctional Institution on your booked date to register from 8:00–10:30 a.m. Visitation is from 11:00 a.m.–1:00 p.m.\nBring your original national ID card or passport for registration.\nMobile phones are not permitted in the visiting area. Please follow the institution’s rules.\nA QR Wallet will be available to buy food, bakery items, and drinks outside the course. These purchases are charged separately from the course fee.",
   "statusPillRefunded": "Refunded",
   "noticeRefunded": "Refunded",
-  "noticeRefundedText": "Finance has recorded a refund for this booking. Contact staff to confirm the amount or refund details."
+  "noticeRefundedText": "Finance has recorded a refund for this booking. Contact staff to confirm the amount or refund details.",
+  "pushAvailabilityInfo": "Get opening alerts and updates when cancellations or expired payment holds free a table. Alerts do not reserve a table; check availability before booking."
 }

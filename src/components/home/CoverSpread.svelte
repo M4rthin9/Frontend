@@ -10,6 +10,7 @@
   import LineIcon from '../ui/LineIcon.svelte';
   import { navigate } from '../../lib/router.svelte';
   import { ui } from '../../lib/store/ui.svelte';
+  import { visitPlan } from '../../lib/store/visitPlan.svelte';
   import { EASE_OUT, MQ, gsap } from '../../lib/motion';
   import Headline from './Headline.svelte';
 
@@ -17,6 +18,22 @@
 
   const settings = $derived(ui.publicSettings);
   const bookingOpen = $derived(settings.bookingWindow.open);
+  const statusKey = $derived(
+    !ui.publicSettingsLoaded ||
+      visitPlan.countsState === 'idle' ||
+      visitPlan.countsState === 'loading'
+      ? 'availabilityLoading'
+      : ui.publicSettingsError || visitPlan.countsState === 'error'
+        ? 'availabilityError'
+        : !bookingOpen
+          ? 'availabilityClosed'
+          : visitPlan.freeDays.length
+            ? 'availabilityOpen'
+            : visitPlan.openDays.length
+              ? 'availabilityFull'
+              : 'availabilityNoDates',
+  );
+  const hasAvailability = $derived(statusKey === 'availabilityOpen');
   const tagline = $derived([1, 2, 3].map((n) => t(`ctTag${n}`).split('|')));
   const mastLines = $derived(t('ctMastTitle').split('|'));
   // The steps line breaks only between its phrases, never inside one
@@ -26,7 +43,7 @@
   function toDates(): void {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     document
-      .getElementById('home-dates')
+      .getElementById('reservation-overview')
       ?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   }
 
@@ -150,29 +167,27 @@
       <div data-line class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm">
         <span class="inline-flex items-center gap-2" role="status">
           <span class="relative flex h-2 w-2" aria-hidden="true">
-            {#if bookingOpen}
+            {#if hasAvailability}
               <span
                 class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 motion-safe:animate-ping"
               ></span>
             {/if}
             <span
-              class="relative inline-flex h-2 w-2 rounded-full {bookingOpen
+              class="relative inline-flex h-2 w-2 rounded-full {hasAvailability
                 ? 'bg-emerald-400'
-                : 'bg-amber-400'}"
+                : statusKey === 'availabilityFull'
+                  ? 'bg-red-400'
+                  : 'bg-amber-400'}"
             ></span>
           </span>
-          <span class="text-text-secondary"
-            >{bookingOpen ? t('homeStatusBookingOpen') : t('homeStatusBookingClosed')}</span
-          >
+          <span class="text-text-secondary">{t(statusKey)}</span>
         </span>
         <button type="button" class="ct-link" onclick={() => navigate('status')}>
           <Search class="h-4 w-4" aria-hidden="true" />{t('btnStatus')}
         </button>
-        {#if bookingOpen}
-          <button type="button" class="ct-link" onclick={toDates}>
-            <ArrowDown class="h-4 w-4" aria-hidden="true" />{t('homeCtaDates')}
-          </button>
-        {/if}
+        <button type="button" class="ct-link" onclick={toDates}>
+          <ArrowDown class="h-4 w-4" aria-hidden="true" />{t('availabilityCheck')}
+        </button>
       </div>
 
       <!-- LINE, in its own green, so it is the one thing on the cover that is not book-coloured. -->
