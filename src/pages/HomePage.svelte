@@ -8,7 +8,6 @@
   import Headline from '../components/home/Headline.svelte';
   import VisitGuide from '../components/home/VisitGuide.svelte';
   import CoverSpread from '../components/home/CoverSpread.svelte';
-  import DateRail from '../components/home/DateRail.svelte';
   import HomeStatusCheck from '../components/home/HomeStatusCheck.svelte';
   import ChefTable from '../components/home/ChefTable.svelte';
   import CraftChapter from '../components/home/CraftChapter.svelte';
@@ -17,8 +16,6 @@
   import SetTable from '../components/home/SetTable.svelte';
   import EndPage from '../components/home/EndPage.svelte';
   import FolioBar from '../components/home/FolioBar.svelte';
-  import TableAnnouncement from '../components/home/TableAnnouncement.svelte';
-  import VisitAnnouncement from '../components/home/VisitAnnouncement.svelte';
   import ReservationOverview from '../components/home/ReservationOverview.svelte';
 
   const promo = $derived(ui.publicSettings.promo);
@@ -27,7 +24,7 @@
   const hasNotice = $derived(promo.notice.enabled && !!(promo.notice.title || promo.notice.body));
 
   // Scroll-linked sections remember where they start. Anything that changes the
-  // page's height above them (news arriving, the date rail filling) would leave
+  // page's height above them (news arriving, availability loading) would leave
   // them measuring stale positions, so re-measure on every real height change.
   // The comparison against the post-refresh height stops a refresh from looping.
   let page = $state<HTMLElement>();
@@ -60,8 +57,6 @@
 <div bind:this={page} class="home-book">
   <CoverSpread />
   <ReservationOverview />
-  <VisitAnnouncement />
-  <TableAnnouncement />
   <VisitGuide />
 
   <!-- Announcements stay reachable on the page when the popup is off or was dismissed. -->
@@ -113,7 +108,6 @@
     </section>
   {/if}
 
-  <DateRail />
   <HomeStatusCheck />
   <VisitSteps />
   <SetTable />
