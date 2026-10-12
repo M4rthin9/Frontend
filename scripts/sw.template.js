@@ -72,7 +72,9 @@ self.addEventListener('fetch', (event) => {
   // Each standalone document has its own fallback; it must not replace the SPA shell.
   if (request.mode === 'navigate') {
     const documentKey =
-      url.pathname === '/system-status.html' ? '/system-status.html' : '/index.html';
+      url.pathname === '/system-status.html' || url.pathname === '/system-status'
+        ? '/system-status.html'
+        : '/index.html';
     event.respondWith(
       fetch(request)
         .then((response) => {

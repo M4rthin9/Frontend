@@ -43,8 +43,11 @@ async function navigateDocument(path) {
 }
 assert.equal(await (await navigateDocument('/system-status.html')).text(), 'STATUS_DOCUMENT');
 assert.equal(await cachedDocuments.get('/index.html').clone().text(), 'BOOKING_SHELL');
+assert.equal(await (await navigateDocument('/system-status')).text(), 'STATUS_DOCUMENT');
+assert.equal(await cachedDocuments.get('/index.html').clone().text(), 'BOOKING_SHELL');
 offline = true;
 assert.equal(await (await navigateDocument('/system-status.html')).text(), 'STATUS_DOCUMENT');
+assert.equal(await (await navigateDocument('/system-status')).text(), 'STATUS_DOCUMENT');
 assert.equal(await (await navigateDocument('/')).text(), 'BOOKING_SHELL');
 const root = fileURLToPath(new URL('../dist/', import.meta.url));
 const outputs = fileURLToPath(new URL('../.local/status-preview/', import.meta.url));
