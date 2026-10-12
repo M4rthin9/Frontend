@@ -43,6 +43,16 @@
   const nextAt = $derived(
     closed ? null : scheduled ? new Date(tableConfig.opensAt) : (opening?.at ?? null),
   );
+  // Reuse the existing browser clock; ticking never fetches availability or settings.
+  const remaining = $derived(
+    nextAt ? Math.max(0, Math.ceil((nextAt.getTime() - ui.now) / 1000)) : 0,
+  );
+  const countdown = $derived([
+    { value: Math.floor(remaining / 86400), unit: 'homeUnitDays' },
+    { value: Math.floor((remaining % 86400) / 3600), unit: 'homeUnitHours' },
+    { value: Math.floor((remaining % 3600) / 60), unit: 'homeUnitMinutes' },
+    { value: remaining % 60, unit: 'homeUnitSeconds' },
+  ]);
 
   // Read the same cells as the booking form. Full dates stay visible so a
   // customer can distinguish a sold-out day from a day that has not opened.
@@ -245,6 +255,19 @@
             <time datetime={nextAt.toISOString()}>{instantLabel(nextAt)}</time>
           </p>
           <p class="timezone">{t('availabilityTimezone')}</p>
+          <div
+            class="countdown"
+            role="timer"
+            aria-label={t('availabilityNext')}
+            aria-live="off"
+          >
+            {#each countdown as part (part.unit)}
+              <div class="countdown-part">
+                <strong>{String(part.value).padStart(2, '0')}</strong>
+                <span>{t(part.unit)}</span>
+              </div>
+            {/each}
+          </div>
           {#if !scheduled && opening}
             <p class="opening-dates">
               {tc('availabilityOpeningDates', { dates: opening.dates.map(dateLabel).join(' · ') })}
@@ -492,6 +515,33 @@
     margin-top: 0.7rem;
     font-size: 0.9rem;
     line-height: 1.7;
+    color: #e4e1df;
+  }
+  .countdown {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .countdown-part {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.65rem 0.25rem;
+    border: 1px solid #ffffff24;
+    border-radius: 0.5rem;
+    background: #ffffff0a;
+  }
+  .countdown-part strong {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 600;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    color: var(--ct-orange);
+  }
+  .countdown-part span {
+    font-size: 0.7rem;
     color: #e4e1df;
   }
   .dates-heading {
