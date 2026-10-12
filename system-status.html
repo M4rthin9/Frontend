@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#faf9f6" />
+    <meta
+      name="description"
+      content="ตรวจสถานะระบบจอง Chance & Change Cafe และประวัติการตรวจสอบบริการ"
+    />
+    <title>สถานะระบบ | Chance & Change Cafe</title>
+    <link rel="icon" href="/favicon.svg" />
+    <script type="module" src="/src/system-status.ts"></script>
+  </head>
+  <body>
+    <div class="status-shell">
+      <header class="site-header">
+        <a class="brand" href="/">
+          <img src="/cida-logo-64.webp" alt="" width="42" height="42" />
+          <span>CHANCE & CHANGE<small>สถานะการให้บริการ</small></span>
+        </a>
+        <a class="back-link" href="/">กลับไปเว็บไซต์ <span aria-hidden="true">↗</span></a>
+      </header>
+      <main>
+        <p class="eyebrow">SYSTEM STATUS</p>
+        <h1>ทุกบริการ เป็นอย่างไรบ้าง</h1>
+        <p class="intro">ตรวจสถานะระบบก่อนจอง และติดตามความพร้อมของบริการได้ที่นี่</p>
+        <section class="summary unknown" id="summary" aria-live="polite" aria-atomic="true">
+          <span class="status-symbol" aria-hidden="true">●</span>
+          <div>
+            <h2 id="overall-title">กำลังตรวจสอบสถานะ</h2>
+            <p id="overall-description">รอสักครู่เพื่อโหลดผลตรวจล่าสุด</p>
+          </div>
+        </section>
+        <div class="update-row">
+          <p id="checked-at">ยังไม่มีเวลาตรวจล่าสุด</p>
+          <button id="refresh" type="button">ตรวจใหม่ <span aria-hidden="true">↻</span></button>
+        </div>
+        <p id="connection-note" class="connection-note" role="status"></p>
+        <aside id="notice" class="notice" hidden>
+          <p class="eyebrow">ประกาศจากร้าน</p>
+          <h2 id="notice-title"></h2>
+          <p id="notice-body"></p>
+        </aside>
+        <section aria-labelledby="services-heading" class="services-section">
+          <div class="section-heading">
+            <h2 id="services-heading">สถานะรายบริการ</h2>
+            <span>ประวัติ 7 วัน</span>
+          </div>
+          <div id="services" class="services"></div>
+          <div class="legend">
+            <span><i class="operational"></i>ตรวจผ่าน</span
+            ><span><i class="maintenance"></i>ปิดบริการชั่วคราว</span
+            ><span><i class="outage"></i>พบปัญหา</span
+            ><span><i class="unknown"></i>ข้อมูลไม่ครบ</span>
+          </div>
+        </section>
+        <section class="history-section" aria-labelledby="history-heading">
+          <div class="section-heading">
+            <h2 id="history-heading">เหตุการณ์ที่ตรวจพบ</h2>
+            <span>ย้อนหลัง 7 วัน</span>
+          </div>
+          <div id="incidents"><p class="empty-history">กำลังโหลดประวัติการตรวจสอบ</p></div>
+        </section>
+        <aside class="about-monitor">
+          <h2>ผลตรวจนี้บอกอะไรบ้าง</h2>
+          <p>
+            ตรวจการเชื่อมต่อและความพร้อมของบริการทุก 5 นาที ประวัติเริ่มสะสมจากวันที่เปิดหน้านี้
+            ช่วงที่ไม่มีผลตรวจจะแสดงเป็นสีเทา
+          </p>
+          <p>
+            ผลตรวจไม่ได้ยืนยันว่ามีโต๊ะว่าง ไม่ได้ทดสอบการจองหรือโอนเงินจริง
+            และไม่ได้ยืนยันการส่งแจ้งเตือนไปยังโทรศัพท์แต่ละเครื่อง
+          </p>
+          <a id="contact" href="/">ต้องการความช่วยเหลือ ติดต่อร้าน ↗</a>
+        </aside>
+      </main>
+      <footer>
+        <span>Chance & Change Cafe</span><span>เวลาแสดงตามประเทศไทย · อัปเดตผลทุก 5 นาที</span>
+      </footer>
+    </div>
+  </body>
+</html>

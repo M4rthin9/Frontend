@@ -33,7 +33,12 @@ export function swStamp(): Plugin {
           )
         : [];
 
-      const precache = ['/', '/index.html', ...new Set([...assetFiles, ...htmlAssets])];
+      const precache = [
+        '/',
+        '/index.html',
+        '/system-status.html',
+        ...new Set([...assetFiles, ...htmlAssets]),
+      ];
       const version = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
       try {

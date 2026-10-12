@@ -6,4 +6,9 @@ import { swStamp } from './plugins/sw-stamp.js';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [svelte(), tailwindcss(), swStamp()],
+  build: {
+    rolldownOptions: {
+      input: { main: 'index.html', status: 'system-status.html' },
+    },
+  },
 });

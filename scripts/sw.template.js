@@ -69,16 +69,18 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
   if (url.pathname.startsWith('/api/')) return;
 
-  // SPA navigations: network-first, fall back to cached shell for offline.
+  // Each standalone document has its own fallback; it must not replace the SPA shell.
   if (request.mode === 'navigate') {
+    const documentKey =
+      url.pathname === '/system-status.html' ? '/system-status.html' : '/index.html';
     event.respondWith(
       fetch(request)
         .then((response) => {
           const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put('/index.html', copy));
+          if (response.ok) caches.open(CACHE).then((cache) => cache.put(documentKey, copy));
           return response;
         })
-        .catch(() => caches.match('/index.html')),
+        .catch(() => caches.match(documentKey)),
     );
     return;
   }

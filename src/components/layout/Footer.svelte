@@ -30,6 +30,10 @@
     </div>
     <p class="text-sm leading-relaxed text-text-tertiary">{t('footer')}</p>
     <a
+      href="/system-status.html"
+      class="mt-3 block text-sm font-semibold text-[var(--footer-link,var(--color-red-700))] hover:underline"
+    >สถานะระบบ</a>
+    <a
       href="https://main.correct.go.th"
       target="_blank"
       rel="noopener"
