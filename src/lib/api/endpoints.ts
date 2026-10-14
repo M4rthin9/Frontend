@@ -137,10 +137,15 @@ export async function updateSlipAndStatus(input: {
 }
 
 /** Public self-service cancellation. */
-export async function publicCancelBooking(ref: string): Promise<void> {
-  const data = await callAction<{ status: string; message?: string }>('publicCancelBooking', {
-    ref,
-  });
+export async function publicCancelBooking(ref: string, visitorId: string): Promise<void> {
+  const data = await callAction<{
+    status: string;
+    message?: string;
+    identityRequired?: boolean;
+    identityMismatch?: boolean;
+  }>('publicCancelBooking', { ref, visitorId });
+  if (data.identityRequired) throw new Error(t('cancelIdentityRequired'));
+  if (data.identityMismatch) throw new Error(t('cancelIdentityMismatch'));
   assertOk(data);
 }
 

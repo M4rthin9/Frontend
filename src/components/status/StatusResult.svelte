@@ -20,6 +20,7 @@
   import { formatDateIn } from '../../lib/utils/date';
   import PaymentForm from './PaymentForm.svelte';
   import PushOptIn from '../ui/PushOptIn.svelte';
+  import Modal from '../ui/Modal.svelte';
   import { TABLE_NO_CHANGES_AGREEMENT_VERSIONS } from '../../lib/utils/tableAgreement';
 
   let {
@@ -38,6 +39,10 @@
   let notes = $state<Note[]>([]);
   let showPayment = $state(false);
   let cancelling = $state(false);
+  let showCancel = $state(false);
+  let cancelVisitorId = $state('');
+  let cancelError = $state('');
+  let cancelIdentityInput = $state<HTMLInputElement>();
   // Fails open: payment stays available unless the backend says otherwise.
   let paymentEnabled = $state(true);
   let paymentClosedMessage = $state('');
@@ -167,7 +172,9 @@
     เสร็จสิ้น: 'stepReady',
   };
   const steps = $derived(isTable ? TABLE_STEPS : VISIT_STEPS);
-  const stopped = $derived(normalized === 'ยกเลิก' || normalized === 'ไม่อนุมัติ' || normalized === 'คืนเงินแล้ว');
+  const stopped = $derived(
+    normalized === 'ยกเลิก' || normalized === 'ไม่อนุมัติ' || normalized === 'คืนเงินแล้ว',
+  );
   const currentStep = $derived(steps.indexOf(normalized));
 
   function stepState(i: number): 'done' | 'now' | 'next' {
@@ -189,7 +196,8 @@
     if (s === 'เสร็จสิ้น') {
       return { title: t('noticeDone'), text: t('noticeDoneText'), kind: 'done' };
     }
-    if (s === 'คืนเงินแล้ว') return { title: t('noticeRefunded'), text: t('noticeRefundedText'), kind: 'cancel' };
+    if (s === 'คืนเงินแล้ว')
+      return { title: t('noticeRefunded'), text: t('noticeRefundedText'), kind: 'cancel' };
     if (s === 'ยกเลิก') {
       return { title: t('noticeCancelled'), text: t('noticeCancelledText'), kind: 'cancel' };
     }
@@ -214,29 +222,39 @@
   const changesLocked = $derived(
     isTable && TABLE_NO_CHANGES_AGREEMENT_VERSIONS.includes(booking.tableAgreementVersion ?? ''),
   );
-  const showCancelBtn = $derived(!changesLocked && !['ยกเลิก', 'เสร็จสิ้น', 'คืนเงินแล้ว'].includes(normalized));
+  const showCancelBtn = $derived(
+    !changesLocked && !['ยกเลิก', 'เสร็จสิ้น', 'คืนเงินแล้ว'].includes(normalized),
+  );
+
+  function resetCancel(): void {
+    cancelVisitorId = '';
+    cancelError = '';
+  }
+
+  async function openCancel(): Promise<void> {
+    resetCancel();
+    showCancel = true;
+    await tick();
+    cancelIdentityInput?.focus();
+  }
 
   async function cancelBooking(): Promise<void> {
-    if (
-      !window.confirm(
-        tc('cancelConfirmMsg', {
-          ref: booking.ref,
-          name: booking.visitorName || '—',
-          status: displayStatus || '—',
-        }),
-      )
-    ) {
+    if (cancelling || !showCancelBtn) return;
+    if (!cancelVisitorId.trim()) {
+      cancelError = t('cancelIdentityRequired');
       return;
     }
+    cancelError = '';
     cancelling = true;
     try {
-      await publicCancelBooking(booking.ref);
+      await publicCancelBooking(booking.ref, cancelVisitorId.trim());
       statusOverride = 'ยกเลิก';
+      showCancel = false;
+      resetCancel();
       ui.showToast(t('cancelSuccess'), 'success');
       await loadNotes();
     } catch (err) {
-      console.error('Cancel error:', err);
-      ui.showToast(tc('cancelFailMsg', { msg: err instanceof Error ? err.message : '' }), 'error');
+      cancelError = tc('cancelFailMsg', { msg: err instanceof Error ? err.message : '' });
     } finally {
       cancelling = false;
     }
@@ -458,7 +476,7 @@
           type="button"
           class="cancel"
           disabled={cancelling}
-          onclick={() => void cancelBooking()}
+          onclick={() => void openCancel()}
         >
           {t('cancelBooking')}
         </button>
@@ -470,6 +488,65 @@
     <p class="text-sm leading-relaxed text-text-secondary">{t('tblNoChangesText')}</p>
   {/if}
 </div>
+
+<Modal
+  bind:open={showCancel}
+  title={t('cancelBooking')}
+  dismissable={!cancelling}
+  onClose={resetCancel}
+>
+  <form
+    class="flex flex-col gap-4"
+    onsubmit={(event) => {
+      event.preventDefault();
+      void cancelBooking();
+    }}
+  >
+    <p class="whitespace-pre-line text-sm leading-relaxed text-text-secondary">
+      {tc('cancelConfirmMsg', {
+        ref: booking.ref,
+        name: booking.visitorName || '—',
+        status: displayStatus || '—',
+      })}
+    </p>
+    <label class="flex flex-col gap-2 text-sm font-medium text-text-primary">
+      {t('cancelIdentityLabel')}
+      <input
+        bind:this={cancelIdentityInput}
+        bind:value={cancelVisitorId}
+        type="text"
+        required
+        maxlength="64"
+        autocomplete="off"
+        spellcheck="false"
+        disabled={cancelling}
+        aria-invalid={Boolean(cancelError)}
+        aria-describedby="cancel-identity-hint cancel-identity-error"
+        class="w-full rounded-lg border border-border-subtle bg-surface p-3 font-normal focus:outline-2 focus:outline-ct-orange"
+      />
+    </label>
+    <p id="cancel-identity-hint" class="text-sm text-text-secondary">{t('cancelIdentityHint')}</p>
+    <p id="cancel-identity-error" role="alert" class="text-sm text-red-700">{cancelError}</p>
+    <div class="flex flex-wrap justify-end gap-3">
+      <button
+        type="button"
+        class="ct-btn ct-btn-line"
+        disabled={cancelling}
+        onclick={() => {
+          showCancel = false;
+          resetCancel();
+        }}>{t('cancelKeepBooking')}</button
+      >
+      <button
+        type="submit"
+        class="ct-btn ct-btn-ink"
+        disabled={cancelling || !cancelVisitorId.trim()}
+      >
+        {t(cancelling ? 'cancelling' : 'cancelBooking')}
+      </button>
+    </div>
+  </form>
+</Modal>
 
 <style>
   .sheet {
