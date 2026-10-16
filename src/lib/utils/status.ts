@@ -215,12 +215,21 @@ export function parseExtraVisitorNames(raw: string | null | undefined): string[]
 /** Individual approval state (yes/no/pending) for a visitor. */
 export type ApprovalState = 'yes' | 'no' | 'pending';
 
-export function approvalState(raw: string | null | undefined): ApprovalState {
+export function approvalState(
+  raw: string | null | undefined,
+  bookingStatus?: string | null,
+): ApprovalState {
   const v = String(raw ?? '')
     .trim()
     .toLowerCase();
   if (v === 'yes') return 'yes';
   if (v === 'no') return 'no';
+  // Older paid/completed bookings may have no individual approval flags.
+  // Use their booking progress for display only; explicit decisions still win.
+  if (!v && bookingStatus) {
+    const status = normalizeStatus(bookingStatus);
+    if (status === 'ชำระแล้ว' || status === 'เสร็จสิ้น') return 'yes';
+  }
   return 'pending';
 }
 

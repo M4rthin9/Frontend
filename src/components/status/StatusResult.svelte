@@ -130,15 +130,14 @@
 
   const visitors = $derived.by(() => {
     const list: { name: string; state: 'yes' | 'no' | 'pending' }[] = [];
-    const mainAppr = String(booking.visitorApproved || '').trim();
     list.push({
       name: String(booking.visitorName || '—'),
-      state: mainAppr ? approvalState(mainAppr) : 'pending',
+      state: approvalState(booking.visitorApproved, displayStatus),
     });
     const exNames = parseExtraVisitorNames(booking.extraVisitorNames);
     const exAppr = String(booking.extraVisitorApproved || '').split(';;');
     exNames.forEach((name, i) => {
-      list.push({ name, state: approvalState(exAppr[i]) });
+      list.push({ name, state: approvalState(exAppr[i], displayStatus) });
     });
     return list;
   });
