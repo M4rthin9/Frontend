@@ -1,4 +1,8 @@
 {
+  "bookingSpecialRounds": "特别场次预约倒计时",
+  "bookingSpecialVisit": "到访日期：{date}",
+  "bookingSpecialOpens": "预约开放时间：{at}（泰国时间）",
+  "bookingSpecialRemaining": "距特别场次预约开放的时间",
   "tblNoChangesText": "接受条款并确认预订后，预订信息即为最终信息，不可申请修改、变更、改期或取消。",
   "tblAcceptAndBook": "接受条款并确认预订",
   "tblReviewAgreement": "阅读条款并确认预订",

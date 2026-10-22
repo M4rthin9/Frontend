@@ -1,4 +1,8 @@
 {
+  "bookingSpecialRounds": "Đếm ngược mở đặt chỗ đợt đặc biệt",
+  "bookingSpecialVisit": "Ngày đến: {date}",
+  "bookingSpecialOpens": "Mở đặt chỗ lúc {at} (giờ Thái Lan)",
+  "bookingSpecialRemaining": "Thời gian còn lại trước khi mở đặt chỗ đợt đặc biệt",
   "tblNoChangesText": "Sau khi chấp nhận điều khoản và xác nhận, thông tin đặt bàn là cuối cùng. Không thể yêu cầu sửa đổi, thay đổi, đổi ngày hoặc hủy.",
   "tblAcceptAndBook": "Chấp nhận điều khoản và xác nhận",
   "tblReviewAgreement": "Xem điều khoản và xác nhận",

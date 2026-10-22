@@ -1,4 +1,8 @@
 {
+  "bookingSpecialRounds": "นับถอยหลังเปิดจองรอบพิเศษ",
+  "bookingSpecialVisit": "รอบเข้าใช้บริการวันที่ {date}",
+  "bookingSpecialOpens": "เริ่มรับจอง {at} (เวลาประเทศไทย)",
+  "bookingSpecialRemaining": "เวลาที่เหลือก่อนเปิดจองรอบพิเศษ",
   "availabilityEyebrow": "เช็กก่อนจอง",
   "availabilityCheck": "ดูวันว่างและเวลาเปิดจอง",
   "availabilityTitle": "ยังว่างไหม? เปิดจองเมื่อไร?",

@@ -2,6 +2,7 @@
   import { booking as defaultBooking, type BookingStore } from '../../lib/store/booking.svelte';
   import { t } from '../../lib/i18n/i18n.svelte';
   import { toThaiLong } from '../../lib/utils/date';
+  import SpecialOpeningCountdown from './SpecialOpeningCountdown.svelte';
 
   // The page decides which flow this belongs to; defaults to the prisoner-visit
   // store so existing usages keep working unchanged.
@@ -13,6 +14,7 @@
   }
 </script>
 
+<SpecialOpeningCountdown />
 <div class="calendar-wrap">
   <div class="cal-header">
     <button

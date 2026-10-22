@@ -1,4 +1,8 @@
 {
+  "bookingSpecialRounds": "Special round booking countdown",
+  "bookingSpecialVisit": "Visit date: {date}",
+  "bookingSpecialOpens": "Booking opens {at} (Thailand time)",
+  "bookingSpecialRemaining": "Time until special round booking opens",
   "tblNoChangesText": "Once you accept these terms and confirm your booking, its details are final. You cannot request amendments, changes, rescheduling, or cancellation.",
   "tblAcceptAndBook": "Accept terms and confirm booking",
   "tblReviewAgreement": "Review terms and confirm booking",

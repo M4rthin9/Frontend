@@ -17,6 +17,7 @@
   import EndPage from '../components/home/EndPage.svelte';
   import FolioBar from '../components/home/FolioBar.svelte';
   import ReservationOverview from '../components/home/ReservationOverview.svelte';
+  import SpecialOpeningCountdown from '../components/booking/SpecialOpeningCountdown.svelte';
 
   const promo = $derived(ui.publicSettings.promo);
   const bookingWindow = $derived(ui.publicSettings.bookingWindow);
@@ -56,6 +57,7 @@
 
 <div bind:this={page} class="home-book">
   <CoverSpread />
+  <div class="mx-auto w-full max-w-6xl px-4 sm:px-6"><SpecialOpeningCountdown /></div>
   <ReservationOverview />
   <VisitGuide />
 

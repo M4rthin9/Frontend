@@ -199,6 +199,20 @@ export function nextOpening(
   overrides: DateOverrides = NO_OVERRIDES,
 ): { dates: string[]; at: Date } | null {
   let best = nextRoll(now, overrides);
+  for (const { date, at } of scheduledOpenings(now, overrides)) {
+    if (!best || at < best.at) best = { dates: [date], at };
+    else if (at.getTime() === best.at.getTime())
+      best = { dates: [...new Set([...best.dates, date])].sort(), at };
+  }
+  return best;
+}
+
+/** Pending special rounds, using the same rolling-window rules as the calendar. */
+export function scheduledOpenings(
+  now: Date,
+  overrides: DateOverrides,
+): { date: string; at: Date }[] {
+  const rounds: { date: string; at: Date }[] = [];
   for (const [date, iso] of Object.entries(overrides.openAt ?? {})) {
     let at = new Date(iso);
     if (!Number.isFinite(at.getTime()) || isShut(date, overrides)) continue;
@@ -208,11 +222,9 @@ export function nextOpening(
     }
     if (!(at > now) || date > lastOpenDate(bookingDay(at))) continue;
     if (date <= new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Bangkok' }).format(at)) continue;
-    if (!best || at < best.at) best = { dates: [date], at };
-    else if (at.getTime() === best.at.getTime())
-      best = { dates: [...new Set([...best.dates, date])].sort(), at };
+    rounds.push({ date, at });
   }
-  return best;
+  return rounds.sort((a, b) => a.at.getTime() - b.at.getTime() || a.date.localeCompare(b.date));
 }
 
 /** Build one month of cells mirroring renderCalendar() in booking.js. */

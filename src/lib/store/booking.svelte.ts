@@ -253,6 +253,7 @@ class BookingStoreImpl {
       this.bookings,
       this.perDay,
       ui.publicSettings.bookingWindow,
+      new Date(ui.now),
     );
   }
   get calTitle(): string {
