@@ -33,7 +33,7 @@ let settings = {
   scheduledOpenings: {},
 };
 let saves = 0;
-async function fixture(width, timezoneId = 'Asia/Bangkok', admin = false) {
+async function fixture(width, timezoneId = 'Asia/Bangkok', admin = false, time = start) {
   const context = await browser.newContext({
     viewport: { width, height: 1000 },
     timezoneId,
@@ -52,8 +52,8 @@ async function fixture(width, timezoneId = 'Asia/Bangkok', admin = false) {
   }, admin);
   const page = await context.newPage();
   page.on('pageerror', (e) => errors.push(e.message));
-  await page.clock.install({ time: new Date(start.getTime() - 1000) });
-  await page.clock.pauseAt(start);
+  await page.clock.install({ time: new Date(time.getTime() - 1000) });
+  await page.clock.pauseAt(time);
   await context.route('**/*', async (route) => {
     const request = route.request(),
       url = new URL(request.url());
@@ -197,9 +197,51 @@ try {
   assert.equal(saves, 3);
   await cleared.context.close();
   await admin.context.close();
+
+  // A newly announced Sunday must replace the regular countdown while the page
+  // stays open. Opening time takes priority over visit-date and insertion order.
+  for (const width of [1440, 390]) {
+    settings.bookingWindow = { open: true, closedDates: {}, openDates: [] };
+    settings.scheduledOpenings = {};
+    const guest = await fixture(width, 'Asia/Bangkok', false, new Date('2026-10-25T02:00:00Z'));
+    await guest.page.goto('https://cida.dpdns.org/');
+    const panel = guest.page.locator('#reservation-overview');
+    const nextTime = panel.locator('.next-time time');
+    const values = () => panel.getByRole('timer').locator('strong').allTextContents();
+    await nextTime.waitFor();
+    assert.deepEqual(await values(), ['00', '22', '00', '00']);
+    assert.match(await panel.locator('.opening-dates').innerText(), /13/);
+
+    settings.bookingWindow.openDates = ['2026-11-01', '2026-11-08'];
+    settings.scheduledOpenings = {
+      '2026-11-01': '2026-10-25T06:00:00Z',
+      '2026-11-08': '2026-10-25T04:00:00Z',
+    };
+    await guest.page.clock.fastForward(60_000);
+    await guest.page.waitForFunction(
+      () =>
+        document
+          .querySelector('#reservation-overview .next-time time')
+          ?.getAttribute('datetime') === '2026-10-25T04:00:00.000Z',
+    );
+    assert.deepEqual(await values(), ['00', '01', '59', '00']);
+    assert.match(await panel.locator('.opening-dates').innerText(), /8/);
+    assert.doesNotMatch(await panel.locator('.opening-dates').innerText(), /13/);
+
+    await guest.page.clock.fastForward(119 * 60_000);
+    assert.equal(await nextTime.getAttribute('datetime'), '2026-10-25T06:00:00.000Z');
+    assert.deepEqual(await values(), ['00', '02', '00', '00']);
+    assert.match(await panel.locator('.opening-dates').innerText(), /1/);
+
+    await guest.page.clock.fastForward(2 * 60 * 60_000);
+    assert.equal(await nextTime.getAttribute('datetime'), '2026-10-26T00:00:00.000Z');
+    assert.deepEqual(await values(), ['00', '18', '00', '00']);
+    assert.match(await panel.locator('.opening-dates').innerText(), /13/);
+    await guest.context.close();
+  }
   assert.deepEqual(errors, []);
   console.log(
-    'Special openings passed: Bangkok-time save/reload, preserved settings, desktop/mobile countdown, blocked-before/open-at-deadline calendar, and removal.',
+    'Special openings passed: Bangkok-time save/reload, preserved settings, desktop/mobile countdown, blocked-before/open-at-deadline calendar, removal, and earliest-opening priority with live updates and rollover.',
   );
 } finally {
   await browser.close();
