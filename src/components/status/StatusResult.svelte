@@ -19,6 +19,7 @@
   import { maskPrisonerName } from '../../lib/utils/helpers';
   import { formatDateIn } from '../../lib/utils/date';
   import PaymentForm from './PaymentForm.svelte';
+  import EntryPass from './EntryPass.svelte';
   import PushOptIn from '../ui/PushOptIn.svelte';
   import Modal from '../ui/Modal.svelte';
   import { TABLE_NO_CHANGES_AGREEMENT_VERSIONS } from '../../lib/utils/tableAgreement';
@@ -312,6 +313,10 @@
           <PushOptIn ref={booking.ref} />
         {/if}
       </section>
+    {/if}
+
+    {#if normalized === 'เสร็จสิ้น'}
+      <EntryPass ref={booking.ref} />
     {/if}
 
     <!-- What happens next, and the one thing the visitor can do about it. -->

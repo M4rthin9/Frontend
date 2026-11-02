@@ -824,5 +824,13 @@
   "statusPillRefunded": "Refunded",
   "noticeRefunded": "Refunded",
   "noticeRefundedText": "Finance has recorded a refund for this booking. Contact staff to confirm the amount or refund details.",
-  "pushAvailabilityInfo": "Get opening alerts and updates when cancellations or expired payment holds free a table. Alerts do not reserve a table; check availability before booking."
+  "pushAvailabilityInfo": "Get opening alerts and updates when cancellations or expired payment holds free a table. Alerts do not reserve a table; check availability before booking.",
+  "entryQrTitle": "Event entry QR",
+  "entryQrInstructions": "Show this QR and your ID or passport on your booked date. Staff will check payment and register each arriving guest.",
+  "entryQrIdentity": "Main booking holder?s ID or passport number",
+  "entryQrGet": "Show entry QR",
+  "entryQrLoading": "Checking?",
+  "entryQrError": "Unable to create entry QR. Please try again.",
+  "entryQrSave": "Save entry QR",
+  "entryQrText": "QR text for the scanner"
 }

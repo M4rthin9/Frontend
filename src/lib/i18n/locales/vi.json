@@ -824,5 +824,13 @@
   "statusPillRefunded": "Đã hoàn tiền",
   "noticeRefunded": "Đã hoàn tiền",
   "noticeRefundedText": "Bộ phận tài chính đã ghi nhận hoàn tiền cho đặt chỗ này. Vui lòng liên hệ nhân viên để xác nhận số tiền hoặc chi tiết hoàn tiền.",
-  "pushAvailabilityInfo": "Nhận thông báo mở đặt chỗ và bàn trống do hủy đặt hoặc hết thời hạn thanh toán. Thông báo không giữ bàn; hãy kiểm tra chỗ trống trước khi đặt."
+  "pushAvailabilityInfo": "Nhận thông báo mở đặt chỗ và bàn trống do hủy đặt hoặc hết thời hạn thanh toán. Thông báo không giữ bàn; hãy kiểm tra chỗ trống trước khi đặt.",
+  "entryQrTitle": "QR v?o s? ki?n",
+  "entryQrInstructions": "Xu?t tr?nh m? QR v? gi?y t? t?y th?n ho?c h? chi?u v?o ng?y ?? ??t. Nh?n vi?n s? ki?m tra thanh to?n v? ??ng k? t?ng kh?ch ??n.",
+  "entryQrIdentity": "S? gi?y t? t?y th?n ho?c h? chi?u c?a ng??i ??t ch?nh",
+  "entryQrGet": "Hi?n QR v?o c?a",
+  "entryQrLoading": "?ang ki?m tra?",
+  "entryQrError": "Kh?ng th? t?o QR v?o c?a. Vui l?ng th? l?i.",
+  "entryQrSave": "L?u QR v?o c?a",
+  "entryQrText": "N?i dung QR cho m?y qu?t"
 }

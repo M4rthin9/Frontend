@@ -62,6 +62,21 @@ export async function getTableCountsByDate(): Promise<TableCounts> {
   };
 }
 
+/** Booking identity is verified server-side before an entry pass is issued. */
+export async function getVisitorEntryQr(
+  ref: string,
+  visitorId: string,
+): Promise<{ qrDataUrl: string; payload: string; visitDateISO: string }> {
+  const data = await callAction<{
+    status: string;
+    qrDataUrl: string;
+    payload: string;
+    visitDateISO: string;
+  }>('getVisitorEntryQr', { ref, visitorId });
+  assertOk(data);
+  return data;
+}
+
 /** Public status lookup by ref number or prisoner ID. */
 export async function lookupByRef(query: {
   ref?: string;
