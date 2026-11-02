@@ -20,6 +20,7 @@
   import { formatDateIn } from '../../lib/utils/date';
   import PaymentForm from './PaymentForm.svelte';
   import EntryPass from './EntryPass.svelte';
+  import EntryGuide from './EntryGuide.svelte';
   import PushOptIn from '../ui/PushOptIn.svelte';
   import Modal from '../ui/Modal.svelte';
   import { TABLE_NO_CHANGES_AGREEMENT_VERSIONS } from '../../lib/utils/tableAgreement';
@@ -456,6 +457,8 @@
       </ul>
     </section>
   </article>
+
+  <EntryGuide />
 
   {#if showPayment && paymentEnabled}
     <div bind:this={paymentPanel} class="booking-app w-full !pb-0">

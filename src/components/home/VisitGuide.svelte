@@ -7,6 +7,7 @@
   import { t } from '../../lib/i18n/i18n.svelte';
   import { navigate } from '../../lib/router.svelte';
   import { ui } from '../../lib/store/ui.svelte';
+  import EntryGuide from '../status/EntryGuide.svelte';
 
   const bookingOpen = $derived(ui.publicSettings.bookingWindow.open);
   const tableClosed = $derived(!ui.tableBookingOpen);
@@ -96,6 +97,7 @@
         </div>
       </div>
     </div>
+    <div style="margin-top:24px"><EntryGuide /></div>
   </div>
 </section>
 

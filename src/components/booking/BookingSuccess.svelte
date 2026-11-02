@@ -4,6 +4,7 @@
   import { t } from '../../lib/i18n/i18n.svelte';
   import Button from '../ui/Button.svelte';
   import PushOptIn from '../ui/PushOptIn.svelte';
+  import EntryGuide from '../status/EntryGuide.svelte';
 
   // The page decides which flow this belongs to; defaults to the prisoner-visit
   // store so existing usages keep working unchanged.
@@ -120,6 +121,7 @@
           {t('newBooking')}
         </Button>
       </div>
+      <div style="margin-top:24px"><EntryGuide /></div>
     </div>
   {/if}
 </div>
