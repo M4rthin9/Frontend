@@ -7,6 +7,7 @@
   import PromoCarousel from '../components/promo/PromoCarousel.svelte';
   import Headline from '../components/home/Headline.svelte';
   import VisitGuide from '../components/home/VisitGuide.svelte';
+  import VisitVideo from '../components/home/VisitVideo.svelte';
   import CoverSpread from '../components/home/CoverSpread.svelte';
   import HomeStatusCheck from '../components/home/HomeStatusCheck.svelte';
   import ChefTable from '../components/home/ChefTable.svelte';
@@ -59,6 +60,7 @@
   <CoverSpread />
   <div class="mx-auto w-full max-w-6xl px-4 sm:px-6"><SpecialOpeningCountdown /></div>
   <ReservationOverview />
+  <VisitVideo />
   <VisitGuide />
 
   <!-- Announcements stay reachable on the page when the popup is off or was dismissed. -->

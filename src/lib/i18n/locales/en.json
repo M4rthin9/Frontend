@@ -857,5 +857,16 @@
   "entryGuideChanges": "For late payment, wait for finance confirmation and check your status again. Get a new QR after a date change. A saved card does not grant entry for a cancelled, refunded or unapproved booking.",
   "entryGuidePhones": "For VIS, show your phone at registration and follow the institution’s rules. Phones are not allowed in the visiting area. Without a phone, bring a clearly printed card and original identification.",
   "entryGuideOpenStatus": "Check booking status / get your QR card",
-  "availabilityVisitRule": "VIS: officers review visitor approval and prisoner discipline 2–3 days before the booked visit. Pay when the status is “Awaiting payment”."
+  "availabilityVisitRule": "VIS: officers review visitor approval and prisoner discipline 2–3 days before the booked visit. Pay when the status is “Awaiting payment”.",
+  "visVideoChapter": "VIS video",
+  "visVideoEyebrow": "VIS reservation video guide",
+  "visVideoTitle": "Book your visit and arrive ready with your QR",
+  "visVideoDescription": "Follow the steps: enter visitors, select the prisoner, wait for approval, pay, save your QR card and check in at registration.",
+  "visVideoLanguage": "Thai narration and subtitles",
+  "visVideoStep1": "Book a VIS visit and wait for officer review",
+  "visVideoStep2": "Pay when payment is available, then save your QR",
+  "visVideoStep3": "Show your QR and original identification at registration",
+  "visVideoDownload": "Download video",
+  "visVideoWatch": "Watch the VIS booking guide",
+  "visVideoError": "The video could not play. Open the MP4 file or download it to watch."
 }

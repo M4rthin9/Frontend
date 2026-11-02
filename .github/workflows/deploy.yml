@@ -27,5 +27,8 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Verify visitor video assets and media caching
+        run: node scripts/verify-video-guide.mjs
+
       - name: Build
         run: npm run build

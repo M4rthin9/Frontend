@@ -12,6 +12,7 @@
   const bookingOpen = $derived(ui.publicSettings.bookingWindow.open);
   const tableClosed = $derived(!ui.tableBookingOpen);
   const shortcuts = $derived([
+    { id: 'home-visit-video', label: t('visVideoWatch') },
     { id: 'home-steps', label: t('ctChSteps') },
     { id: 'home-table', label: t('price') },
     { id: 'home-faq', label: t('ctChFaq') },

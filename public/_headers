@@ -9,4 +9,7 @@
   Referrer-Policy: origin-when-cross-origin
   Permissions-Policy: camera=(), geolocation=(), microphone=(), payment=()
   Cross-Origin-Opener-Policy: same-origin
+
+/media/vis-guide/*
+  Cache-Control: public, max-age=31536000, immutable
 */

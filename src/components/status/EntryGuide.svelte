@@ -3,6 +3,7 @@
   import { navigate } from '../../lib/router.svelte';
   import BookOpen from '@lucide/svelte/icons/book-open';
   import ChevronDown from '@lucide/svelte/icons/chevron-down';
+  import { VIS_GUIDE_VIDEO } from '../../lib/visGuideVideo';
 </script>
 
 <details class="entry-guide">
@@ -15,6 +16,7 @@
   >
   <div class="guide-body">
     <p class="guide-intro">{t('entryGuideIntro')}</p>
+    <a class="guide-video" href={VIS_GUIDE_VIDEO.src} target="_blank" rel="noopener">{t('visVideoWatch')} · {VIS_GUIDE_VIDEO.duration}</a>
     <ol>
       {#each [1, 2, 3, 4] as step (step)}
         <li>
@@ -81,6 +83,7 @@
     line-height: 1.7;
     color: var(--app-text-secondary);
   }
+  .guide-video { display: inline-flex; align-items: center; min-height: 44px; margin-top: .5rem; font-size: .875rem; text-decoration: underline; text-underline-offset: 4px; color: var(--app-text); }
   ol {
     list-style: none;
     padding: 0;

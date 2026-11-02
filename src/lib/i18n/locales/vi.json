@@ -857,5 +857,16 @@
   "entryGuideChanges": "Nếu thanh toán muộn, chờ tài chính xác nhận và kiểm tra lại trạng thái. Sau khi đổi ngày phải lấy QR mới. Thẻ đã lưu không cho phép vào nếu đặt chỗ bị hủy, hoàn tiền hoặc chưa được duyệt.",
   "entryGuidePhones": "Với VIS, xuất trình điện thoại tại quầy và tuân thủ quy định của cơ sở. Không mang điện thoại vào khu thăm gặp. Nếu không có điện thoại, mang thẻ in rõ nét cùng giấy tờ gốc.",
   "entryGuideOpenStatus": "Kiểm tra trạng thái / lấy thẻ QR",
-  "availabilityVisitRule": "VIS: nhân viên xét duyệt người thăm và kỷ luật phạm nhân 2–3 ngày trước ngày đã đặt. Thanh toán khi trạng thái là “Chờ thanh toán”."
+  "availabilityVisitRule": "VIS: nhân viên xét duyệt người thăm và kỷ luật phạm nhân 2–3 ngày trước ngày đã đặt. Thanh toán khi trạng thái là “Chờ thanh toán”.",
+  "visVideoChapter": "Video VIS",
+  "visVideoEyebrow": "Video hướng dẫn đặt thăm VIS",
+  "visVideoTitle": "Hiểu cách đặt thăm và chuẩn bị mã QR cho ngày hẹn",
+  "visVideoDescription": "Xem các bước: điền người thăm, chọn phạm nhân, chờ phê duyệt, thanh toán, lưu thẻ QR và đăng ký tại quầy.",
+  "visVideoLanguage": "Thuyết minh và phụ đề tiếng Thái",
+  "visVideoStep1": "Đặt thăm VIS và chờ nhân viên xét duyệt",
+  "visVideoStep2": "Thanh toán khi được phép, rồi lưu mã QR",
+  "visVideoStep3": "Xuất trình QR và giấy tờ gốc tại quầy đăng ký",
+  "visVideoDownload": "Tải video",
+  "visVideoWatch": "Xem hướng dẫn đặt thăm VIS",
+  "visVideoError": "Không thể phát video. Hãy mở tệp MP4 hoặc tải xuống để xem."
 }

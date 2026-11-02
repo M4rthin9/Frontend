@@ -857,5 +857,16 @@
   "entryGuideChanges": "逾期付款后请等待财务确认并重新查询状态。更改日期后须获取新二维码。已取消、已退款或未获批准的预约不能凭已保存的卡片入场。",
   "entryGuidePhones": "VIS 访客可在登记处用手机出示卡片，并须遵守机构规定。探视区域禁止携带手机。没有手机时，请携带清晰打印的卡片和身份证件原件。",
   "entryGuideOpenStatus": "查询预约状态 / 获取二维码卡",
-  "availabilityVisitRule": "VIS 探视：工作人员在预约日期前 2–3 天审核访客资格及在押人员纪律。状态变为“等待付款”后再付款。"
+  "availabilityVisitRule": "VIS 探视：工作人员在预约日期前 2–3 天审核访客资格及在押人员纪律。状态变为“等待付款”后再付款。",
+  "visVideoChapter": "VIS 视频",
+  "visVideoEyebrow": "VIS 探视预约视频指南",
+  "visVideoTitle": "了解探视预约流程，携带二维码准时到访",
+  "visVideoDescription": "了解填写访客、选择在押人员、等待审核、付款、保存二维码卡及现场登记的完整流程。",
+  "visVideoLanguage": "泰语配音及字幕",
+  "visVideoStep1": "预约 VIS 探视并等待工作人员审核",
+  "visVideoStep2": "系统开放付款后再付款，并保存二维码",
+  "visVideoStep3": "在登记处出示二维码和身份证件原件",
+  "visVideoDownload": "下载视频",
+  "visVideoWatch": "观看 VIS 探视预约指南",
+  "visVideoError": "无法播放视频，请打开 MP4 文件或下载后观看。"
 }

@@ -69,6 +69,15 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
   if (url.pathname.startsWith('/api/')) return;
 
+  // Let the browser/CDN serve byte ranges for playback and seeking. A media
+  // navigation must never replace the cached HTML shell with video bytes.
+  if (
+    request.destination === 'video' ||
+    /\.(mp4|webm)$/i.test(url.pathname) ||
+    request.headers.has('range')
+  )
+    return;
+
   // Each standalone document has its own fallback; it must not replace the SPA shell.
   if (request.mode === 'navigate') {
     const documentKey =

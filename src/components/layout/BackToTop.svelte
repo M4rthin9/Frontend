@@ -27,7 +27,7 @@
     transition:fade={{ duration: 160 }}
     onclick={toTop}
     aria-label={t('backToTop')}
-    class="fixed bottom-[10rem] right-6 z-50 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border border-border-strong bg-background text-text-primary shadow-lg transition hover:scale-105"
+    class="back-to-top fixed bottom-[10rem] right-6 z-50 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border border-border-strong bg-background text-text-primary shadow-lg transition hover:scale-105"
   >
     <ArrowUp class="h-6 w-6" aria-hidden="true" />
   </button>
