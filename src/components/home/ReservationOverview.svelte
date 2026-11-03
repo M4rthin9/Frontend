@@ -255,12 +255,7 @@
             <time datetime={nextAt.toISOString()}>{instantLabel(nextAt)}</time>
           </p>
           <p class="timezone">{t('availabilityTimezone')}</p>
-          <div
-            class="countdown"
-            role="timer"
-            aria-label={t('availabilityNext')}
-            aria-live="off"
-          >
+          <div class="countdown" role="timer" aria-label={t('availabilityNext')} aria-live="off">
             {#each countdown as part (part.unit)}
               <div class="countdown-part">
                 <strong>{String(part.value).padStart(2, '0')}</strong>
@@ -409,9 +404,9 @@
     font-size: 0.9rem;
   }
   .mode-switch [aria-pressed='true'] {
-    background: var(--ct-ink);
-    color: var(--surface);
-    border-color: var(--ct-ink);
+    background: var(--ct-action);
+    color: var(--ct-action-text);
+    border-color: var(--ct-action);
   }
   .summary-grid {
     display: grid;
@@ -481,8 +476,8 @@
     margin-top: 1.2rem;
     padding: 0.7rem 1rem;
     border-radius: 0.4rem;
-    background: var(--ct-ink);
-    color: var(--surface);
+    background: var(--ct-action);
+    color: var(--ct-action-text);
     font-size: 0.9rem;
     min-height: 44px;
   }
@@ -494,6 +489,7 @@
     opacity: 0.45;
   }
   .next-card {
+    --ct-orange: #5eead4;
     background: var(--ct-black);
     color: #fff;
   }

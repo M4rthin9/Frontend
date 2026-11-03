@@ -44,7 +44,7 @@
     <!-- Remembering it is functional storage; without that consent it could not stick. -->
     {#if consent.allows('preferences')}
       <label class="flex cursor-pointer items-center gap-2 text-xs text-text-tertiary">
-        <input type="checkbox" bind:checked={hideToday} class="h-4 w-4 rounded accent-red-700" />
+        <input type="checkbox" bind:checked={hideToday} class="h-4 w-4 rounded accent-[var(--primary)]" />
         {t('promoHideToday')}
       </label>
     {:else}
@@ -52,7 +52,7 @@
     {/if}
     <button
       type="button"
-      class="rounded-xl bg-red-700 px-5 py-2 text-sm font-bold text-white shadow-md transition-colors duration-200 hover:bg-red-800"
+      class="rounded-xl bg-[var(--primary)] px-5 py-2 text-sm font-bold text-white shadow-md transition-colors duration-200 hover:bg-[var(--primary-dark)]"
       onclick={close}
     >
       {t('promoClose')}

@@ -116,7 +116,7 @@
         {:else if phase === 'notfound'}
           <p class="text-sm text-text-secondary" in:fly={{ y: 8, duration: 220 }}>{tc('homeStatusNotFound', { query: searched })}</p>
         {:else if phase === 'error'}
-          <p class="text-sm text-[#a12d2d]" in:fly={{ y: 8, duration: 220 }}>{t('errorServer')}</p>
+          <p class="text-sm text-[var(--error-text)]" in:fly={{ y: 8, duration: 220 }}>{t('errorServer')}</p>
         {/if}
       </div>
     </div>
@@ -133,7 +133,7 @@
   }
   .search:focus-within {
     border-color: var(--ct-ink);
-    box-shadow: 0 0 0 3px rgba(245, 130, 31, 0.28);
+    box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.28);
   }
   .result {
     background: var(--surface);

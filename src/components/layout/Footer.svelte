@@ -13,7 +13,7 @@
 <footer class="border-t border-border-subtle bg-surface">
   <div
     aria-hidden="true"
-    class="h-px w-full bg-gradient-to-r from-transparent via-gold-200/60 to-transparent"
+    class="h-px w-full bg-gradient-to-r from-transparent via-teal-300/60 to-transparent"
   ></div>
   <div class="mx-auto max-w-3xl px-4 py-10 text-center sm:px-6">
     <div class="mb-4 flex items-center justify-center gap-2">
@@ -31,13 +31,13 @@
     <p class="text-sm leading-relaxed text-text-tertiary">{t('footer')}</p>
     <a
       href="/system-status.html"
-      class="mt-3 block text-sm font-semibold text-[var(--footer-link,var(--color-red-700))] hover:underline"
+      class="mt-3 block text-sm font-semibold text-[var(--footer-link,var(--accent))] hover:underline"
     >สถานะระบบ</a>
     <a
       href="https://main.correct.go.th"
       target="_blank"
       rel="noopener"
-      class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--footer-link,var(--color-red-700))] transition-colors hover:opacity-80"
+      class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--footer-link,var(--accent))] transition-colors hover:opacity-80"
     >
       {t('textFooter2')}
       <ExternalLink class="h-3.5 w-3.5" />

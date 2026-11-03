@@ -27,8 +27,6 @@
   };
 
   let previousRoute = $state(router.route);
-  // Every page is printed on the Chef Table paper: always light, with the book's black footer.
-  const bookPage = $derived(['home', 'status', 'booking', 'table-booking'].includes(router.route));
 
   onMount(() => {
     ui.initDarkMode();
@@ -100,14 +98,8 @@
     {/key}
   </main>
 
-  <!-- On the home page the footer is the back of the book: the end page's black continues into it.
-       The book keeps its own colours there, so the light/dark switch is left to the other pages. -->
-  <div
-    class={bookPage
-      ? 'home-book ct-black [--surface:var(--ct-black)] [--footer-link:var(--ct-orange)]'
-      : ''}
-  >
-    <Footer themeToggle={!bookPage} />
+  <div class="ct-black">
+    <Footer />
   </div>
   <LineFab />
   <BackToTop />
@@ -134,7 +126,7 @@
         {/if}
         <button
           type="button"
-          class="mt-6 w-full rounded-xl bg-red-700 px-6 py-3 text-sm font-bold text-white shadow-md transition-colors duration-200 hover:bg-red-800"
+          class="mt-6 w-full rounded-xl bg-[var(--primary)] px-6 py-3 text-sm font-bold text-white shadow-md transition-colors duration-200 hover:bg-[var(--primary-dark)]"
           onclick={() => navigate('home')}
         >
           {t('tblComingSoonOk')}

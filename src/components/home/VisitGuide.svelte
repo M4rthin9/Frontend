@@ -105,7 +105,7 @@
 <style>
   .guide {
     padding: clamp(3rem, 6vw, 5.5rem) 1.5rem;
-    background: linear-gradient(145deg, #fff9f0, var(--ct-paper) 65%);
+    background: var(--app-bg-subtle);
     border-bottom: 1px solid var(--app-border-subtle);
   }
   .guide-inner {
@@ -146,7 +146,7 @@
     padding: 0.55rem 0.9rem;
     border: 1px solid var(--app-border-subtle);
     border-radius: 99px;
-    background: #fff;
+    background: var(--surface);
     font-size: 0.85rem;
     cursor: pointer;
   }
@@ -161,14 +161,14 @@
     flex-direction: column;
     align-items: start;
     padding: clamp(1.25rem, 2.5vw, 2rem);
-    background: #fff;
+    background: var(--surface);
     border: 1px solid var(--app-border-subtle);
     border-radius: 1rem;
     box-shadow: 0 12px 36px -26px #6e422d55;
   }
   .option-featured {
     border-top: 3px solid var(--ct-orange);
-    background: #fffaf3;
+    background: var(--surface);
   }
   .option-status {
     background: var(--ct-linen);
@@ -186,7 +186,7 @@
     max-width: 80%;
     border-radius: 99px;
     padding: 0.3rem 0.65rem;
-    background: #fff;
+    background: var(--app-bg-subtle);
     border: 1px solid var(--app-border-subtle);
     font-size: 0.75rem;
     color: var(--ct-ink-2);
@@ -255,7 +255,7 @@
   @media (hover: hover) {
     .shortcuts button:hover {
       border-color: var(--ct-orange-ink);
-      background: #fff4e5;
+      background: var(--app-bg-subtle);
     }
   }
   @media (max-width: 767px) {

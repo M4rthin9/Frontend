@@ -51,11 +51,11 @@
           class="relative rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 sm:block {isActive(
             item.path,
           )
-            ? 'bg-red-50 text-red-700'
+            ? 'bg-[var(--primary-light)] text-[var(--accent)]'
             : 'text-text-tertiary hover:bg-background-subtle hover:text-text-primary'}"
         >
           {#if isActive(item.path)}
-            <span class="absolute inset-x-1 -bottom-0.5 h-0.5 rounded-full bg-red-700"></span>
+            <span class="absolute inset-x-1 -bottom-0.5 h-0.5 rounded-full bg-[var(--primary)]"></span>
           {/if}
           {t(item.key)}
         </button>

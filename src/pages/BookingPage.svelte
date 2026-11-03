@@ -95,7 +95,7 @@
         <!-- Admin closed all public booking: no form, just the reason. -->
         <div class="section text-center" role="status">
           <div
-            class="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full bg-[#fff1e5] text-[var(--ct-orange-ink)]"
+            class="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full bg-[var(--warning-bg)] text-[var(--ct-orange-ink)]"
           >
             <CirclePause class="h-7 w-7" aria-hidden="true" />
           </div>
@@ -230,7 +230,7 @@
                 <div class="extra-visitor-block">
                   <div class="extra-visitor-num">
                     <span
-                      class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--ct-ink)] text-xs font-bold text-white"
+                      class="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--ct-action)] text-xs font-bold text-white"
                       >{num}</span
                     >
                     {t('textBookingPage5')}
@@ -334,7 +334,7 @@
           {#if isTable}
             {t('textBookingPage14')} <strong>{store.perDay} {t('textBookingPage15')}</strong>
             {t('textBookingPage16')} <strong>{t('textBookingPage17')}</strong><br />
-            <span style="color:var(--emerald-600)">
+            <span style="color:var(--success-text)">
               {t('textBookingPage18')} <strong>{store.holdMinutes} {t('textBookingPage19')}</strong>
               {t('textBookingPage20')}</span
             ><br />
@@ -344,7 +344,7 @@
             {t('textBookingPage25')}<br />
           {/if}
           {#if !isTable}
-            <span style="color:var(--emerald-600)" class="child-price-note"
+            <span style="color:var(--success-text)" class="child-price-note"
               >{t('textBookingPage26')}</span
             ><br />
           {/if}

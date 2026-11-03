@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="ระบบจองคิวเพื่อร่วมกิจกรรม · ทัณฑสถานบำบัดพิเศษกลาง" />
-    <meta name="theme-color" content="#a92928" />
+    <meta name="theme-color" content="#0f766e" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" href="/favicon-64.png" />
     <!-- Installable web app: iPhone only allows Web Push for a site added to the Home Screen. -->
@@ -22,34 +22,27 @@
     />
     <title>ระบบจองคิวเพื่อร่วมกิจกรรม</title>
     <style>
-      /* Pre-paint: cool slate tint (official) — avoids flash before app mounts */
+      /* Match the app theme before JavaScript mounts. */
       html,
       body {
         margin: 0;
-        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        background: #dfe6ef;
       }
-      html.home-pre,
-      html.home-pre body {
-        background: #0d0908;
+      html.dark,
+      html.dark body {
+        background: #1a2231;
       }
     </style>
     <script>
-      // The home page is a dark stage: paint it dark from the first frame so it never flashes white.
+      // Charcoal by default; preserve an explicit light preference.
       (function () {
-        var h = location.hash;
-        if (!h || h === '#' || h === '#/' || h === '#/home') document.documentElement.classList.add('home-pre');
-      })();
-      // Pre-paint theme: default to light; only apply dark when explicitly chosen.
-      (function () {
+        var saved = null;
         try {
-          var saved = localStorage.getItem('ccc_dark_mode');
-          if (saved === '1') {
-            document.documentElement.classList.add('dark');
-            document.documentElement.style.background = '#0f172a';
-          }
+          saved = localStorage.getItem('ccc_dark_mode');
         } catch (e) {
-          /* storage unavailable — fall through */
+          /* storage unavailable */
         }
+        document.documentElement.classList.toggle('dark', saved !== '0');
       })();
     </script>
   </head>

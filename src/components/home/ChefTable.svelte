@@ -234,7 +234,7 @@
 
 <style>
   .table-photo {
-    background: #ccd3d4;
+    background: var(--ct-black);
   }
   .story-type {
     font-size: 1.05rem;
@@ -268,7 +268,7 @@
     width: 1.75rem;
     height: 1.75rem;
     border-radius: 999px;
-    background: #fff;
+    background: var(--surface);
     color: var(--ct-ink);
     font-size: 0.9rem;
     box-shadow:
@@ -285,7 +285,7 @@
     left: 50%;
     padding: 0.3rem 0.65rem;
     border-radius: 4px;
-    background: #fff;
+    background: var(--surface);
     color: var(--ct-ink);
     font-size: 0.8rem;
     white-space: nowrap;
@@ -312,6 +312,7 @@
     .marker:hover .marker-dot {
       transform: scale(1.12);
       background: var(--ct-orange);
+      color: var(--ct-on-accent);
     }
     .marker:hover .marker-cap {
       opacity: 1;
@@ -327,7 +328,7 @@
   }
 
   .dish-stage {
-    background: #ccd3d4;
+    background: var(--surface);
   }
   /* The chosen plate is set down: it turns and settles into place. Leaving is quicker. */
   .dish-img {

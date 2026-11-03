@@ -533,7 +533,7 @@
       />
     </label>
     <p id="cancel-identity-hint" class="text-sm text-text-secondary">{t('cancelIdentityHint')}</p>
-    <p id="cancel-identity-error" role="alert" class="text-sm text-red-700">{cancelError}</p>
+    <p id="cancel-identity-error" role="alert" class="text-sm text-[var(--error-text)]">{cancelError}</p>
     <div class="flex flex-wrap justify-end gap-3">
       <button
         type="button"
@@ -587,7 +587,7 @@
     background: var(--app-border-subtle);
   }
   .step.done + .step::before {
-    background: var(--ct-ink);
+    background: var(--ct-action);
   }
   .mark {
     position: relative;
@@ -603,15 +603,15 @@
     font-weight: 600;
   }
   .step.done .mark {
-    border-color: var(--ct-ink);
-    background: var(--ct-ink);
+    border-color: var(--ct-action);
+    background: var(--ct-action);
     color: #fff;
   }
   .step.now .mark {
     border-color: var(--ct-orange);
     background: var(--ct-orange);
-    color: var(--ct-ink);
-    box-shadow: 0 0 0 4px rgba(245, 130, 31, 0.22);
+    color: var(--ct-on-accent);
+    box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.22);
   }
   .step-label {
     display: none;
@@ -685,7 +685,7 @@
   .tag {
     flex: none;
     border-radius: 999px;
-    background: var(--ct-ink);
+    background: var(--ct-action);
     color: #fff;
     padding: 0.125rem 0.625rem;
     font-size: 0.75rem;
@@ -702,7 +702,7 @@
 
   .cancel {
     min-height: 2.75rem;
-    color: #a12d2d;
+    color: var(--error-text);
     font-size: 0.875rem;
     font-weight: 500;
     text-decoration: underline;

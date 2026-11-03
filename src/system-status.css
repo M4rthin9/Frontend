@@ -11,10 +11,10 @@
   font-display: swap;
 }
 :root {
-  color-scheme: light;
+  color-scheme: dark;
   font-family: Kanit, system-ui, sans-serif;
-  background: #faf9f6;
-  color: #272b29;
+  background: #1a2231;
+  color: #f1f5fb;
   font-synthesis: none;
 }
 * {
@@ -35,7 +35,7 @@ a:hover {
 }
 button:focus-visible,
 a:focus-visible {
-  outline: 3px solid #e78432;
+  outline: 3px solid #5eead4;
   outline-offset: 5px;
 }
 [hidden] {
@@ -52,7 +52,7 @@ a:focus-visible {
   align-items: center;
   gap: 20px;
   padding: 32px 0;
-  border-bottom: 1px solid #e5e5df;
+  border-bottom: 1px solid #53647b;
 }
 .brand {
   display: flex;
@@ -72,12 +72,12 @@ a:focus-visible {
     400 12px Kanit,
     sans-serif;
   letter-spacing: 0;
-  color: #737873;
+  color: #bac9dd;
   margin-top: 5px;
 }
 .back-link {
   font-size: 13px;
-  color: #747974;
+  color: #bac9dd;
 }
 main {
   padding-top: 60px;
@@ -87,7 +87,7 @@ main {
     600 11px system-ui,
     sans-serif;
   letter-spacing: 2px;
-  color: #a7652a;
+  color: #5eead4;
   margin: 0 0 14px;
 }
 h1 {
@@ -98,7 +98,7 @@ h1 {
 }
 .intro {
   margin: 12px 0 32px;
-  color: #737873;
+  color: #bac9dd;
   font-size: 15px;
 }
 .summary {
@@ -119,24 +119,24 @@ h1 {
   font-size: 14px;
 }
 .summary.operational {
-  background: #eff7f0;
-  border-color: #d2e6d5;
-  color: #236c3d;
+  background: #153e35;
+  border-color: #2c8c68;
+  color: #86efac;
 }
 .summary.maintenance {
-  background: #fff6e8;
-  border-color: #f2ddba;
-  color: #8b5c13;
+  background: #453419;
+  border-color: #9c742b;
+  color: #fcd34d;
 }
 .summary.outage {
-  background: #fff0ee;
-  border-color: #f3d0cb;
-  color: #a94435;
+  background: #4a252c;
+  border-color: #b85a65;
+  color: #fecaca;
 }
 .summary.unknown {
-  background: #f0f1ee;
-  border-color: #daddd7;
-  color: #626a62;
+  background: #303e54;
+  border-color: #53647b;
+  color: #bac9dd;
 }
 .status-symbol {
   font:
@@ -150,35 +150,35 @@ h1 {
   align-items: center;
   margin-top: 16px;
   font-size: 12px;
-  color: #7b827c;
+  color: #bac9dd;
 }
 .update-row p {
   margin: 0;
 }
 button {
-  border: 1px solid #d9ded7;
+  border: 1px solid #53647b;
   border-radius: 8px;
-  background: #fff;
+  background: #273347;
   padding: 8px 14px;
   cursor: pointer;
-  color: #485247;
+  color: #f1f5fb;
 }
 button:hover {
-  background: #f1f3ee;
+  background: #303e54;
 }
 button:disabled {
   opacity: 0.55;
   cursor: wait;
 }
 .connection-note {
-  color: #8b5c13;
+  color: #fcd34d;
   font-size: 13px;
   min-height: 20px;
   margin: 10px 0 0;
 }
 .notice {
-  border-left: 3px solid #de863a;
-  background: #fff4e7;
+  border-left: 3px solid #5eead4;
+  background: #173f42;
   margin-top: 24px;
   padding: 22px 26px;
 }
@@ -210,11 +210,11 @@ button:disabled {
 }
 .section-heading > span {
   font-size: 12px;
-  color: #8a9089;
+  color: #bac9dd;
 }
 .services {
-  background: #fff;
-  border: 1px solid #e3e6df;
+  background: #273347;
+  border: 1px solid #53647b;
   border-radius: 14px;
   overflow: hidden;
 }
@@ -222,7 +222,7 @@ button:disabled {
   padding: 23px 26px;
 }
 .service + .service {
-  border-top: 1px solid #e9ece5;
+  border-top: 1px solid #53647b;
 }
 .service-heading {
   display: flex;
@@ -237,7 +237,7 @@ button:disabled {
 }
 .service-description {
   font-size: 12px;
-  color: #848b82;
+  color: #bac9dd;
   margin: 7px 0 16px;
   line-height: 1.8;
 }
@@ -256,16 +256,16 @@ button:disabled {
   background: currentColor;
 }
 .badge.operational {
-  color: #318451;
+  color: #86efac;
 }
 .badge.maintenance {
-  color: #b37d24;
+  color: #fcd34d;
 }
 .badge.outage {
-  color: #c35949;
+  color: #fecaca;
 }
 .badge.unknown {
-  color: #8d948b;
+  color: #bac9dd;
 }
 .bars {
   display: grid;
@@ -291,21 +291,21 @@ button:disabled {
 }
 .bar.unknown,
 .legend i.unknown {
-  background: #e7ebe4;
+  background: #47566d;
 }
 .history-axis {
   display: flex;
   justify-content: space-between;
   margin-top: 6px;
   font-size: 10px;
-  color: #989e95;
+  color: #bac9dd;
 }
 .legend {
   display: flex;
   flex-wrap: wrap;
   gap: 12px 20px;
   margin-top: 18px;
-  color: #7d847b;
+  color: #bac9dd;
   font-size: 11px;
 }
 .legend span {
@@ -323,16 +323,16 @@ button:disabled {
   margin-top: 48px;
 }
 .empty-history {
-  border: 1px dashed #d9dfd4;
+  border: 1px dashed #53647b;
   border-radius: 12px;
   padding: 27px;
   text-align: center;
   font-size: 14px;
-  color: #7b8478;
+  color: #bac9dd;
 }
 .incident {
   padding: 20px 0;
-  border-bottom: 1px solid #e4e8df;
+  border-bottom: 1px solid #53647b;
 }
 .incident-head {
   display: flex;
@@ -346,14 +346,14 @@ button:disabled {
   margin: 0;
 }
 .incident p {
-  color: #7d857a;
+  color: #bac9dd;
   font-size: 12px;
   margin: 7px 0 0;
   line-height: 1.8;
 }
 .about-monitor {
   margin: 42px 0 52px;
-  border-top: 1px solid #e4e8df;
+  border-top: 1px solid #53647b;
   padding-top: 28px;
 }
 .about-monitor h2 {
@@ -363,7 +363,7 @@ button:disabled {
 }
 .about-monitor p {
   font-size: 12px;
-  color: #81897d;
+  color: #bac9dd;
   line-height: 1.9;
   margin: 8px 0;
 }
@@ -371,16 +371,16 @@ button:disabled {
   display: inline-block;
   margin-top: 12px;
   font-size: 13px;
-  color: #a86b32;
+  color: #5eead4;
 }
 footer {
   padding: 23px 0 30px;
-  border-top: 1px solid #e3e7df;
+  border-top: 1px solid #53647b;
   display: flex;
   justify-content: space-between;
   gap: 14px;
   font-size: 11px;
-  color: #949b8e;
+  color: #bac9dd;
 }
 @media (max-width: 600px) {
   .status-shell {

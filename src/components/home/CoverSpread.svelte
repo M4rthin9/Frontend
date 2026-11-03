@@ -284,20 +284,20 @@
     margin-top: 0.5rem;
     padding: 0.2rem 0.6rem;
     border-radius: 99px;
-    background: #f8e5c9;
-    color: #734410;
+    background: var(--warning-bg);
+    color: var(--warning-text);
     font-size: 0.75rem;
     line-height: 1.5;
   }
   @media (hover: hover) and (pointer: fine) {
     .booking-action-table:hover {
-      background: #fff4e5;
+      background: var(--app-bg-subtle);
     }
   }
   .cover {
     /* A faint highlight where the black page rises from the spine. */
     background-image:
-      radial-gradient(ellipse at 100% 0%, rgba(245, 130, 31, 0.16), transparent 65%),
+      radial-gradient(ellipse at 100% 0%, rgba(13, 148, 136, 0.16), transparent 65%),
       linear-gradient(90deg, rgba(255, 255, 255, 0.07), transparent 3%);
   }
   /* "CHEF TABLE" in Tinos Bold caps is about 6.8em wide: size it to fill the

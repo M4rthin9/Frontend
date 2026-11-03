@@ -273,10 +273,10 @@
 
 <div>
   <div class="section-title flex items-center gap-2" style="margin-top:0.5rem">
-    <CreditCard class="h-5 w-5 text-red-700" />{t('paymentTitle')}
+    <CreditCard class="h-5 w-5 text-[var(--accent)]" />{t('paymentTitle')}
   </div>
 
-  <div class="pay-bank-card border-t-2 border-gold-200">
+  <div class="pay-bank-card border-t-2 border-[var(--accent)]">
     <div class="promptpay-tag flex items-center justify-center gap-2">
       <QrCode class="h-4 w-4" />{t('promptpayTag')}
     </div>
@@ -317,7 +317,7 @@
          so the slip upload stays right under the QR for most payers. -->
     <details class="cross-border">
       <summary class="cross-border-head">
-        <Globe class="h-4 w-4 text-gold-600" />
+        <Globe class="h-4 w-4 text-[var(--accent)]" />
         <span class="cross-border-title">{t('crossBorderTitle')}</span>
         <ChevronDown class="cross-border-chevron h-4 w-4" aria-hidden="true" />
       </summary>
@@ -373,7 +373,7 @@
 
   <div class="upload-card">
     <div class="section-title flex items-center gap-2" style="margin-top:0">
-      <Upload class="h-5 w-5 text-red-700" />{t('uploadSlipTitle')}
+      <Upload class="h-5 w-5 text-[var(--accent)]" />{t('uploadSlipTitle')}
     </div>
 
     {#if !booking.ref.toUpperCase().startsWith('TBL-')}
@@ -516,13 +516,13 @@
 
   .slip-verify-badge.ok {
     background: rgba(46, 160, 67, 0.12);
-    color: #2ea043;
+    color: var(--success-text);
     border: 1px solid rgba(46, 160, 67, 0.4);
   }
 
   .slip-verify-badge.slip_verify {
     background: rgba(219, 171, 9, 0.12);
-    color: #d29922;
+    color: var(--warning-text);
     border: 1px solid rgba(219, 171, 9, 0.4);
   }
 
@@ -530,7 +530,7 @@
   .slip-verify-badge.unreadable,
   .slip-verify-badge.duplicate {
     background: rgba(248, 81, 73, 0.12);
-    color: #f85149;
+    color: var(--error-text);
     border: 1px solid rgba(248, 81, 73, 0.4);
   }
 

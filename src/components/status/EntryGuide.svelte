@@ -100,8 +100,8 @@
     height: 30px;
     display: grid;
     place-items: center;
-    background: #0b1f33;
-    color: #ead6b0;
+    background: var(--primary);
+    color: #fff;
     border-radius: 50%;
     font-size: 0.8rem;
   }
@@ -111,7 +111,7 @@
     margin-bottom: 4px;
   }
   .guide-reminders {
-    border-left: 3px solid #c6a66b;
+    border-left: 3px solid var(--accent);
     padding: 12px 16px;
     background: var(--app-bg);
     margin-bottom: 20px;

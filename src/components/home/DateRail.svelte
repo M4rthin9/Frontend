@@ -246,7 +246,7 @@
     background: var(--app-bg-muted);
   }
   .meter {
-    background: var(--ct-ink);
+    background: var(--ct-action);
   }
   .meter.is-low {
     background: var(--ct-orange);
@@ -259,6 +259,9 @@
   }
 
   .card.is-picked {
+    --ct-orange: #5eead4;
+    --ct-orange-ink: #5eead4;
+    --ct-on-accent: #102b2b;
     background: var(--ct-black);
     border-color: var(--ct-black);
     color: #fff;
@@ -288,10 +291,11 @@
   }
   .check {
     background: var(--ct-orange);
-    color: var(--ct-ink);
+    color: var(--ct-on-accent);
   }
   /* One of the book's black pages: the countdown is the loudest thing in the section. */
   .opening-card {
+    --ct-orange: #5eead4;
     background: var(--ct-black);
     color: #fff;
     box-shadow: 0 20px 34px -22px rgba(35, 31, 32, 0.7);

@@ -34,7 +34,12 @@ runInNewContext(await readFile(new URL('../dist/sw.js', import.meta.url), 'utf8'
 async function navigateDocument(path) {
   let result;
   handlers.get('fetch')({
-    request: { url: `https://cida.example${path}`, method: 'GET', mode: 'navigate' },
+    request: {
+      url: `https://cida.example${path}`,
+      method: 'GET',
+      mode: 'navigate',
+      headers: new Headers(),
+    },
     respondWith: (promise) => {
       result = promise;
     },

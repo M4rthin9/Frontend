@@ -58,7 +58,7 @@ class UIStore {
 
   initDarkMode(): void {
     const saved = safeGetItem(window.localStorage, 'ccc_dark_mode');
-    this.darkMode = saved === '1';
+    this.darkMode = saved !== '0';
     this.applyDarkClass();
   }
 

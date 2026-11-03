@@ -20,7 +20,7 @@
   const pdpa = $derived(ui.publicSettings.pdpa);
 
   const btn = 'rounded-xl px-4 py-2.5 text-sm font-bold transition-colors duration-200';
-  const btnPrimary = `${btn} bg-red-700 text-white shadow-md hover:bg-red-800`;
+  const btnPrimary = `${btn} bg-[var(--primary)] text-white shadow-md hover:bg-[var(--primary-dark)]`;
   const btnOutline = `${btn} border border-border-strong text-text-primary hover:bg-background-subtle`;
 </script>
 
@@ -33,7 +33,7 @@
           <h2 class="text-sm font-bold text-text-primary">{t('ckBannerTitle')}</h2>
           <p class="mt-1 text-xs leading-relaxed text-text-secondary">
             {t('ckBannerText')}
-            <button type="button" class="font-semibold text-red-700 underline underline-offset-2" onclick={() => consent.openSettings()}>
+            <button type="button" class="font-semibold text-[var(--accent)] underline underline-offset-2" onclick={() => consent.openSettings()}>
               {t('ckPolicyLink')}
             </button>
           </p>
@@ -63,7 +63,7 @@
       <label class="block cursor-pointer rounded-xl border border-border-subtle p-4">
         <span class="flex items-center justify-between gap-3">
           <span class="text-sm font-bold text-text-primary">{t('ckPreferencesTitle')}</span>
-          <input type="checkbox" role="switch" bind:checked={preferences} class="h-5 w-5 shrink-0 accent-red-700" />
+          <input type="checkbox" role="switch" bind:checked={preferences} class="h-5 w-5 shrink-0 accent-[var(--primary)]" />
         </span>
         <span class="mt-1.5 block text-xs leading-relaxed text-text-tertiary">{t('ckPreferencesDesc')}</span>
       </label>
@@ -71,7 +71,7 @@
       <label class="block cursor-pointer rounded-xl border border-border-subtle p-4">
         <span class="flex items-center justify-between gap-3">
           <span class="text-sm font-bold text-text-primary">{t('ckAnalyticsTitle')}</span>
-          <input type="checkbox" role="switch" bind:checked={analytics} class="h-5 w-5 shrink-0 accent-red-700" />
+          <input type="checkbox" role="switch" bind:checked={analytics} class="h-5 w-5 shrink-0 accent-[var(--primary)]" />
         </span>
         <span class="mt-1.5 block text-xs leading-relaxed text-text-tertiary">{t('ckAnalyticsDesc')}</span>
       </label>

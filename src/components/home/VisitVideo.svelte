@@ -154,16 +154,16 @@
     display: grid;
     place-items: center;
     border-radius: 50%;
-    background: #0b1f33;
-    color: #ead6b0;
+    background: var(--primary);
+    color: #fff;
     font-size: 0.8rem;
   }
   .video-approval {
     max-width: 38rem;
     padding: 0.9rem 1rem;
-    border-left: 3px solid #c6a66b;
-    background: #fffaf0;
-    color: #514331;
+    border-left: 3px solid var(--accent);
+    background: var(--app-bg-subtle);
+    color: var(--app-text-secondary);
     font-size: 0.875rem;
     line-height: 1.8;
   }
@@ -201,7 +201,7 @@
     margin-top: 1rem;
     font-size: 0.875rem;
     line-height: 1.7;
-    color: #a12d2d;
+    color: var(--error-text);
   }
   .video-error a {
     text-decoration: underline;

@@ -193,7 +193,7 @@
 
 <style>
   .entry-pass {
-    border: 1px solid #dce3e8;
+    border: 1px solid var(--app-border-subtle);
     border-radius: 16px;
     padding: clamp(18px, 4vw, 28px);
     background: var(--surface);
@@ -204,8 +204,8 @@
     align-items: flex-start;
   }
   .entry-icon {
-    background: #0b1f33;
-    color: #e4d1ae;
+    background: #131b29;
+    color: #5eead4;
     width: 44px;
     height: 44px;
     flex-shrink: 0;
@@ -240,7 +240,7 @@
     width: 100%;
     min-height: 48px;
     margin-top: 8px;
-    border: 1px solid var(--app-border-subtle);
+    border: 1px solid var(--app-border-strong);
     border-radius: 8px;
     padding: 10px 12px;
     font-size: 16px;
@@ -250,7 +250,7 @@
   a:focus-visible,
   button:focus-visible,
   summary:focus-visible {
-    outline: 2px solid #c6a66b;
+    outline: 2px solid var(--accent);
     outline-offset: 3px;
   }
   .entry-save,
@@ -268,7 +268,7 @@
     text-decoration: none;
   }
   .entry-save {
-    background: #0b1f33;
+    background: var(--primary);
     color: #fff;
   }
   .entry-share {
@@ -321,7 +321,7 @@
     margin-top: 12px;
     font-size: 0.875rem;
     line-height: 1.6;
-    color: #b42318;
+    color: var(--error-text);
   }
   .entry-text {
     margin-top: 20px;

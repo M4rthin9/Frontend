@@ -437,7 +437,7 @@
     transform: translateX(-50%);
     padding: 0.2rem 0.55rem;
     border-radius: 3px;
-    background: #fff;
+    background: var(--surface);
     color: var(--ct-ink);
     font-size: 0.72rem;
     white-space: nowrap;
@@ -464,7 +464,7 @@
     min-width: 6.5rem;
     padding: 0.55rem 0.8rem 0.6rem;
     border-radius: 3px;
-    background: linear-gradient(180deg, #ffffff 0 48%, #eef0ef 52% 100%);
+    background: linear-gradient(180deg, var(--surface) 0 48%, var(--app-bg-subtle) 52% 100%);
     color: var(--ct-ink);
     text-align: center;
     box-shadow:

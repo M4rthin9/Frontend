@@ -107,8 +107,8 @@
 
 /* ============================================================
    GLOBALS.CSS — Design System
-   Official palette — Crimson + Muted Gold + Ink (Phase 1)
-   Crimson #A92928 • Muted Gold #C68A00 • Cool Slate base
+   Shared public and administrative visual direction
+   Charcoal surfaces • Teal actions • Distinct semantic status colours
    ============================================================ */
 
 @theme {
@@ -117,7 +117,7 @@
   --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
   --font-book: 'Tinos', 'Times New Roman', Times, 'Kanit', serif;
 
-  /* === Red (primary) — #A92928 === */
+  /* === Red (errors) === */
   --color-red-50: #fef2f2;
   --color-red-100: #fde8e8;
   --color-red-200: #f9c4c4;
@@ -155,30 +155,30 @@
   --color-navy-950: #020617;
 
   /* === Warm Gray (neutral) === */
-  --color-warm-50: #faf9f7;
-  --color-warm-100: #f3f1ec;
-  --color-warm-200: #e8e4dc;
-  --color-warm-300: #d4cfc3;
-  --color-warm-400: #b5ae9e;
-  --color-warm-500: #968e7c;
-  --color-warm-600: #7a7265;
-  --color-warm-700: #5e574d;
-  --color-warm-800: #433e37;
-  --color-warm-900: #2b2723;
-  --color-warm-950: #1a1714;
+  --color-warm-50: #f4f6fa;
+  --color-warm-100: #e6ecf3;
+  --color-warm-200: #d0dae7;
+  --color-warm-300: #a7b5c8;
+  --color-warm-400: #8292a9;
+  --color-warm-500: #64748b;
+  --color-warm-600: #495c73;
+  --color-warm-700: #303e54;
+  --color-warm-800: #273347;
+  --color-warm-900: #1a2231;
+  --color-warm-950: #131b29;
 
   /* Keep Tailwind palette keys alive for any utility usage */
-  --color-indigo-50: var(--color-red-50);
-  --color-indigo-100: var(--color-red-100);
-  --color-indigo-200: var(--color-red-200);
-  --color-indigo-300: var(--color-red-300);
-  --color-indigo-400: var(--color-red-400);
-  --color-indigo-500: var(--color-red-500);
-  --color-indigo-600: var(--color-red-600);
-  --color-indigo-700: var(--color-red-700);
-  --color-indigo-800: var(--color-red-800);
-  --color-indigo-900: var(--color-red-900);
-  --color-indigo-950: var(--color-red-950);
+  --color-indigo-50: #f0fdfa;
+  --color-indigo-100: #ccfbf1;
+  --color-indigo-200: #99f6e4;
+  --color-indigo-300: #5eead4;
+  --color-indigo-400: #2dd4bf;
+  --color-indigo-500: #14b8a6;
+  --color-indigo-600: #0d9488;
+  --color-indigo-700: #0f766e;
+  --color-indigo-800: #115e59;
+  --color-indigo-900: #134e4a;
+  --color-indigo-950: #042f2e;
 
   --color-amber-50: var(--color-gold-50);
   --color-amber-100: var(--color-gold-100);
@@ -224,17 +224,17 @@
   --color-sky-800: #075985;
   --color-sky-900: #0c4a6e;
 
-  --color-slate-50: #f8f7f5;
-  --color-slate-100: #f0eeea;
-  --color-slate-200: #e2dfd8;
-  --color-slate-300: #ccc8bd;
-  --color-slate-400: #a8a294;
-  --color-slate-500: #857e6e;
-  --color-slate-600: #665f52;
-  --color-slate-700: #4a4538;
-  --color-slate-800: #302c22;
-  --color-slate-900: #1a1812;
-  --color-slate-950: #0f0e0a;
+  --color-slate-50: #f4f6fa;
+  --color-slate-100: #e6ecf3;
+  --color-slate-200: #d0dae7;
+  --color-slate-300: #a7b5c8;
+  --color-slate-400: #8292a9;
+  --color-slate-500: #64748b;
+  --color-slate-600: #495c73;
+  --color-slate-700: #303e54;
+  --color-slate-800: #273347;
+  --color-slate-900: #1a2231;
+  --color-slate-950: #131b29;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -253,37 +253,55 @@
 
 :root {
   color-scheme: light;
-  --surface: #ffffff;
-  --app-bg: #f8fafc;
-  --app-bg-subtle: #f1f5f9;
-  --app-bg-muted: #e2e8f0;
-  --app-border-subtle: #e2e8f0;
-  --app-border-strong: #cbd5e1;
-  --app-text: #0f172a;
-  --app-text-secondary: #475569;
-  --app-text-tertiary: #64748b;
-  --primary: #a92928;
-  --primary-dark: #8b2020;
-  --primary-light: #fef2f2;
-  --accent: #c68a00;
-  --accent-light: #fffbeb;
-  --accent-dark: #8a5f00;
+  --surface: #f4f6fa;
+  --app-bg: #dfe6ef;
+  --app-bg-subtle: #e6ecf3;
+  --app-bg-muted: #d0dae7;
+  --app-border-subtle: #a7b5c8;
+  --app-border-strong: #71839b;
+  --app-text: #1c2b41;
+  --app-text-secondary: #3c4e65;
+  --app-text-tertiary: #495c73;
+  --primary: #0f766e;
+  --primary-dark: #115e59;
+  --primary-light: #d6eee9;
+  --accent: #115e59;
+  --accent-light: #d6eee9;
+  --accent-dark: #115e59;
   --success: #047857;
-  --warning: #c68a00;
+  --success-text: #166534;
+  --warning: #8a5a00;
   --error: #b91c1c;
+  --error-text: #a12d2d;
+  --warning-text: #734410;
+  --warning-bg: #f8e5c9;
   --info: #0369a1;
-  --ink: #0f172a;
+  --ink: #1c2b41;
+  --ct-paper: var(--surface);
+  --ct-linen: var(--app-bg-subtle);
+  --ct-ink: var(--app-text);
+  --ct-ink-2: var(--app-text-secondary);
+  --ct-ink-3: var(--app-text-tertiary);
+  --ct-black: #131b29;
+  /* Keep existing book components on the shared charcoal-and-teal palette. */
+  --ct-orange: var(--accent);
+  --ct-orange-ink: var(--accent);
+  --ct-action: var(--primary);
+  --ct-action-text: #ffffff;
+  --ct-secondary-action: #1c2b41;
+  --ct-on-accent: #ffffff;
+  --ct-ease: cubic-bezier(0.23, 1, 0.32, 1);
 
   /* Legacy aliases — booking-flow CSS + inline styles still reference these */
-  --indigo-50: var(--color-red-50);
-  --indigo-100: var(--color-red-100);
-  --indigo-200: var(--color-red-200);
-  --indigo-500: var(--color-red-500);
-  --indigo-600: var(--color-red-600);
-  --indigo-700: var(--color-red-700);
-  --indigo-800: var(--color-red-800);
-  --indigo-900: var(--color-red-900);
-  --indigo-950: var(--color-red-950);
+  --indigo-50: var(--color-indigo-50);
+  --indigo-100: var(--color-indigo-100);
+  --indigo-200: var(--color-indigo-200);
+  --indigo-500: var(--color-indigo-500);
+  --indigo-600: var(--color-indigo-600);
+  --indigo-700: var(--color-indigo-700);
+  --indigo-800: var(--color-indigo-800);
+  --indigo-900: var(--color-indigo-900);
+  --indigo-950: var(--color-indigo-950);
   --amber-50: var(--color-gold-50);
   --amber-100: var(--color-gold-100);
   --amber-200: var(--color-gold-200);
@@ -300,10 +318,10 @@
   --rose-100: var(--color-rose-100);
   --rose-200: var(--color-rose-200);
   --rose-700: var(--color-rose-700);
-  --accent-500: var(--color-gold-500);
-  --accent-600: var(--color-gold-600);
-  --accent-700: var(--color-gold-700);
-  --accent-800: var(--color-gold-800);
+  --accent-500: var(--color-indigo-500);
+  --accent-600: var(--color-indigo-600);
+  --accent-700: var(--color-indigo-700);
+  --accent-800: var(--color-indigo-800);
   --error-50: var(--color-rose-50);
   --error-200: var(--color-rose-200);
   --error-400: var(--color-rose-400);
@@ -311,27 +329,39 @@
   --error-600: var(--color-rose-600);
   --error-700: var(--color-rose-700);
   --error-800: var(--color-rose-800);
-  --blue: var(--color-red-500);
+  --blue: var(--color-indigo-500);
+  --red: var(--error-text);
   --gray-200: var(--color-slate-200);
   --bg-subtle: var(--app-bg-subtle);
   --border: var(--app-border-strong);
   --text: var(--app-text);
+  --text-secondary: var(--app-text-secondary);
 }
 
 .dark {
   color-scheme: dark;
-  --surface: #0f172a;
-  --app-bg: #0f172a;
-  --app-bg-subtle: #1e293b;
-  --app-bg-muted: #334155;
-  --app-border-subtle: #1e293b;
-  --app-border-strong: #334155;
-  --app-text: #f1f5f9;
-  --app-text-secondary: #cbd5e1;
-  --app-text-tertiary: #94a3b8;
-  --primary-light: rgba(169, 41, 40, 0.22);
-  --accent-light: rgba(198, 138, 0, 0.16);
-  --accent-dark: #eab308;
+  --surface: #273347;
+  --app-bg: #1a2231;
+  --app-bg-subtle: #303e54;
+  --app-bg-muted: #3b4c64;
+  --app-border-subtle: #53647b;
+  --app-border-strong: #8292a9;
+  --app-text: #f1f5fb;
+  --app-text-secondary: #d0dced;
+  --app-text-tertiary: #bac9dd;
+  --primary-light: #173f42;
+  --accent: #5eead4;
+  --accent-light: #173f42;
+  --accent-dark: #5eead4;
+  --error-text: #fecaca;
+  --success-text: #86efac;
+  --warning-text: #fcd34d;
+  --warning-bg: #453419;
+  --ct-secondary-action: #303e54;
+  --ct-on-accent: #102b2b;
+  --indigo-50: #173f42;
+  --indigo-100: #1c4e50;
+  --indigo-200: #428782;
 }
 
 /* === Base Styles === */
@@ -381,14 +411,14 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--primary);
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
     border-radius: 6px;
   }
 
   ::selection {
-    background: var(--color-red-200);
-    color: var(--color-red-900);
+    background: var(--color-indigo-200);
+    color: var(--color-indigo-900);
   }
 
   ::-webkit-scrollbar {
@@ -458,8 +488,8 @@
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.04), 0 4px 6px -4px rgb(0 0 0 / 0.04);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.04), 0 4px 6px -4px rgb(0 0 0 / 0.04);
   --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.08);
-  --shadow-primary: 0 4px 14px 0 rgba(169, 41, 40, 0.15);
-  --shadow-primary-lg: 0 10px 25px -5px rgba(169, 41, 40, 0.2);
+  --shadow-primary: 0 4px 14px 0 rgba(13, 148, 136, 0.15);
+  --shadow-primary-lg: 0 10px 25px -5px rgba(13, 148, 136, 0.2);
 
   --duration-fast: 150ms;
   --duration-normal: 250ms;
@@ -575,7 +605,7 @@
 
 .status-pill-paid {
   background: var(--indigo-100);
-  color: var(--indigo-700);
+  color: var(--accent);
   border: 1px solid var(--indigo-200);
 }
 
@@ -652,7 +682,7 @@
 }
 
 .booking-app .booking-back:hover {
-  color: var(--primary);
+  color: var(--accent);
   background: var(--primary-light);
 }
 
@@ -781,13 +811,13 @@
 }
 
 .booking-app .count-btn:hover {
-  border-color: var(--primary);
-  color: var(--primary);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .booking-app .count-btn.active {
   background: var(--primary);
-  border-color: var(--primary);
+  border-color: var(--accent);
   color: #fff;
   box-shadow: var(--shadow-sm);
 }
@@ -880,7 +910,7 @@
 .booking-app .extra-visitor-num {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--indigo-600);
+  color: var(--accent);
   margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
@@ -921,8 +951,8 @@
 
 .booking-app .prisoner-search-input:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(169, 41, 40, 0.08);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.08);
 }
 
 .booking-app .prisoner-search-input.field-error {
@@ -940,11 +970,11 @@
 }
 
 .booking-app .prisoner-load-status.load-ok {
-  color: var(--emerald-600);
+  color: var(--success-text);
 }
 
 .booking-app .prisoner-load-status.load-error {
-  color: var(--error-600);
+  color: var(--error-text);
 }
 
 .booking-app .prisoner-hint {
@@ -1006,7 +1036,7 @@
 }
 
 .booking-app .suggestion-wing {
-  color: var(--indigo-600);
+  color: var(--accent);
   font-weight: 600;
 }
 
@@ -1027,7 +1057,7 @@
 
 .booking-app .badge-normal {
   background: var(--indigo-100);
-  color: var(--indigo-700);
+  color: var(--accent);
 }
 
 /* === Selected Prisoner Display === */
@@ -1042,7 +1072,7 @@
 
 .booking-app .selected-prisoner-check {
   font-size: 0.8125rem;
-  color: var(--emerald-600);
+  color: var(--success-text);
   font-weight: 600;
   margin-bottom: 0.5rem;
   display: flex;
@@ -1067,7 +1097,7 @@
 
 .booking-app .selected-prisoner-clear:hover {
   border-color: var(--error-400);
-  color: var(--error-600);
+  color: var(--error-text);
   background: var(--rose-50);
 }
 
@@ -1089,7 +1119,7 @@
 }
 
 .booking-app .selected-prisoner-wing {
-  color: var(--indigo-600);
+  color: var(--accent);
   font-weight: 700;
 }
 
@@ -1133,8 +1163,8 @@
 }
 
 .booking-app .cal-nav:hover {
-  border-color: var(--primary);
-  color: var(--primary);
+  border-color: var(--accent);
+  color: var(--accent);
   background: var(--indigo-50);
 }
 
@@ -1176,17 +1206,17 @@
 }
 
 .booking-app .day-btn:not(.full):not(.past):not(.holiday):not(.weekend):not(.selected):hover {
-  border-color: var(--primary);
-  color: var(--primary);
+  border-color: var(--accent);
+  color: var(--accent);
   background: var(--indigo-50);
 }
 
 .booking-app .day-btn.selected {
   background: var(--primary);
   color: #ffffff;
-  border-color: var(--primary);
+  border-color: var(--accent);
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(169, 41, 40, 0.2);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.2);
 }
 
 .booking-app .day-btn.full {
@@ -1223,7 +1253,7 @@
 
 .booking-app .selected-date-display {
   font-size: 0.875rem;
-  color: var(--indigo-600);
+  color: var(--accent);
   font-weight: 600;
   margin-top: 0.75rem;
   min-height: 20px;
@@ -1262,14 +1292,14 @@
 }
 
 .booking-app .counts-status.counts-error {
-  color: var(--error-600);
+  color: var(--error-text);
 }
 
 .booking-app .counts-retry {
   padding: 3px 12px;
   border: 1px solid var(--error-400);
   background: transparent;
-  color: var(--error-600);
+  color: var(--error-text);
   border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 0.75rem;
@@ -1283,7 +1313,7 @@
 
 /* === Rules — official: navy tint, not indigo wash === */
 .booking-app .rules {
-  background: var(--color-navy-50);
+  background: var(--app-bg-subtle);
   border-left: 3px solid var(--indigo-500);
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
   padding: 1rem 1.25rem;
@@ -1294,7 +1324,7 @@
 }
 
 .booking-app .rules strong {
-  color: var(--indigo-700);
+  color: var(--accent);
   font-weight: 600;
 }
 
@@ -1322,8 +1352,8 @@
 
 .booking-app .consent-row:has(input:checked),
 .booking-app .consent-row.consent-checked {
-  border-color: var(--primary);
-  background: var(--color-navy-50);
+  border-color: var(--accent);
+  background: var(--app-bg-subtle);
 }
 
 .booking-app .consent-row input[type='checkbox'] {
@@ -1331,7 +1361,7 @@
   height: 18px;
   flex-shrink: 0;
   margin-top: 2px;
-  accent-color: var(--primary);
+  accent-color: var(--accent);
   cursor: pointer;
   border-radius: 4px;
 }
@@ -1591,7 +1621,7 @@
 
 .booking-app .error-text {
   font-size: 0.75rem;
-  color: var(--error-600);
+  color: var(--error-text);
   margin-top: 0.375rem;
   line-height: 1.4;
 }
@@ -1785,8 +1815,8 @@
 }
 
 .booking-app .btn-secondary:hover {
-  border-color: var(--primary);
-  color: var(--primary);
+  border-color: var(--accent);
+  color: var(--accent);
   background: var(--indigo-50);
 }
 
@@ -1880,7 +1910,7 @@
 .booking-app .result-ref strong {
   font-size: 1.0625rem;
   font-weight: 700;
-  color: var(--primary);
+  color: var(--accent);
   font-family: var(--font-mono);
   letter-spacing: 0.02em;
 }
@@ -1977,7 +2007,7 @@
 
 .booking-app .status-pill.status-paid {
   background: var(--indigo-100);
-  color: var(--indigo-700);
+  color: var(--accent);
   border: 1px solid var(--indigo-200);
 }
 
@@ -2086,7 +2116,7 @@
 }
 
 .booking-app .table-external-notice h3 {
-  color: var(--indigo-800);
+  color: var(--accent);
   font-size: 0.9375rem;
   font-weight: 700;
   margin-bottom: 0.375rem;
@@ -2272,7 +2302,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: var(--indigo-600);
+  background: var(--primary);
   color: #fff;
   font-size: 0.875rem;
   font-weight: 700;
@@ -2373,12 +2403,12 @@
 }
 
 .booking-app .upload-area:hover {
-  border-color: var(--primary);
+  border-color: var(--accent);
   background: var(--indigo-50);
 }
 
 .booking-app .upload-area.drag-over {
-  border-color: var(--primary);
+  border-color: var(--accent);
   background: var(--indigo-50);
 }
 
@@ -2449,7 +2479,7 @@
 .booking-app .alert-strip.success {
   background: rgba(16, 185, 129, 0.06);
   border: 1px solid rgba(16, 185, 129, 0.3);
-  color: var(--emerald-700);
+  color: var(--success-text);
 }
 
 /* === Status Responsive === */
@@ -2463,12 +2493,6 @@
 /* ============================================================
    DARK MODE — booking / status subdesign overrides
    ============================================================ */
-.dark {
-  --primary-light: rgba(169, 41, 40, 0.15);
-  --accent-light: rgba(245, 158, 11, 0.12);
-  --accent-dark: #fbbf24;
-}
-
 .dark .booking-app .suggestion-meta,
 .dark .booking-app .review-none,
 .dark .booking-app .confirm-note {
@@ -2599,6 +2623,7 @@
 
 .dark .booking-app .approval-badge.yes {
   background: #047857;
+  color: #fff;
 }
 
 .dark .booking-app .approval-badge.no {
@@ -2607,7 +2632,8 @@
 }
 
 .dark .booking-app .approval-badge.pending {
-  color: var(--accent-dark);
+  background: var(--warning-bg);
+  color: var(--warning-text);
 }
 
 .dark .booking-app .discount-line {
@@ -2623,52 +2649,39 @@
   background: var(--bg-subtle);
 }
 
-/* === Home page: the "Chef Table" book (sections live in src/components/home) ===
-   Daylight, linen, matte black plates and one orange, after the printed book
-   "Chef Table ในเรือนจำ". The wrapper redefines the app's colour tokens, so every
-   token-based utility inside reads as paper in both themes; .ct-black turns a
-   block into one of the book's black pages. */
+/* Home sections share the app theme; cover and footer retain a dark stage. */
 @layer components {
   .home-book {
-    --ct-paper: #fafaf8;
-    --ct-linen: #eef0ef;
-    --ct-ink: #231f20;
-    --ct-ink-2: #4b4647;
-    --ct-ink-3: #6b6566;
-    --ct-black: #231f20;
-    --ct-orange: #f5821f;
-    /* The cover orange is 2.6:1 on paper; orange text on paper or linen uses this (5:1+). */
-    --ct-orange-ink: #a24b08;
-    --ct-ease: cubic-bezier(0.23, 1, 0.32, 1);
-    --surface: #ffffff;
-    --app-bg: var(--ct-paper);
-    --app-bg-subtle: var(--ct-linen);
-    --app-bg-muted: #e2e5e4;
-    --app-border-subtle: rgba(35, 31, 32, 0.12);
-    --app-border-strong: rgba(35, 31, 32, 0.26);
-    --app-text: var(--ct-ink);
-    --app-text-secondary: var(--ct-ink-2);
-    --app-text-tertiary: var(--ct-ink-3);
-    color-scheme: light;
-    background: var(--ct-paper);
-    color: var(--ct-ink);
+    background: var(--app-bg);
+    color: var(--app-text);
   }
   .ct-black {
-    --surface: #2d2829;
-    --app-bg: var(--ct-black);
-    --app-bg-subtle: #2d2829;
-    --app-bg-muted: #3b3536;
-    --app-border-subtle: rgba(255, 255, 255, 0.13);
-    --app-border-strong: rgba(255, 255, 255, 0.28);
-    --app-text: #ffffff;
-    --app-text-secondary: rgba(255, 255, 255, 0.76);
-    --app-text-tertiary: rgba(255, 255, 255, 0.62);
+    --surface: #202d40;
+    --app-bg: #131b29;
+    --app-bg-subtle: #273347;
+    --app-bg-muted: #303e54;
+    --app-border-subtle: #53647b;
+    --app-border-strong: #8292a9;
+    --app-text: #f1f5fb;
+    --app-text-secondary: #d0dced;
+    --app-text-tertiary: #bac9dd;
+    --accent: #5eead4;
+    --ct-paper: var(--surface);
+    --ct-ink: var(--app-text);
+    --ct-ink-2: var(--app-text-secondary);
+    --ct-ink-3: var(--app-text-tertiary);
+    --ct-orange: #5eead4;
+    --ct-orange-ink: #5eead4;
+    --ct-on-accent: #102b2b;
+    --ct-secondary-action: #303e54;
+    --warning-bg: #453419;
+    --warning-text: #fcd34d;
     color-scheme: dark;
     background: var(--ct-black);
-    color: #fff;
+    color: var(--app-text);
   }
   .home-book ::selection {
-    background: rgba(245, 130, 31, 0.32);
+    background: rgba(45, 212, 191, 0.32);
     color: inherit;
   }
 
@@ -2733,13 +2746,14 @@
     outline: 2px solid var(--ct-orange);
     outline-offset: 3px;
   }
-  /* Orange carries ink, not white: 6.2:1. */
+  /* Filled actions retain white text in both themes. */
   .ct-btn-orange {
-    background: var(--ct-orange);
-    color: var(--ct-ink);
+    background: var(--ct-action);
+    color: var(--ct-action-text);
   }
   .ct-btn-ink {
-    background: var(--ct-ink);
+    border: 1px solid var(--app-border-strong);
+    background: var(--ct-secondary-action);
     color: #fff;
   }
   .ct-btn-line {
@@ -2762,10 +2776,10 @@
   }
   @media (hover: hover) and (pointer: fine) {
     .ct-btn-orange:not(:disabled):hover {
-      background: #ff9a45;
+      background: var(--primary-dark);
     }
     .ct-btn-ink:not(:disabled):hover {
-      background: #3d3637;
+      background: #3b4c64;
     }
     .ct-btn-line:not(:disabled):hover {
       border-color: var(--app-text);
@@ -2805,7 +2819,7 @@
     --tint: #fff6e2;
   }
   .is-pay {
-    --tone: var(--ct-orange-ink);
+    --tone: #8a5a00;
     --tint: #fff1e5;
   }
   .is-done {
@@ -2816,6 +2830,19 @@
     --tone: #a12d2d;
     --tint: #fcecec;
   }
+  .dark .is-wait,
+  .dark .is-pay {
+    --tone: #fcd34d;
+    --tint: #453419;
+  }
+  .dark .is-done {
+    --tone: #86efac;
+    --tint: #153e35;
+  }
+  .dark .is-stop {
+    --tone: #fecaca;
+    --tint: #4a252c;
+  }
   .ct-pill.is-wait,
   .ct-pill.is-pay,
   .ct-pill.is-done,
@@ -2824,48 +2851,9 @@
     background: var(--tint);
   }
 
-  /* The booking and status pages sit on the same paper. Their forms still read
-     the older booking tokens (maroon --primary, red --indigo-*, gold --amber-* /
-     --accent-*), so inside the book those are pointed at ink and orange. Error
-     reds (rose) are left alone. */
   .book-paper {
     --bg-subtle: var(--app-bg-subtle);
     --border: var(--app-border-strong);
     --text: var(--app-text);
-    --primary: var(--ct-ink);
-    --primary-dark: #000;
-    --primary-light: #f3eee9;
-    --shadow-primary: none;
-    --shadow-primary-lg: none;
-    --indigo-50: #f3eee9;
-    --indigo-100: #e8e2dc;
-    --indigo-200: #d6cec7;
-    --indigo-500: var(--ct-ink-3);
-    --indigo-600: var(--ct-ink-2);
-    --indigo-700: var(--ct-ink);
-    --indigo-800: #1a1617;
-    --indigo-900: #120f10;
-    --indigo-950: #0b0909;
-    --amber-50: #fff6ec;
-    --amber-100: #ffe9d2;
-    --amber-200: #fdd3aa;
-    --amber-300: #fbb877;
-    --amber-400: #f89a45;
-    --amber-700: var(--ct-orange-ink);
-    --accent: var(--ct-orange);
-    --accent-light: #fff1e5;
-    --accent-dark: var(--ct-orange-ink);
-    --accent-500: var(--ct-orange);
-    --accent-600: #e06f0c;
-    --accent-700: var(--ct-orange-ink);
-    --accent-800: #7d3a06;
-    /* The rules note and other navy tints read as warm paper. */
-    --color-navy-50: #f3eee9;
-    /* Calendar legend dots: open days in ink, full days in the status red. */
-    --blue: var(--ct-ink);
-    --red: #a12d2d;
-    /* Tailwind's focus utilities on the form fields (focus:border-indigo-500, ring-indigo-100). */
-    --color-indigo-500: var(--ct-ink);
-    --color-indigo-100: rgba(245, 130, 31, 0.28);
   }
 }
