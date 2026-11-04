@@ -2,6 +2,7 @@
   import { booking as defaultBooking, type BookingStore } from '../../lib/store/booking.svelte';
   import { navigate } from '../../lib/router.svelte';
   import { t } from '../../lib/i18n/i18n.svelte';
+  import { cleanLabel, statusPillLabel } from '../../lib/utils/status';
   import Button from '../ui/Button.svelte';
   import PushOptIn from '../ui/PushOptIn.svelte';
   import EntryGuide from '../status/EntryGuide.svelte';
@@ -31,7 +32,11 @@
       <p style="font-size:14px;color:var(--text-secondary);margin-bottom:1rem">{t('successSub')}</p>
 
       <div class="status-pill status-pending">
-        <span>{t('bookingInitialStatus')}</span>
+        <span
+          >{success.status
+            ? cleanLabel(statusPillLabel(success.status))
+            : t('bookingInitialStatus')}</span
+        >
       </div>
 
       <div class="ref-box">

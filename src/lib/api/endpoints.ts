@@ -91,14 +91,17 @@ export async function lookupByRef(query: {
 }
 
 /** Submit a new booking (Turnstile token required). */
-export async function saveReservation(payload: SaveReservationPayload): Promise<{ ref: string }> {
-  const data = await callAction<{ status: string; ref?: string; message?: string }>(
-    'saveReservation',
-    payload as unknown as Record<string, unknown>,
-    { timeoutMs: 45000 },
-  );
+export async function saveReservation(
+  payload: SaveReservationPayload,
+): Promise<{ ref: string; newStatus?: string }> {
+  const data = await callAction<{
+    status: string;
+    ref?: string;
+    message?: string;
+    newStatus?: string;
+  }>('saveReservation', payload as unknown as Record<string, unknown>, { timeoutMs: 45000 });
   assertOk(data);
-  return { ref: data.ref ?? '' };
+  return { ref: data.ref ?? '', newStatus: data.newStatus };
 }
 
 /**

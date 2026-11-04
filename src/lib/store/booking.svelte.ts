@@ -73,6 +73,7 @@ export interface ConfirmData {
 
 export interface SuccessData {
   ref: string;
+  status?: string;
   visitDate: string;
   visitorCount: number;
   totalPersons: number;
@@ -792,6 +793,7 @@ class BookingStoreImpl {
     };
 
     let savedRef = ref;
+    let savedStatus = payload.status;
     let submitError = '';
     try {
       const resp = this.isTable
@@ -802,6 +804,7 @@ class BookingStoreImpl {
           })
         : await saveReservation(payload);
       savedRef = String(resp.ref || '').trim() || ref;
+      if ('newStatus' in resp && resp.newStatus) savedStatus = String(resp.newStatus);
     } catch (err) {
       submitError =
         err instanceof ApiError ? err.message : String(err instanceof Error ? err.message : err);
@@ -824,6 +827,7 @@ class BookingStoreImpl {
 
     this.success = {
       ref: savedRef,
+      status: savedStatus,
       visitDate: this.confirmData.visitDate,
       visitorCount: this.visitorCount,
       totalPersons: this.confirmData.totalPersons,
