@@ -55,6 +55,8 @@ export interface PublicReservation {
   ref: string;
   timestamp?: string;
   status?: string;
+  participantApproved?: string;
+  disciplineApproved?: string;
   bookingType?: string;
   tableAgreementVersion?: string;
   visitDate?: string;

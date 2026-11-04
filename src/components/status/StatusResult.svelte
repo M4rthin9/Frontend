@@ -179,12 +179,19 @@
   const currentStep = $derived(steps.indexOf(normalized));
 
   function stepState(i: number): 'done' | 'now' | 'next' {
+    if (!isTable && i < 2 && ['รอตรวจสอบผู้เข้าร่วม', 'รอตรวจสอบวินัย'].includes(normalized)) {
+      const approved = i === 0 ? booking.participantApproved : booking.disciplineApproved;
+      if (approved !== undefined) return approved === 'yes' ? 'done' : 'now';
+    }
     if (i < currentStep || normalized === 'เสร็จสิ้น') return 'done';
     return i === currentStep ? 'now' : 'next';
   }
 
   const statusNotice = $derived.by(() => {
     const s = normalized;
+    if (!isTable && s === 'รอตรวจสอบผู้เข้าร่วม' && booking.participantApproved === '' && booking.disciplineApproved === '') {
+      return { title: t('noticeReviewDefault'), text: t('noticeReviewDefaultText'), kind: 'pending' };
+    }
     if (s === 'รอชำระเงิน') {
       return { title: t('noticeApprovedPay'), text: t('noticeApprovedPayText'), kind: 'approve' };
     }
@@ -293,7 +300,7 @@
         <ol class="steps" style="--n: {steps.length}">
           {#each steps as s, i (s)}
             {@const state = stepState(i)}
-            <li class="step {state}" aria-current={state === 'now' ? 'step' : undefined}>
+            <li class="step {state}" aria-current={state === 'now' && i === currentStep ? 'step' : undefined}>
               <span class="mark" aria-hidden="true">
                 {#if state === 'done'}<Check class="h-3.5 w-3.5" strokeWidth={3} />{:else}{i +
                     1}{/if}
