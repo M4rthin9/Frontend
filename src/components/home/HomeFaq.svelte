@@ -5,6 +5,7 @@
   import { t, tc } from '../../lib/i18n/i18n.svelte';
   import { chat } from '../../lib/store/chat.svelte';
   import { ui } from '../../lib/store/ui.svelte';
+  import { visitPlan } from '../../lib/store/visitPlan.svelte';
   import { BOOKING_MAX_DAYS_AHEAD } from '../../lib/utils/calendar';
   import { LINE_ADD_URL, LINE_ID } from '../../lib/line';
   import LineIcon from '../ui/LineIcon.svelte';
@@ -22,7 +23,7 @@
     }
   }
 
-  const perDay = $derived(ui.publicSettings.publicBooking.perDay);
+  const perDay = $derived(visitPlan.perDay);
   const holdMinutes = $derived(ui.publicSettings.tableBooking.holdMinutes);
 
   const faqs = $derived([

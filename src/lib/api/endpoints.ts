@@ -238,21 +238,22 @@ export interface PdpaPublic {
   contact: string;
 }
 
+export { DEFAULT_PUBLIC_BOOKING } from '../utils/publicCapacity';
+import { DEFAULT_PUBLIC_BOOKING, type PublicBookingCapacity } from '../utils/publicCapacity';
+
 export interface PublicSettings {
   frontendContent: Partial<Record<'th' | 'en' | 'zh' | 'vi', Record<string, string>>>;
   paymentEnabled: boolean;
   paymentClosedMessage: string;
   tableBooking: TableBookingPublicConfig;
   /** Daily cap on public prisoner-visit bookings (admin_settings.publicBooking). */
-  publicBooking: { perDay: number };
+  publicBooking: PublicBookingCapacity;
   bookingWindow: BookingWindow;
   promo: Promo;
   pdpa: PdpaPublic;
 }
 
 export const DEFAULT_PDPA: PdpaPublic = { policyVersion: '1', contact: '' };
-
-export const DEFAULT_PUBLIC_BOOKING = { perDay: 20 };
 
 export const DEFAULT_BOOKING_WINDOW: BookingWindow = {
   open: true,
@@ -286,7 +287,7 @@ export async function getPublicSettings(strict = false): Promise<PublicSettings>
       paymentEnabled?: boolean;
       paymentClosedMessage?: string;
       tableBooking?: Partial<TableBookingPublicConfig>;
-      publicBooking?: { perDay?: number };
+      publicBooking?: Partial<PublicBookingCapacity>;
       bookingWindow?: Partial<BookingWindow>;
       promo?: Partial<Promo>;
       pdpa?: Partial<PdpaPublic>;
@@ -320,7 +321,7 @@ export async function getPublicSettings(strict = false): Promise<PublicSettings>
         opensAt: data.tableBooking?.opensAt ?? '',
         serverTime: data.tableBooking?.serverTime,
       },
-      publicBooking: { perDay: data.publicBooking?.perDay || DEFAULT_PUBLIC_BOOKING.perDay },
+      publicBooking: { ...DEFAULT_PUBLIC_BOOKING, ...data.publicBooking },
       bookingWindow: {
         open: bw?.open !== false,
         closedMessage: bw?.closedMessage ?? '',

@@ -20,6 +20,7 @@ import { toThaiLong } from '../utils/date';
 import { validateIdFormat, validatePhone } from '../utils/validation';
 import { buildCalendarCells, calendarTitle, QUOTA } from '../utils/calendar';
 import { ui } from './ui.svelte';
+import { publicCapacityForDate } from '../utils/publicCapacity';
 import { TABLE_AGREEMENT_VERSION } from '../utils/tableAgreement';
 import { navigate } from '../router.svelte';
 import {
@@ -226,7 +227,18 @@ class BookingStoreImpl {
   selectedDate = $state<string | null>(null);
   bookings = $state<Record<string, number>>({});
   /** Tables sellable per day. Overwritten from the server in table mode. */
-  perDay = $state(QUOTA);
+  tablePerDay = $state(QUOTA);
+  get perDay(): number {
+    return this.capacityForDate(
+      this.selectedDate ||
+        new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Bangkok' }).format(new Date(ui.now)),
+    );
+  }
+  capacityForDate(date: string): number {
+    return this.isTable
+      ? this.tablePerDay
+      : publicCapacityForDate(ui.publicSettings.publicBooking, date);
+  }
   /** Minutes an unpaid table booking holds its slot (table mode only). */
   holdMinutes = $state(60);
   countsState = $state<'loading' | 'ready' | 'error'>('loading');
@@ -252,7 +264,7 @@ class BookingStoreImpl {
       this.calMonth,
       this.selectedDate,
       this.bookings,
-      this.perDay,
+      (date) => this.capacityForDate(date),
       ui.publicSettings.bookingWindow,
       new Date(ui.now),
     );
@@ -316,7 +328,7 @@ class BookingStoreImpl {
       if (this.isTable) {
         const res = await getTableCountsByDate();
         counts = res.counts;
-        this.perDay = res.perDay;
+        this.tablePerDay = res.perDay;
         this.holdMinutes = res.holdMinutes;
       } else {
         counts = await getCountsByDate();

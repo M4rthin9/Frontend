@@ -20,7 +20,6 @@
 
   const bookingOpen = $derived(ui.publicSettings.bookingWindow.open);
   const days = $derived(visitPlan.freeDays.slice(0, 8));
-  const perDay = $derived(visitPlan.perDay);
 
   onMount(() => visitPlan.loadCounts());
 
@@ -162,7 +161,7 @@
                   data-meter
                   class="meter absolute inset-y-0 left-0 origin-left rounded-full"
                   class:is-low={low}
-                  style="width: {Math.max(4, Math.round((day.left / perDay) * 100))}%"
+                  style="width: {Math.max(4, Math.round((day.left / visitPlan.capacityForDate(day.date)) * 100))}%"
                 ></span>
               </span>
               <span class="seats mt-2 text-xs font-medium" class:is-low={low}>

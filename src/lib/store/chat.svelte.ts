@@ -34,7 +34,7 @@ const chatI18n: Record<ChatLang, Record<string, string>> = {
     checkStatus:
       '🔍 <strong>ตรวจสอบสถานะ</strong>:<br>ใช้ <strong>Ref No.</strong> หรือ <strong>เลขผู้ต้องขัง</strong> ที่หน้า "ตรวจสอบสถานะ"<br><br>สถานะที่อาจเจอ:<br>• รอตรวจสอบผู้เข้าร่วม<br>• รอตรวจสอบวินัย<br>• รอชำระเงิน<br>• ชำระแล้ว<br>• เสร็จสิ้น<br>• ไม่อนุมัติ',
     daysTime:
-      '📅 <strong>วันและเวลา</strong>:<br>เปิดรับจองเฉพาะ <strong>วันทำการ</strong><br>จันทร์ – ศุกร์ (ยกเว้นวันหยุดราชการ)<br><br>จำนวนโต๊ะจำกัด 20 โต๊ะ / วัน<br>เมื่อเต็มแล้วระบบจะปิดรับโดยอัตโนมัติ',
+      '📅 <strong>วันและเวลา</strong>:<br>เปิดรับจองเฉพาะ <strong>วันทำการ</strong><br>จันทร์ – ศุกร์ (ยกเว้นวันหยุดราชการ)<br><br>VIS: 20 โต๊ะ/วัน ก่อนวันที่ 9 พ.ย. 2569 และ 25 โต๊ะ/วัน ตั้งแต่วันที่ 9 พ.ย. 2569<br>เมื่อเต็มแล้วระบบจะปิดรับโดยอัตโนมัติ',
     whatToBring:
       '📝 <strong>สิ่งที่ควรเตรียมในวันเยี่ยม</strong>:<br>• แสดงบัตรประชาชนตัวจริง<br>• ห้ามนำโทรศัพท์เข้าพื้นที่เยี่ยม<br><br>ในกิจกรรมจะมีอาหารเป็น <strong>Fine Dining 6 คอร์ส</strong>เสิร์ฟให้ผู้เข้าร่วม',
     childAgePrice:
@@ -78,7 +78,7 @@ const chatI18n: Record<ChatLang, Record<string, string>> = {
     checkStatus:
       '🔍 <strong>Check Status</strong>:<br>Use <strong>Ref No.</strong> or <strong>Prisoner ID</strong> on the "Check Status" page<br><br>Possible statuses:<br>• Pending verification<br>• Pending visitor check<br>• Pending payment<br>• Paid<br>• Completed<br>• Rejected',
     daysTime:
-      '📅 <strong>Days and Hours</strong>:<br>Bookings accepted on <strong>working days</strong><br>Mon – Fri (except public holidays)<br><br>Limited to 20 seats / day<br>System closes automatically when full',
+      '📅 <strong>Days and Hours</strong>:<br>Bookings accepted on <strong>working days</strong><br>Mon – Fri (except public holidays)<br><br>VIS: 20 tables/day before 9 November 2026; 25 tables/day from 9 November 2026<br>System closes automatically when full',
     whatToBring:
       '📝 <strong>What to Bring</strong>:<br>• Present actual ID card<br>• No phones allowed in visit area<br><br>The activity includes Fine Dining 6-course meal',
     childAgePrice:

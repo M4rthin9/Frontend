@@ -27,6 +27,9 @@
   const windowConfig = $derived(ui.publicSettings.bookingWindow);
   const tableConfig = $derived(ui.publicSettings.tableBooking);
   const perDay = $derived(mode === 'visit' ? visitPlan.perDay : tableConfig.perDay);
+  function capacityForDate(date: string): number {
+    return mode === 'visit' ? visitPlan.capacityForDate(date) : tableConfig.perDay;
+  }
   const countsState = $derived(mode === 'visit' ? visitPlan.countsState : tableState);
   const counts = $derived(mode === 'visit' ? (visitPlan.counts ?? {}) : tableCounts);
   const updated = $derived(mode === 'visit' ? visitPlan.updatedAt : tableUpdated);
@@ -229,7 +232,7 @@
           <p>
             {tc('availabilityFirstFree', {
               date: dateLabel(firstFree.date),
-              n: Math.max(0, perDay - firstFree.quota),
+              n: Math.max(0, capacityForDate(firstFree.date) - firstFree.quota),
               unit: t(mode === 'visit' ? 'availabilityVisitUnit' : 'availabilityTableUnit'),
             })}
           </p>
@@ -297,7 +300,7 @@
                 >{day.blocked
                   ? t('availabilityFull')
                   : tc('availabilityLeft', {
-                      n: Math.max(0, perDay - day.quota),
+                      n: Math.max(0, capacityForDate(day.date) - day.quota),
                       unit: t(mode === 'visit' ? 'availabilityVisitUnit' : 'availabilityTableUnit'),
                     })}</strong
               >

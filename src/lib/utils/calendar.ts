@@ -233,7 +233,7 @@ export function buildCalendarCells(
   month: number,
   selectedDate: string | null,
   bookings: Record<string, number>,
-  perDay: number = QUOTA,
+  perDay: number | ((date: string) => number) = QUOTA,
   overrides: DateOverrides = NO_OVERRIDES,
   now: Date = new Date(),
 ): CalendarCell[] {
@@ -273,7 +273,7 @@ export function buildCalendarCells(
             ? undefined
             : HOLIDAYS[dateStr];
     const used = bookings[dateStr] || 0;
-    const isFull = used >= perDay;
+    const isFull = used >= (typeof perDay === 'function' ? perDay(dateStr) : perDay);
     const isNotWithinWindow = dateStr < minAllowedStr || dateStr > maxAllowedStr;
 
     let kind: CalendarCellKind = 'available';

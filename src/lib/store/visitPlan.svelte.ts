@@ -3,6 +3,7 @@ import { getCountsByDate } from '../api/endpoints';
 import { buildCalendarCells, type CalendarCell } from '../utils/calendar';
 import { PRICE_CHILD_5_8, PRICE_CHILD_UNDER_5, PRICE_PER_PERSON } from './booking.svelte';
 import { ui } from './ui.svelte';
+import { publicCapacityForDate } from '../utils/publicCapacity';
 
 /** The prisoner-visit form offers 1 to 10 visitors; the plan never exceeds it. */
 export const MAX_VISITORS = 10;
@@ -43,7 +44,14 @@ class VisitPlan {
   }
 
   get perDay(): number {
-    return ui.publicSettings.publicBooking.perDay;
+    return this.capacityForDate(
+      this.date ||
+        new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Bangkok' }).format(new Date(ui.now)),
+    );
+  }
+
+  capacityForDate(date: string): number {
+    return publicCapacityForDate(ui.publicSettings.publicBooking, date);
   }
 
   /**
@@ -66,7 +74,7 @@ class VisitPlan {
         month.getMonth(),
         null,
         this.counts,
-        this.perDay,
+        (date) => this.capacityForDate(date),
         ui.publicSettings.bookingWindow,
         now,
       )) {
@@ -82,7 +90,7 @@ class VisitPlan {
       .filter((cell) => !cell.blocked)
       .map((cell) => ({
         date: cell.date,
-        left: Math.max(this.perDay - cell.quota, 0),
+        left: Math.max(this.capacityForDate(cell.date) - cell.quota, 0),
       }));
   }
 

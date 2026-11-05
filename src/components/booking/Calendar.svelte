@@ -67,7 +67,7 @@
         >
           {cell.day}
           {#if !cell.blocked && cell.kind !== 'selected'}
-            <span class="quota">{cell.quota}/{store.perDay}</span>
+            <span class="quota">{cell.quota}/{store.capacityForDate(cell.date)}</span>
           {/if}
           {#if cell.label}
             <span class="hol-label">{cell.label}</span>
