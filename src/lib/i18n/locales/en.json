@@ -868,5 +868,8 @@
   "visVideoStep3": "Show your QR and original identification at registration",
   "visVideoDownload": "Download video",
   "visVideoWatch": "Watch the VIS booking guide",
-  "visVideoError": "The video could not play. Open the MP4 file or download it to watch."
+  "visVideoError": "The video could not play. Open the MP4 file or download it to watch.",
+  "bookingBanNotice": "This prisoner is banned from reservations for 3 months. Time remaining: {days} days, {hours} hours, {minutes} minutes. Reservations reopen on {date} (Thailand time).",
+  "bookingBanChecking": "Checking booking eligibility?",
+  "bookingBanCheckFailed": "Unable to check booking eligibility. Please select the prisoner again."
 }

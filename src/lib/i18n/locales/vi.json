@@ -868,5 +868,8 @@
   "visVideoStep3": "Xuất trình QR và giấy tờ gốc tại quầy đăng ký",
   "visVideoDownload": "Tải video",
   "visVideoWatch": "Xem hướng dẫn đặt thăm VIS",
-  "visVideoError": "Không thể phát video. Hãy mở tệp MP4 hoặc tải xuống để xem."
+  "visVideoError": "Không thể phát video. Hãy mở tệp MP4 hoặc tải xuống để xem.",
+  "bookingBanNotice": "Phạm nhân này bị cấm đặt chỗ trong 3 tháng. Còn lại: {days} ngày, {hours} giờ, {minutes} phút. Có thể đặt lại vào {date} (giờ Thái Lan).",
+  "bookingBanChecking": "Đang kiểm tra quyền đặt chỗ…",
+  "bookingBanCheckFailed": "Không thể kiểm tra quyền đặt chỗ. Vui lòng chọn lại phạm nhân."
 }

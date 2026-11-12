@@ -4,12 +4,58 @@
     RESTRICTED_STATUS,
     type BookingStore,
   } from '../../lib/store/booking.svelte';
-  import { t } from '../../lib/i18n/i18n.svelte';
+  import { t, tc, i18n } from '../../lib/i18n/i18n.svelte';
+  import { callAction } from '../../lib/api/client';
+  import type { Prisoner } from '../../lib/api/types';
   import Button from '../ui/Button.svelte';
 
   // The page decides which flow this belongs to; defaults to the prisoner-visit
   // store so existing usages keep working unchanged.
   let { store = defaultBooking }: { store?: BookingStore } = $props();
+  let checking = $state(false);
+  let selectionVersion = 0;
+
+  async function selectPrisoner(p: Prisoner): Promise<void> {
+    const version = ++selectionVersion;
+    checking = true;
+    store.clearPrisoner();
+    store.errors = { ...store.errors, prisonerSearch: '' };
+    try {
+      const result = await callAction<{ status: string; bannedUntil: string; serverTime: string }>(
+        'getPrisonerBookingBan',
+        { prisonerId: p.prisonerId },
+      );
+      if (version !== selectionVersion) return;
+      if (result.status !== 'ok') throw new Error('Ban check failed');
+      const remaining = Date.parse(result.bannedUntil) - Date.parse(result.serverTime);
+      if (remaining > 0) {
+        const minutes = Math.ceil(remaining / 60000);
+        const date = new Intl.DateTimeFormat(i18n.lang, {
+          timeZone: 'Asia/Bangkok',
+          dateStyle: 'long',
+          timeStyle: 'short',
+        }).format(new Date(result.bannedUntil));
+        store.errors = {
+          ...store.errors,
+          prisonerSearch: tc('bookingBanNotice', {
+            days: Math.floor(minutes / 1440),
+            hours: Math.floor((minutes % 1440) / 60),
+            minutes: minutes % 60,
+            date,
+          }),
+        };
+        store.hideSuggestions();
+        return;
+      }
+      store.selectPrisoner(p);
+    } catch {
+      if (version === selectionVersion) {
+        store.errors = { ...store.errors, prisonerSearch: t('bookingBanCheckFailed') };
+      }
+    } finally {
+      if (version === selectionVersion) checking = false;
+    }
+  }
 </script>
 
 <div>
@@ -43,7 +89,7 @@
               aria-selected="false"
               onmousedown={(e) => {
                 e.preventDefault();
-                store.selectPrisoner(p);
+                void selectPrisoner(p);
               }}
             >
               <div class="suggestion-main">
@@ -90,8 +136,11 @@
       <div class="prisoner-load-status load-ok">{store.prisonerLoadMsg}</div>
     {/if}
 
+    {#if checking}
+      <div class="prisoner-load-status" role="status">{t('bookingBanChecking')}</div>
+    {/if}
     {#if store.errors.prisonerSearch}
-      <div class="error-text">{store.errors.prisonerSearch}</div>
+      <div class="error-text" role="alert">{store.errors.prisonerSearch}</div>
     {/if}
   </div>
 

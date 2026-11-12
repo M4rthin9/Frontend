@@ -868,5 +868,8 @@
   "visVideoStep3": "在登记处出示二维码和身份证件原件",
   "visVideoDownload": "下载视频",
   "visVideoWatch": "观看 VIS 探视预约指南",
-  "visVideoError": "无法播放视频，请打开 MP4 文件或下载后观看。"
+  "visVideoError": "无法播放视频，请打开 MP4 文件或下载后观看。",
+  "bookingBanNotice": "该服刑人员被暂停预约3个月。剩余：{days}天{hours}小时{minutes}分钟。可再次预约时间：{date}（泰国时间）。",
+  "bookingBanChecking": "正在检查预约资格…",
+  "bookingBanCheckFailed": "无法检查预约资格，请重新选择服刑人员。"
 }
