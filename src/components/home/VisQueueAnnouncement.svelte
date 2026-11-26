@@ -6,6 +6,7 @@
     window.matchMedia('(pointer: coarse)').matches &&
     Math.min(window.screen.width, window.screen.height) < 600;
   const media = '/media/vis-guide/queue-dec-2026';
+  const version = '?v=20261201';
   const videos = [
     { id: '01-vis-announcement-th', title: 'ประกาศระบบคิวใหม่ VIS', duration: '0:52' },
     { id: '02-vis-how-to-use-th', title: 'วิธีใช้หน้าตรวจสอบสถานะ VIS', duration: '1:06' },
@@ -39,8 +40,8 @@
             <span class="text-sm tabular-nums">{video.duration}</span>
           </figcaption>
           <video
-            src={`${asset}.mp4`}
-            poster={`${asset}-poster.jpg`}
+            src={`${asset}.mp4${version}`}
+            poster={`${asset}-poster.jpg${version}`}
             class="block w-full rounded-xl bg-[#143029]"
             width={phone ? 1080 : 1920}
             height={phone ? 1920 : 1080}
@@ -51,11 +52,11 @@
           >
             <track
               kind="captions"
-              src={`${media}/${video.id}.vtt`}
+              src={`${media}/${video.id}.vtt${version}`}
               srclang="th"
               label="ภาษาไทย"
             />
-            <a href={`${asset}.mp4`}>{video.title}</a>
+            <a href={`${asset}.mp4${version}`}>{video.title}</a>
           </video>
         </figure>
       {/each}
