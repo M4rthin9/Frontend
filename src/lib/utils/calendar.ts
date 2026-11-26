@@ -236,6 +236,7 @@ export function buildCalendarCells(
   perDay: number | ((date: string) => number) = QUOTA,
   overrides: DateOverrides = NO_OVERRIDES,
   now: Date = new Date(),
+  queueFullDates?: readonly string[],
 ): CalendarCell[] {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -273,7 +274,7 @@ export function buildCalendarCells(
             ? undefined
             : HOLIDAYS[dateStr];
     const used = bookings[dateStr] || 0;
-    const isFull = used >= (typeof perDay === 'function' ? perDay(dateStr) : perDay);
+    const isFull = queueFullDates ? queueFullDates.includes(dateStr) : used >= (typeof perDay === 'function' ? perDay(dateStr) : perDay);
     const isNotWithinWindow = dateStr < minAllowedStr || dateStr > maxAllowedStr;
 
     let kind: CalendarCellKind = 'available';

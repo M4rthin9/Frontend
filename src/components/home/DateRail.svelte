@@ -136,14 +136,15 @@
       {:else}
         {#each days as day (day.date)}
           {@const picked = visitPlan.date === day.date}
-          {@const low = day.left <= 5}
+          {@const low = !visitPlan.visWaitlist && day.left <= 5}
+          {@const countLabel = visitPlan.visWaitlist ? `ยืนยันชำระแล้ว ${day.paid}/${visitPlan.capacityForDate(day.date)} โต๊ะ` : tc('homeNextLeft', { n: day.left })}
           <li data-day class="snap-start">
             <button
               type="button"
               class="card group relative flex h-full w-full cursor-pointer flex-col rounded-md px-4 pb-4 pt-4 text-left"
               class:is-picked={picked}
               aria-pressed={picked}
-              aria-label="{formatDateIn(day.date, i18n.lang, { weekday: 'long', day: 'numeric', month: 'long' })} · {tc('homeNextLeft', { n: day.left })}"
+              aria-label="{formatDateIn(day.date, i18n.lang, { weekday: 'long', day: 'numeric', month: 'long' })} · {countLabel}"
               onclick={() => visitPlan.toggleDate(day.date)}
             >
               <span class="card-soft text-xs font-medium tracking-wide">
@@ -161,11 +162,11 @@
                   data-meter
                   class="meter absolute inset-y-0 left-0 origin-left rounded-full"
                   class:is-low={low}
-                  style="width: {Math.max(4, Math.round((day.left / visitPlan.capacityForDate(day.date)) * 100))}%"
+                  style="width: {Math.max(4, Math.round(((visitPlan.visWaitlist ? day.paid : day.left) / visitPlan.capacityForDate(day.date)) * 100))}%"
                 ></span>
               </span>
               <span class="seats mt-2 text-xs font-medium" class:is-low={low}>
-                {tc('homeNextLeft', { n: day.left })}
+                {countLabel}
               </span>
 
               {#if picked}

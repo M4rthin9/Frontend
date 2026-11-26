@@ -193,6 +193,9 @@
 
   {#if store.inlineError}
     <div class="error-text-inline" style="white-space:pre-line">{store.inlineError}</div>
+    {#if /มีรายการ VIS (?:ที่ยังไม่ชำระเงิน|เดิมที่เลือกวันใหม่ได้)/.test(store.inlineError)}
+      <a href="#/status" class="ct-link">ดำเนินการต่อกับรายการเดิม</a>
+    {/if}
   {/if}
 
   <div style="display:flex;gap:10px;margin-bottom:1rem">

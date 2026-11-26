@@ -66,7 +66,9 @@
           }}
         >
           {cell.day}
-          {#if !cell.blocked && cell.kind !== 'selected'}
+          {#if store.visWaitlist && !store.isTable && ['available', 'full', 'selected'].includes(cell.kind)}
+            <span class="quota" aria-label="ยืนยันชำระแล้ว">{cell.quota}/{store.capacityForDate(cell.date)}</span>
+          {:else if !cell.blocked && cell.kind !== 'selected'}
             <span class="quota">{cell.quota}/{store.capacityForDate(cell.date)}</span>
           {/if}
           {#if cell.label}
@@ -84,15 +86,16 @@
     </div>
   {/if}
 
+  {#if store.visWaitlist && !store.isTable}<p class="mt-3 text-sm">ตัวเลขแสดงโต๊ะที่ยืนยันชำระแล้ว · เลือกวันที่เปิดรับคิว</p>{/if}
   <div class="quota-info">
     <span
       ><span class="quota-dot" style="background:var(--blue)"></span><span
-        >{t('quotaAvailable')}</span
+        >{store.visWaitlist && !store.isTable ? 'เปิดรับคิว' : t('quotaAvailable')}</span
       ></span
     >
     <span
       ><span class="quota-dot" style="background:var(--red)"></span><span
-        >{t('quotaFull')} ({store.perDay}/{store.perDay})</span
+        >{store.visWaitlist && !store.isTable ? 'คิวเต็ม' : `${t('quotaFull')} (${store.perDay}/${store.perDay})`}</span
       ></span
     >
     <span

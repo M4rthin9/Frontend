@@ -1,5 +1,5 @@
 import { untrack } from 'svelte';
-import { getCountsByDate } from '../api/endpoints';
+import { getVisCalendar } from '../api/endpoints';
 import { buildCalendarCells, type CalendarCell } from '../utils/calendar';
 import { PRICE_CHILD_5_8, PRICE_CHILD_UNDER_5, PRICE_PER_PERSON } from './booking.svelte';
 import { ui } from './ui.svelte';
@@ -11,6 +11,7 @@ export const MAX_VISITORS = 10;
 export interface FreeDay {
   date: string;
   left: number;
+  paid: number;
 }
 
 /**
@@ -29,6 +30,8 @@ class VisitPlan {
   countsState = $state<'idle' | 'loading' | 'ready' | 'error'>('idle');
   updatedAt = $state<number | null>(null);
   refreshing = $state(false);
+  visWaitlist = $state(false);
+  visQueueFullDates = $state<string[]>([]);
 
   get visitors(): number {
     return this.adults + this.kids58 + this.kidsUnder5;
@@ -77,6 +80,7 @@ class VisitPlan {
         (date) => this.capacityForDate(date),
         ui.publicSettings.bookingWindow,
         now,
+        this.visWaitlist ? this.visQueueFullDates : undefined,
       )) {
         if (cell.date > today && (cell.kind === 'available' || cell.kind === 'full'))
           days.push(cell);
@@ -90,6 +94,7 @@ class VisitPlan {
       .filter((cell) => !cell.blocked)
       .map((cell) => ({
         date: cell.date,
+        paid: cell.quota,
         left: Math.max(this.capacityForDate(cell.date) - cell.quota, 0),
       }));
   }
@@ -104,9 +109,11 @@ class VisitPlan {
       return;
     this.refreshing = true;
     if (!refresh) this.countsState = 'loading';
-    getCountsByDate()
+    getVisCalendar()
       .then((c) => {
-        this.counts = c;
+        this.counts = c.counts;
+        this.visWaitlist = c.waitlist;
+        this.visQueueFullDates = c.queueFullDates;
         this.countsState = 'ready';
         this.updatedAt = Date.now();
       })

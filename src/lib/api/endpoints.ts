@@ -38,12 +38,38 @@ export async function getPrisoners(): Promise<Prisoner[]> {
 }
 
 /** Active booking counts per visitDateISO — drives the calendar quota. */
-export async function getCountsByDate(): Promise<Record<string, number>> {
-  const data = await callAction<{ status: string; counts?: Record<string, number> }>(
-    'getCountsByDate',
-  );
+export async function getVisCalendar() {
+  const data = await callAction<{
+    status: string;
+    counts?: Record<string, number>;
+    visWaitlist?: boolean;
+    queueFullDates?: string[];
+  }>('getCountsByDate');
   assertOk(data);
-  return data.counts ?? {};
+  return {
+    counts: data.counts ?? {},
+    waitlist: data.visWaitlist === true,
+    queueFullDates: data.queueFullDates ?? [],
+  };
+}
+
+export async function getCountsByDate(): Promise<Record<string, number>> {
+  return (await getVisCalendar()).counts;
+}
+
+export type VisGuest = { name: string; id: string; relation: string; age: string };
+export type VisManageResult = {
+  status: string;
+  message?: string;
+  version?: number;
+  main?: VisGuest;
+  guests?: VisGuest[];
+  canChooseDate?: boolean;
+};
+export async function manageVis(input: Record<string, unknown>): Promise<VisManageResult> {
+  const data = await callAction<VisManageResult>('manageVis', input);
+  assertOk(data);
+  return data;
 }
 
 /**
@@ -129,15 +155,21 @@ export async function uploadSlip(input: {
   fileName: string;
   mimeType: string;
   base64Data: string;
-}): Promise<{ url: string; verify?: SlipVerifyResult }> {
+  visitorId?: string;
+}): Promise<{ url: string; verify?: SlipVerifyResult; pendingVerification?: boolean }> {
   const data = await callAction<{
     status: string;
     url?: string;
     verify?: SlipVerifyResult;
+    pendingVerification?: boolean;
     message?: string;
   }>('uploadSlip', input as unknown as Record<string, unknown>, { timeoutMs: 120000 });
   assertOk(data);
-  return { url: data.url ?? '', verify: data.verify };
+  return {
+    url: data.url ?? '',
+    verify: data.verify,
+    pendingVerification: data.pendingVerification,
+  };
 }
 
 /** Mark a booking as paid with the uploaded slip image. */

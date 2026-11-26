@@ -75,6 +75,9 @@ export interface PublicReservation {
   total?: number | string;
   cancelReason?: string;
   archivedAt?: string;
+  visManaged?: boolean;
+  visDeadline?: string;
+  visPendingVerification?: boolean;
 }
 
 export interface Note {

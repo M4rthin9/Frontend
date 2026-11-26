@@ -87,7 +87,7 @@ const captions = fs.readFileSync(
   new URL('../public' + paths.find((path) => path.endsWith('.vtt')), import.meta.url),
   'utf8',
 );
-assert.ok(captions.startsWith('WEBVTT\n'));
+assert.match(captions, /^WEBVTT\r?\n/);
 assert.match(captions, /2–3/);
 assert.match(captions, /VIS/);
 console.log(

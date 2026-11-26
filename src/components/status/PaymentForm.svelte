@@ -13,13 +13,16 @@
   let {
     booking,
     onpaid = () => {},
+    onpending = () => {},
     oncancel = () => {},
   }: {
     booking: PublicReservation;
     onpaid?: () => void;
+    onpending?: () => void;
     oncancel?: () => void;
   } = $props();
 
+  let ownerDocument = $state('');
   let slipFile = $state<File | null>(null);
   let previewUrl = $state('');
   let alertMsg = $state('');
@@ -233,13 +236,15 @@
       const mimeType = base64Data.slice(base64Data.indexOf(':') + 1, base64Data.indexOf(';'));
 
       progress = 30;
-      const { url, verify } = await uploadSlip({
+      const { url, verify, pendingVerification } = await uploadSlip({
         ref: booking.ref,
         fileName: slipFile.name,
         mimeType,
         base64Data,
+        ...(booking.visManaged ? { visitorId: ownerDocument } : {}),
       });
       progress = 70;
+      if (pendingVerification) { progress = 100; onpending(); return; }
 
       if (verify) {
         verifyResult = verify;
@@ -272,6 +277,9 @@
 </script>
 
 <div>
+  {#if booking.visManaged}<label class="mt-2 grid gap-1 text-sm">เลขบัตรประชาชนหรือหนังสือเดินทางของผู้จองหลัก
+    <input type="password" class="rounded border px-3 py-2" maxlength="64" autocomplete="off" bind:value={ownerDocument} />
+  </label>{/if}
   <div class="section-title flex items-center gap-2" style="margin-top:0.5rem">
     <CreditCard class="h-5 w-5 text-[var(--accent)]" />{t('paymentTitle')}
   </div>

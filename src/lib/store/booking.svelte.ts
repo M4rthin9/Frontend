@@ -1,7 +1,7 @@
 import { t, tc } from '../i18n/i18n.svelte';
 import {
   getPrisoners,
-  getCountsByDate,
+  getVisCalendar,
   getTableCountsByDate,
   lookupByRef,
   saveReservation,
@@ -247,6 +247,8 @@ class BookingStoreImpl {
   // ——— Errors ———
   errors = $state<Record<string, string>>({});
   inlineError = $state('');
+  visWaitlist = $state(false);
+  visQueueFullDates = $state<string[]>([]);
 
   // ——— Confirm / submit ———
   submitting = $state(false);
@@ -267,6 +269,7 @@ class BookingStoreImpl {
       (date) => this.capacityForDate(date),
       ui.publicSettings.bookingWindow,
       new Date(ui.now),
+      this.visWaitlist && !this.isTable ? this.visQueueFullDates : undefined,
     );
   }
   get calTitle(): string {
@@ -331,7 +334,10 @@ class BookingStoreImpl {
         this.tablePerDay = res.perDay;
         this.holdMinutes = res.holdMinutes;
       } else {
-        counts = await getCountsByDate();
+        const result = await getVisCalendar();
+        counts = result.counts;
+        this.visWaitlist = result.waitlist;
+        this.visQueueFullDates = result.queueFullDates;
       }
       this.bookings = {};
       for (const [dk, v] of Object.entries(counts)) {
@@ -558,7 +564,7 @@ class BookingStoreImpl {
       this.errors = errs;
       return false;
     }
-    if ((this.bookings[this.selectedDate] || 0) >= this.perDay) {
+    if (this.visWaitlist && !this.isTable ? this.visQueueFullDates.includes(this.selectedDate) : (this.bookings[this.selectedDate] || 0) >= this.perDay) {
       this.inlineError = t('textbookingMessage28');
       this.errors = errs;
       return false;
@@ -829,13 +835,13 @@ class BookingStoreImpl {
       const isServerRejection =
         submitError.indexOf('⚠️') === 0 ||
         submitError.indexOf('ไม่สามารถจองได้') === 0 ||
-        submitError.indexOf('Cannot change') === 0;
+        submitError.indexOf('Cannot change') === 0 || (this.visWaitlist && !this.isTable && errTextIsQueueMessage(submitError));
       this.inlineError = isServerRejection ? submitError : t('textbookingMessage35');
       return;
     }
 
     // Optimistic local quota update
-    this.bookings[this.selectedDate] = (this.bookings[this.selectedDate] || 0) + 1;
+    if (!this.visWaitlist || this.isTable) this.bookings[this.selectedDate] = (this.bookings[this.selectedDate] || 0) + 1;
 
     this.success = {
       ref: savedRef,
@@ -917,3 +923,7 @@ export const tableBooking = new BookingStoreImpl('table');
 
 /** Prop type for the shared booking components, which work against either store. */
 export type BookingStore = typeof booking;
+
+function errTextIsQueueMessage(message: string): boolean {
+  return /รายการ VIS ที่ยังไม่ชำระเงิน|รายการ VIS เดิมที่เลือกวันใหม่ได้|รายการเยี่ยมก่อนหน้า|คิวสำหรับวันนี้เต็มแล้ว/.test(message);
+}

@@ -30,6 +30,7 @@
   function capacityForDate(date: string): number {
     return mode === 'visit' ? visitPlan.capacityForDate(date) : tableConfig.perDay;
   }
+  const paidOnly = $derived(mode === 'visit' && visitPlan.visWaitlist);
   const countsState = $derived(mode === 'visit' ? visitPlan.countsState : tableState);
   const counts = $derived(mode === 'visit' ? (visitPlan.counts ?? {}) : tableCounts);
   const updated = $derived(mode === 'visit' ? visitPlan.updatedAt : tableUpdated);
@@ -230,7 +231,7 @@
           <p>{t('availabilityScheduledDetail')}</p>
         {:else if firstFree}
           <p>
-            {tc('availabilityFirstFree', {
+            {paidOnly ? `${dateLabel(firstFree.date)} · ยืนยันชำระแล้ว ${firstFree.quota}/${capacityForDate(firstFree.date)} โต๊ะ · เปิดรับคิว` : tc('availabilityFirstFree', {
               date: dateLabel(firstFree.date),
               n: Math.max(0, capacityForDate(firstFree.date) - firstFree.quota),
               unit: t(mode === 'visit' ? 'availabilityVisitUnit' : 'availabilityTableUnit'),
@@ -297,7 +298,7 @@
             >
               <span>{dateLabel(day.date)}</span>
               <strong
-                >{day.blocked
+                >{paidOnly ? `ยืนยันชำระแล้ว ${day.quota}/${capacityForDate(day.date)} โต๊ะ · ${day.blocked ? 'คิวเต็ม' : 'เปิดรับคิว'}` : day.blocked
                   ? t('availabilityFull')
                   : tc('availabilityLeft', {
                       n: Math.max(0, capacityForDate(day.date) - day.quota),

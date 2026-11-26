@@ -19,6 +19,7 @@
   import { maskPrisonerName } from '../../lib/utils/helpers';
   import { formatDateIn } from '../../lib/utils/date';
   import PaymentForm from './PaymentForm.svelte';
+  import VisManage from './VisManage.svelte';
   import EntryPass from './EntryPass.svelte';
   import EntryGuide from './EntryGuide.svelte';
   import PushOptIn from '../ui/PushOptIn.svelte';
@@ -40,6 +41,10 @@
   let statusOverride = $state<string | null>(null);
   let notes = $state<Note[]>([]);
   let showPayment = $state(false);
+  let submittedVis = $state(false);
+  const verifyingVis = $derived(submittedVis || booking.visPendingVerification === true);
+  const visTimeLeft = $derived(booking.visDeadline ? Math.max(0, Date.parse(booking.visDeadline) - ui.now) : 0);
+  const visCountdown = $derived([Math.floor(visTimeLeft / 3600000), Math.floor(visTimeLeft / 60000) % 60, Math.floor(visTimeLeft / 1000) % 60].map(n => String(n).padStart(2, '0')).join(':'));
   let cancelling = $state(false);
   let showCancel = $state(false);
   let cancelVisitorId = $state('');
@@ -288,7 +293,7 @@
       </div>
       <span class="ct-pill {statusTone(displayStatus)}">
         <span class="dot" aria-hidden="true"></span>
-        {cleanLabel(statusPillLabel(displayStatus))}
+        {verifyingVis ? 'กำลังตรวจสอบการชำระเงิน' : displayStatus === 'รอคิวโต๊ะ' ? 'รอคิวโต๊ะ' : cleanLabel(statusPillLabel(displayStatus))}
       </span>
     </header>
 
@@ -371,7 +376,7 @@
         </div>
       {/if}
 
-      {#if statusNotice.kind === 'approve' && !showPayment}
+      {#if statusNotice.kind === 'approve' && !showPayment && !verifyingVis && (!booking.visManaged || visTimeLeft > 0)}
         <div class="pay-row mt-4 flex flex-wrap items-end justify-between gap-4 pt-4">
           <div>
             <p class="text-xs text-text-tertiary">{t('amountDue')}</p>
@@ -467,9 +472,15 @@
 
   <EntryGuide />
 
-  {#if showPayment && paymentEnabled}
+  {#if booking.visManaged && booking.visDeadline && booking.status === 'รอชำระเงิน' && !verifyingVis}
+    <p class="rounded-xl border border-current/20 p-4 text-sm">เวลาชำระเงินที่เหลือ <span class="font-semibold tabular-nums">{visCountdown}</span></p>
+  {/if}
+  {#if booking.visManaged && !verifyingVis && ['รอตรวจสอบผู้เข้าร่วม', 'รอตรวจสอบวินัย', 'รอคิวโต๊ะ', 'รอชำระเงิน'].includes(booking.status || '')}
+    <VisManage {booking} />
+  {/if}
+  {#if showPayment && paymentEnabled && !verifyingVis && (!booking.visManaged || visTimeLeft > 0)}
     <div bind:this={paymentPanel} class="booking-app w-full !pb-0">
-      <PaymentForm {booking} {onpaid} oncancel={() => (showPayment = false)} />
+      <PaymentForm {booking} {onpaid} onpending={() => { submittedVis = true; showPayment = false; }} oncancel={() => (showPayment = false)} />
     </div>
   {/if}
 
